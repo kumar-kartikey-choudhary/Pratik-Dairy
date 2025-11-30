@@ -1,0 +1,69 @@
+<div class="user-management-container">
+    
+    <h1><span class="icon">👥</span> User Accounts Management</h1>
+    
+    <div class="controls-bar">
+        <div class="search-group">
+            <input 
+                type="text" 
+                placeholder="Search by Name, Email, or Phone..." 
+                [(ngModel)]="searchTerm" 
+                class="search-input"
+            >
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="filter-group">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" [(ngModel)]="selectedStatus" class="status-select">
+                @for (status of statusOptions; track status) {
+                    <option [value]="status">{{ status }}</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="user-table-panel panel">
+        <h2>Registered Users ({{ filteredUsers.length }} found)</h2>
+        
+        @if (filteredUsers.length > 0) {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User Name</th>
+                        <th>Contact Email</th>
+                        <th>Registered On</th>
+                        <th>Orders</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (user of filteredUsers; track user.id) {
+                        <tr [class.blocked]="user.status === 'Blocked'">
+                            <td class="user-id">#{{ user.id }}</td>
+                            <td class="user-name">{{ user.name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.registeredDate | date:'mediumDate' }}</td>
+                            <td class="total-orders">{{ user.totalOrders }}</td>
+                            <td>
+                                <span [class]="'status-badge status-' + user.status.toLowerCase()">
+                                    {{ user.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-action btn-view">View History</button>
+                                @if (user.status === 'Active') {
+                                    <button class="btn-action btn-danger" (click)="blockUser(user.id)">Block</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        } @else {
+            <p class="no-users-message">No users found matching the current filters.</p>
+        }
+    </div>
+</div>

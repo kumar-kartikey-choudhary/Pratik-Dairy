@@ -1,0 +1,63 @@
+<footer class="pratik-footer">
+  <div class="footer-container">
+    
+    <div class="footer-column brand-info">
+      <a routerLink="/" class="footer-logo">
+        <img src="assets/images/pratik-dairy-logo.png" alt="Pratik Dairy & Sweets Logo" class="footer-logo-img">
+        <h3>Pratik Dairy & Sweets</h3>
+      </a>
+      <p class="tagline">The Taste of Tradition. Purity in Every Drop and Bite.</p>
+      
+      <div class="social-links">
+        <a href="https://facebook.com/pratikdairysweets" target="_blank" aria-label="Facebook">📘</a>
+        <a href="https://instagram.com/pratikdairysweets" target="_blank" aria-label="Instagram">📸</a>
+        <a href="https://twitter.com/pratikdairys" target="_blank" aria-label="Twitter">🐦</a>
+        <a href="https://whatsapp.com" target="_blank" aria-label="WhatsApp">🟢</a>
+      </div>
+    </div>
+
+    <div class="footer-column quick-links">
+      <h4>Quick Links</h4>
+      <ul>
+        @for (item of quickLinks; track item.label) {
+          <li>
+            <a [routerLink]="item.link">{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+    
+    <div class="footer-column contact-details">
+      <h4>Contact & Support</h4>
+      <ul>
+        @for (item of utilityLinks; track item.label) {
+          <li>
+            <a [routerLink]="item.link">{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="footer-column location-info">
+      <h4>Location & Hours</h4>
+      <p>
+        <strong>Main Store:</strong><br>
+        123 Milk Street, Sweet Town, <br>
+        Maharashtra, India - 400001
+      </p>
+      <p>
+        <strong>Phone:</strong> <a href="tel:+917000628291">+91 7000628291</a><br>
+        <strong>Email:</strong> <a href="mailto:info@pratikdairysweets.com">info@pratikdairysweets.com</a>
+      </p>
+      <p>
+        <strong>Hours:</strong><br>
+        Mon - Sat: 9:00 AM - 9:00 PM
+      </p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; 2025 Pratik Dairy & Sweets. All Rights Reserved. | Crafted with Freshness.</p>
+  </div>
+</footer>

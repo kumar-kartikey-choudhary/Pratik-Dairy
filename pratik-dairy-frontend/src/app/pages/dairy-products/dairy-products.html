@@ -1,0 +1,41 @@
+<main class="dairy-page-container">
+  
+  <section class="page-header-banner">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Our Dairy Products</h1>
+      <p>Pure Milk. Pure Ingredients. Pure Trust. Taste the freshness delivered daily.</p>
+    </div>
+  </section>
+
+  <section class="product-listing-section">
+    <h2>Available Today</h2>
+    
+    <div class="product-grid">
+      @for (product of dairyProducts; track product.name) {
+        <div class="product-card">
+          <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+          
+          <div class="card-body">
+            <h3>{{ product.name }}</h3>
+            <p class="description">{{ product.description }}</p>
+            
+            <div class="price-actions">
+              <span class="price-tag">{{ product.price }} / {{ product.unit }}</span>
+              <button class="btn-add-to-cart">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Looking for Ghee or Festive Sweets?</h2>
+    <div class="cta-actions">
+      <a routerLink="/products/sweets" class="btn btn-primary">View Sweets Menu 🍬</a>
+      <a routerLink="/contact" class="btn btn-secondary">Bulk Order Inquiry</a>
+    </div>
+  </section>
+
+</main>

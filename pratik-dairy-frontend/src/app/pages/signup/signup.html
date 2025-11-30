@@ -1,0 +1,134 @@
+<main class="signup-page-container">
+    
+    <div class="signup-card">
+        <div class="card-header">
+            <h1>Create Your Account</h1>
+            <p>Join Pratik Dairy & Sweets to enjoy fresh products delivered to your door!</p>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" #signupForm="ngForm" class="signup-form">
+            
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="firstName">First Name</label>
+                    <input 
+                        type="text" 
+                        id="firstName" 
+                        name="firstName" 
+                        [(ngModel)]="user.firstName" 
+                        required 
+                        #firstNameField="ngModel"
+                    >
+                    <div *ngIf="firstNameField.invalid && (firstNameField.dirty || firstNameField.touched)" class="error-message">
+                        First Name is required.
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="middleName">Middle Name (Optional)</label>
+                    <input 
+                        type="text" 
+                        id="middleName" 
+                        name="middleName" 
+                        [(ngModel)]="user.middleName"
+                    >
+                </div>
+
+                <div class="input-group">
+                    <label for="lastName">Last Name</label>
+                    <input 
+                        type="text" 
+                        id="lastName" 
+                        name="lastName" 
+                        [(ngModel)]="user.lastName" 
+                        required
+                        #lastNameField="ngModel"
+                    >
+                    <div *ngIf="lastNameField.invalid && (lastNameField.dirty || lastNameField.touched)" class="error-message">
+                        Last Name is required.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-group full-width">
+                    <label for="username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        [(ngModel)]="user.username" 
+                        required 
+                        #usernameField="ngModel"
+                    >
+                    <div *ngIf="usernameField.invalid && (usernameField.dirty || usernameField.touched)" class="error-message">
+                        Username is required.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-group full-width">
+                    <label for="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        [(ngModel)]="user.email" 
+                        required 
+                        email 
+                        #emailField="ngModel"
+                    >
+                    <div *ngIf="emailField.invalid && (emailField.dirty || emailField.touched)" class="error-message">
+                        Please enter a valid email.
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        [(ngModel)]="user.password" 
+                        required 
+                        minlength="8"
+                        #passwordField="ngModel"
+                        [class.is-invalid]="passwordField.invalid && (passwordField.dirty || passwordField.touched)"
+                    >
+                    <div *ngIf="passwordField.invalid && (passwordField.dirty || passwordField.touched)" class="error-message">
+                        Password must be at least 8 characters.
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        [(ngModel)]="user.confirmPassword" 
+                        required
+                        [class.is-invalid]="passwordMismatch && (signupForm.submitted || confirmPasswordField.touched)"
+                        #confirmPasswordField="ngModel"
+                    >
+                    <div *ngIf="passwordMismatch" class="error-message">
+                        Passwords do not match.
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="role" [(ngModel)]="user.role">
+
+            <button type="submit" [disabled]="!signupForm.valid" class="btn btn-primary">
+                Register Account
+            </button>
+            
+            <p class="login-link-text">
+                Already have an account? <a routerLink="/login" class="login-link">Login Here</a>
+            </p>
+        </form>
+    </div>
+</main>

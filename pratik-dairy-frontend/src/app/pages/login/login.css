@@ -1,0 +1,167 @@
+/* src/app/pages/login/login.component.css */
+
+/* Define Color Variables (Matches the overall Dark Theme) */
+:root {
+    --dark-bg: #1e1e2d;         /* Page Background */
+    --dark-surface: #262948;    /* Panel Background */
+    --primary-accent: #ff8f00;  /* Orange/Action */
+    --secondary-accent: #FFC107; /* Gold/Yellow */
+    --text-light: #f4f4f4;
+    --text-muted: #a0a0a0;
+}
+
+/* --- PAGE CONTAINER (Full Screen Background) --- */
+.auth-page-container {
+    /* Set up a full-screen background for a secure, focused environment */
+    background-color: var(--dark-bg);
+    background-image: url('/assets/images/dairy-splatter-bg.jpg'); /* Subtle dark texture */
+    background-size: cover;
+    background-position: center;
+    
+    min-height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+/* --- LOGIN PANEL --- */
+.auth-panel-wrapper {
+    width: 100%;
+    max-width: 400px; /* Focused, standard login width */
+    margin: auto;
+}
+
+.auth-panel {
+    background-color: var(--dark-surface);
+    padding: 40px;
+    border-radius: 15px;
+    /* Striking shadow for security feel */
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); 
+    border-top: 5px solid var(--secondary-accent); /* Gold accent line */
+    transition: transform 0.3s;
+}
+
+/* --- BRANDING & HEADER --- */
+.brand-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.logo-img {
+    height: 70px;
+    margin-bottom: 10px;
+}
+.brand-header h2 {
+    color: var(--secondary-accent);
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+.intro-text {
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+/* --- FORM STYLING --- */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between input groups */
+}
+
+.input-group {
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    color: var(--text-light);
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background-color: var(--dark-bg); /* Dark input background */
+    color: var(--text-light);
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+
+.auth-form input:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 8px rgba(255, 143, 0, 0.5);
+    outline: none;
+}
+
+/* --- BUTTONS & LINKS --- */
+.btn-primary {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: none;
+    padding: 15px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s;
+    width: 100%; /* Full width button */
+}
+.btn-primary:hover {
+    background-color: #ffaa33;
+    box-shadow: 0 4px 15px rgba(255, 143, 0, 0.4);
+}
+
+.forgot-link {
+    display: block;
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.85em;
+    text-decoration: none;
+    margin-top: 5px;
+}
+.forgot-link:hover {
+    color: var(--secondary-accent);
+}
+
+/* --- SWITCH CTA (Create Account Link) --- */
+.switch-cta {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+.switch-cta p {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+.switch-link {
+    color: var(--primary-accent);
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.switch-link:hover {
+    text-decoration: underline;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 600px) {
+    .auth-panel-wrapper {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+    .auth-panel {
+        padding: 30px 20px;
+    }
+    .brand-header h2 {
+        font-size: 1.6em;
+    }
+}

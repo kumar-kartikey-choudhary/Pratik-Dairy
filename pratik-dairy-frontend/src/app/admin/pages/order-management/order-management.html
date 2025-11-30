@@ -1,0 +1,69 @@
+<div class="order-management-container">
+    
+    <h1><span class="icon">📦</span> Orders Management</h1>
+    
+    <div class="controls-bar">
+        <div class="search-group">
+            <input 
+                type="text" 
+                placeholder="Search by Order ID or Customer Name..." 
+                [(ngModel)]="searchTerm" 
+                class="search-input"
+            >
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="filter-group">
+            <label for="status-filter">Filter by Status:</label>
+            <select id="status-filter" [(ngModel)]="selectedStatus" class="status-select">
+                @for (status of statusOptions; track status) {
+                    <option [value]="status">{{ status }}</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="order-table-panel panel">
+        <h2>Order List ({{ selectedStatus }})</h2>
+        
+        @if (filteredOrders.length > 0) {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Date & Time</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (order of filteredOrders; track order.id) {
+                        <tr>
+                            <td class="order-id">#{{ order.id }}</td>
+                            <td>{{ order.customerName }}</td>
+                            <td>{{ order.orderDate | date:'short' }}</td>
+                            <td class="total-col">₹ {{ order.total | number:'1.2-2' }}</td>
+                            <td>
+                                <span [class]="'status-badge status-' + order.status.toLowerCase()">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-action" 
+                                        (click)="updateStatus(order.id, 'Delivered')">
+                                    Mark Ready
+                                </button>
+                                <a routerLink="/admin/orders/{{ order.id }}" class="btn-view-details">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        } @else {
+            <p class="no-orders-message">No orders found matching the current filters.</p>
+        }
+    </div>
+
+</div>

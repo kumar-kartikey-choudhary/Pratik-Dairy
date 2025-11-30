@@ -1,0 +1,298 @@
+/* src/app/pages/home/home.component.css */
+
+/* Define Dark Palette Variables (Good Practice) */
+:root {
+    --dark-bg: #1e1e2d;         /* Deep dark background */
+    --dark-surface: #262948;    /* Slightly lighter dark background for cards/sections */
+    --primary-accent: #ff8f00;  /* Bright Orange/Amber */
+    --secondary-accent: #FFC107; /* Gold/Yellow */
+    --text-light: #f4f4f4;      /* Off-white text */
+    --text-muted: #a0a0a0;      /* Muted gray text */
+}
+
+.home-page-container {
+    /* padding-top: 0px; */
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+}
+
+/* --- 1. HERO SECTION --- */
+.hero-banner {
+    /* FIX: Path starts with /assets/ to resolve correctly from the server root (public folder) */
+    background-image: url('/assets/images/home/pd-bg.jpg'); 
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    color:white;
+    padding: 100px 40px; 
+    text-align: center;
+    min-height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Overlay to ensure text is readable on top of background image */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75); /* Darker 75% black overlay */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-banner h1 {
+    font-size: 3.5em; 
+    color: var(--secondary-accent);
+    margin-bottom: 15px;
+    text-shadow: 0 0 15px rgba(255, 200, 0, 0.5);
+}
+
+.hero-banner h2 {
+    font-size: 1.8em;
+    font-weight: 300;
+    margin-bottom: 40px;
+    color: var(--text-light);
+}
+
+/* Styling for the paragraph itself */
+.hero-banner p {
+   
+    max-width: 100%; 
+    /* Add padding inside the box */
+    padding: 20px 30px;    
+    /* Center the box within its content area */
+    margin: 30px auto 50px auto; 
+    border-radius: 8px; /* Soft corners for a modern look */ 
+    /* Ensure text properties are retained */
+    font-size: 1.1em;
+    color: rgb(246, 236, 236); /* Make base text white for maximum contrast */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+    line-height: 1.6;
+}
+/* --- TEXT HIGHLIGHT CLASSES --- */
+
+.hero-content .highlight-gold {
+    color: var(--secondary-accent); /* Bright Gold/Yellow */
+    font-weight: 700;
+    text-shadow: 0 0 5px rgba(255, 200, 0, 0.8); /* Slight glow effect */
+}
+
+.hero-content .highlight-white {
+    color: var(--text-light); /* Pure Off-white color */
+    font-weight: 700;
+    text-shadow: 0 0 3px rgba(255, 255, 255, 0.5); /* Subtle shadow */
+}
+
+/* --- BUTTON ACTIONS CONTAINER --- */
+
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    z-index: 10;
+}
+
+/* --- BUTTON BASE STYLES --- */
+
+.btn {
+    text-decoration: none;
+    padding: 14px 30px;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: all 0.3s ease-in-out;
+    text-transform: uppercase;
+    font-size: 1em;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+}
+
+/* --- PRIMARY BUTTON (Orange - Order Sweets) --- */
+
+.btn-primary {
+    background-color: var(--primary-accent); /* Bright Orange */
+    color: var(--dark-bg); /* Dark text on bright button */
+    border: 2px solid var(--primary-accent);
+}
+
+.btn-primary:hover {
+    background-color: #ffaa33;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(255, 143, 0, 0.3); /* Button lift effect */
+}
+
+/* --- SECONDARY BUTTON (White Border - See Fresh Dairy) --- */
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-light);
+    border: 2px solid var(--text-light);
+}
+
+.btn-secondary:hover {
+   background-color: #ffaa33;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(255, 143, 0, 0.3);
+}
+
+/* --- MEDIA QUERIES (Important for stacking buttons on mobile) --- */
+
+@media (max-width: 768px) {
+    .hero-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+/* --- END BUTTON STYLING --- */
+
+
+/* --- 2. PRODUCT HIGHLIGHTS --- */
+.product-highlights {
+    padding: 80px 20px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--dark-bg);
+}
+
+.product-highlights h2 {
+    font-size: 2.5em;
+    color: var(--secondary-accent);
+    margin-bottom: 50px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.highlight-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.highlight-item {
+    background-color: var(--dark-surface); /* Surface color for contrast */
+    padding: 30px 20px; 
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+    flex: 0 1 300px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    transition: transform 0.3s;
+}
+
+.highlight-item:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Styling for direct product images */
+.product-img {
+    width: 100%; 
+    max-width: 250px; 
+    height: 180px; 
+    object-fit: cover; 
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 3px solid var(--secondary-accent); /* Gold border around product images */
+}
+
+.highlight-item h3 {
+    color: var(--secondary-accent);
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.highlight-item p {
+    flex-grow: 1;
+    margin-bottom: 15px;
+    color: var(--text-muted);
+}
+
+.link-more {
+    color: var(--primary-accent);
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    margin-top: auto;
+    transition: color 0.2s;
+}
+.link-more:hover {
+    color: #ffaa33;
+}
+
+
+/* --- 3. BRAND PROMISE --- */
+.brand-promise {
+    background-color: var(--dark-surface); 
+    padding: 100px 20px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+.promise-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.brand-promise h2 {
+    color: var(--secondary-accent);
+    font-size: 3em;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+/* --- 4. CTA CONTACT --- */
+.cta-contact {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+}
+
+.cta-contact h2 {
+    color: var(--primary-accent);
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.cta-contact p {
+    margin-bottom: 40px;
+    color: var(--text-muted);
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 768px) {
+    .hero-banner {
+        padding: 80px 20px;
+    }
+    .hero-banner h1 {
+        font-size: 2.5em;
+    }
+    .hero-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .highlight-grid {
+        gap: 20px;
+    }
+    .highlight-item {
+        flex: 1 1 100%;
+    }
+    .brand-promise h2 {
+        font-size: 2.2em;
+    }
+}

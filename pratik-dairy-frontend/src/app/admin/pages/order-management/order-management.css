@@ -1,0 +1,179 @@
+/* src/app/admin/pages/order-management/order-management.component.css */
+
+/* Use variables from the Admin Layout CSS */
+:root {
+    --admin-primary: #e67e22;    /* Orange/Action Color */
+    --admin-surface: #ffffff;    /* Card Background White */
+    --admin-content-bg: #f4f7f6;
+    --admin-text-dark: #333;
+    --accent-danger: #e74c3c;    /* Red (Cancelled) */
+    --accent-warning: #f1c40f;   /* Yellow (Processing) */
+    --accent-success: #2ecc71;   /* Green (Delivered) */
+    --accent-info: #3498db;      /* Blue (New/Ready) */
+}
+
+.order-management-container {
+    padding: 10px;
+}
+.order-management-container h1 {
+    font-size: 2em;
+    margin-bottom: 25px;
+    color: var(--admin-text-dark);
+}
+
+/* --- 1. CONTROLS BAR --- */
+.controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--admin-surface);
+    padding: 15px 25px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.search-group, .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-group {
+    position: relative;
+    width: 350px;
+}
+.search-input {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+.search-input:focus {
+    border-color: var(--admin-primary);
+    outline: none;
+}
+.search-icon {
+    position: absolute;
+    left: 10px;
+    color: var(--text-muted);
+}
+
+.filter-group label {
+    font-weight: 600;
+    color: var(--admin-text-dark);
+}
+.status-select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* --- 2. ORDER TABLE PANEL --- */
+.order-table-panel {
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.order-table-panel h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: var(--admin-text-dark);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    margin-bottom: 20px;
+}
+.data-table th, .data-table td {
+    padding: 15px 10px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+.data-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Row Hover Effect */
+.data-table tbody tr:hover {
+    background-color: #fcfcfc;
+}
+.order-id {
+    font-weight: 600;
+    color: var(--admin-text-dark);
+}
+.total-col {
+    font-weight: 700;
+    color: var(--admin-primary);
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+}
+
+.status-new { background-color: var(--accent-info); } /* Blue */
+.status-processing { background-color: var(--accent-warning); } /* Yellow */
+.status-ready { background-color: var(--admin-primary); } /* Orange */
+.status-delivered { background-color: var(--accent-success); } /* Green */
+.status-cancelled { background-color: var(--accent-danger); } /* Red */
+
+/* Action Buttons */
+.btn-action {
+    background-color: var(--admin-primary);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-right: 8px;
+    transition: background-color 0.2s;
+}
+.btn-action:hover {
+    background-color: #d1691a;
+}
+.btn-view-details {
+    color: var(--admin-primary);
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.no-orders-message {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+}
+
+
+/* MEDIA QUERIES */
+@media (max-width: 900px) {
+    .controls-bar {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .search-group {
+        width: 100%;
+    }
+    /* Simple overflow for better mobile table experience */
+    .order-table-panel {
+        overflow-x: auto;
+    }
+    .data-table {
+        min-width: 700px;
+    }
+}

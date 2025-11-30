@@ -1,0 +1,152 @@
+/* src/app/footer/footer.component.css */
+
+/* Color variables copied from header/home for strict consistency */
+:root {
+    --dark-bg: #1e1e2d;         /* Deep dark background (for bottom strip) */
+    --dark-surface: #262948;    /* Main footer body color (Lighter shade of dark) */
+    --primary-accent: #ff8f00;  /* Orange */
+    --secondary-accent: #FFC107; /* Gold/Yellow */
+    --text-light: #333333;      /* Heading text */
+    --text-muted: #2a2a2a;      /* Link/Body text */
+}
+
+.pratik-footer {
+    background-color: var(--dark-surface); 
+    color: var(--text-muted);
+    padding-top: 60px; /* Increased vertical padding */
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5); /* Deeper shadow for separation */
+    font-size: 0.95em;
+    font-family: Arial, sans-serif;
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px 50px; /* Increased bottom padding */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 40px; /* Increased gap between columns */
+}
+
+.footer-column {
+    flex: 1 1 200px;
+    min-width: 200px;
+}
+
+.footer-column h4 {
+    color: var(--secondary-accent); /* Gold heading */
+    font-size: 1.3em; /* Slightly larger heading */
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--primary-accent); /* Strong orange bottom border */
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- LOGO & BRAND INFO --- */
+.footer-logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    margin-bottom: 15px;
+}
+
+.footer-logo-img {
+    height: 40px; /* Consistent with header */
+    margin-right: 10px;
+}
+
+.footer-logo h3 {
+    color: var(--text-light);
+    font-size: 1.6em;
+    margin: 0;
+}
+
+.tagline {
+    font-style: italic;
+    font-size: 0.9em;
+    margin-bottom: 25px;
+    color: var(--text-muted);
+}
+
+/* --- QUICK LINKS & CONTACT LISTS --- */
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 8px;
+}
+
+.footer-column ul a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s, padding-left 0.2s;
+}
+
+.footer-column ul a:hover {
+    color: var(--primary-accent);
+    padding-left: 5px; /* Subtle sliding effect on hover */
+}
+
+/* --- CONTACT & LOCATION --- */
+.location-info strong {
+    color: var(--text-light); /* Make key details stand out */
+}
+
+.location-info p a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.location-info p a:hover {
+    color: var(--primary-accent);
+}
+
+/* --- SOCIAL MEDIA --- */
+.social-links {
+    margin-top: 20px;
+}
+.social-links a {
+    color: var(--text-light);
+    font-size: 2em; /* Larger social icons */
+    margin-right: 20px;
+    transition: color 0.3s, transform 0.3s;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: var(--primary-accent);
+    transform: scale(1.1);
+}
+
+/* --- FOOTER BOTTOM --- */
+.footer-bottom {
+    text-align: center;
+    padding: 20px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--dark-bg); /* Darkest color for the bottom strip */
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.85em;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+/* --- MEDIA QUERIES (Mobile) --- */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        padding: 0 20px 30px;
+    }
+    .footer-column {
+        flex: 1 1 100%;
+        margin-bottom: 20px;
+    }
+}

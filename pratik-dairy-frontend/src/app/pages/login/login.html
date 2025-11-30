@@ -1,0 +1,51 @@
+<main class="auth-page-container">
+    <div class="auth-panel-wrapper">
+        <div class="auth-panel login-panel">
+            
+            <div class="brand-header">
+                <img src="assets/images/pratik-dairy-logo.png" alt="Pratik Dairy Logo" class="logo-img">
+                <h2>Welcome Back!</h2>
+                <p class="intro-text">Please sign in to access your dashboard and place orders.</p>
+            </div>
+
+            <form class="auth-form" (ngSubmit)="onLogin()">
+                
+                <div class="input-group">
+                    <label for="username">Username / Email</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Enter your username or email" 
+                        [(ngModel)]="loginForm.username" 
+                        name="username" 
+                        required
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Enter your password" 
+                        [(ngModel)]="loginForm.password" 
+                        name="password" 
+                        required
+                    >
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    Log In Securely
+                </button>
+
+                <a routerLink="/forgot-password" class="forgot-link">Forgot Password?</a>
+            </form>
+            
+            <div class="switch-cta">
+                <p>New to Pratik Dairy & Sweets?</p>
+                <a routerLink="/signup" class="switch-link">Create Account</a>
+            </div>
+
+        </div>
+    </div>
+</main>

@@ -1,0 +1,160 @@
+/* src/app/admin/pages/admin-dashboard/admin-dashboard.component.css */
+
+/* Reuse variables from the Admin Layout CSS */
+:root {
+    --admin-primary: #e67e22;    /* Orange/Action Color */
+    --admin-bg-dark: #2c3e50;
+    --admin-content-bg: #f4f7f6;
+    --admin-text-dark: #333;
+    --accent-danger: #e74c3c;    /* Red */
+    --accent-success: #2ecc71;   /* Green */
+    --accent-info: #3498db;      /* Blue */
+}
+
+.dashboard-container h1 {
+    margin-bottom: 30px;
+    color: var(--admin-text-dark);
+}
+
+/* --- 1. KPI SECTION STYLING (The content of the boxes) --- */
+
+.kpi-section {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.kpi-card {
+    background-color: white;
+    flex: 1;
+    min-width: 220px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    border-left: 5px solid var(--admin-content-bg); /* Reset default border */
+}
+
+/* Add accent borders based on class */
+.kpi-card-primary { border-left-color: var(--admin-primary); }
+.kpi-card-secondary { border-left-color: var(--accent-success); }
+.kpi-card-danger { border-left-color: var(--accent-danger); }
+.kpi-card-info { border-left-color: var(--accent-info); }
+
+.kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.kpi-card h3 {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+.kpi-card .value {
+    font-size: 2.5em;
+    font-weight: 700;
+    margin: 5px 0 0;
+}
+.kpi-card .detail {
+    font-size: 0.8em;
+    color: var(--text-muted);
+}
+.kpi-card .primary { color: var(--admin-primary); }
+.kpi-card .secondary { color: var(--accent-success); }
+.kpi-card .danger { color: var(--accent-danger); }
+.kpi-card .info { color: var(--accent-info); }
+
+
+/* --- 2. ACTIVITY & INVENTORY SECTION STYLING --- */
+.activity-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr; 
+    gap: 30px;
+}
+.panel {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.panel h2 {
+    font-size: 1.4em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    color: var(--admin-text-dark);
+}
+
+/* Data Table Styling */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+.data-table th, .data-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+.data-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* Status Badges */
+.status-new { color: var(--admin-primary); font-weight: 600; }
+.status-processing { color: var(--accent-info); font-weight: 600; }
+.status-delivered { color: var(--accent-success); font-weight: 600; }
+.status-cancelled { color: var(--accent-danger); font-weight: 600; }
+
+.action-link {
+    color: var(--admin-primary);
+    text-decoration: none;
+}
+
+/* Inventory List Styling */
+.inventory-list {
+    list-style: none;
+    padding: 0;
+}
+.inventory-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.inventory-list li:last-child {
+    border-bottom: none;
+}
+.inventory-list .item-name {
+    font-weight: 600;
+}
+.inventory-list .item-stock {
+    color: var(--accent-danger);
+    font-weight: 700;
+}
+.inventory-list .item-threshold {
+    color: var(--text-muted);
+    font-size: 0.8em;
+}
+
+.view-all-link {
+    color: var(--admin-primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    margin-top: 10px;
+}
+
+/* MEDIA QUERIES */
+@media (max-width: 900px) {
+    .kpi-section {
+        flex-direction: column;
+    }
+    .activity-section {
+        grid-template-columns: 1fr;
+    }
+}

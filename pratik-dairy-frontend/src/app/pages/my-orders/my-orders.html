@@ -1,0 +1,51 @@
+<main class="orders-page-container">
+    
+    <section class="page-header-banner">
+        <h1>My Order History</h1>
+        <p>Track your recent purchases and view details for past orders.</p>
+    </section>
+
+    @if (orders.length === 0) {
+        <div class="no-orders-message">
+            <p>You haven't placed any orders yet. Start your first order now!</p>
+            <a routerLink="/products" class="btn btn-primary">Shop Our Menu →</a>
+        </div>
+    } @else {
+        <section class="order-list-section">
+            
+            @for (order of orders; track order.id) {
+                <div class="order-card">
+                    <div class="order-summary-header">
+                        <div class="header-details">
+                            <p class="order-id">Order #{{ order.id }}</p>
+                            <p class="order-date">Placed: {{ order.date | date:'mediumDate' }}</p>
+                            <p class="order-total">Total: 
+                                <span class="total-value">₹ {{ order.total | number:'1.2-2' }}</span>
+                            </p>
+                        </div>
+                        
+                        <div class="header-actions">
+                            <span [class]="'status-badge status-' + order.status.toLowerCase()">
+                                {{ order.status }}
+                            </span>
+                            <button class="btn-action btn-details">View Details</button>
+                            <button class="btn-action btn-reorder">Reorder</button>
+                        </div>
+                    </div>
+                    
+                    <div class="order-details-body">
+                        <p class="details-heading">Items Ordered:</p>
+                        <ul class="item-list">
+                            @for (item of order.items; track item.name) {
+                                <li>
+                                    <span>{{ item.name }}</span>
+                                    <span class="item-qty">Qty: {{ item.quantity }}</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </section>
+    }
+</main>

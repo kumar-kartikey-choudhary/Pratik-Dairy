@@ -1,0 +1,217 @@
+/* src/app/pages/contact/contact.component.css */
+
+/* Consistent Color Variables */
+:root {
+    --dark-bg: #1e1e2d;         /* Deepest Dark Background (Page BG, Input BG) */
+    --dark-surface: #262948;    /* General Surface/Card Color */
+    --primary-accent: #ff8f00;  /* Orange (for buttons/focus) */
+    --secondary-accent: #FFC107; /* Gold/Yellow (for headings/highlights) */
+    --text-light: #f4f4f4;
+    --text-muted: #a0a0a0;
+}
+
+.contact-page-container {
+    background-color: var(--dark-bg);
+    min-height: 85vh;
+    padding-bottom: 80px;
+    color: var(--text-light);
+}
+
+/* --- 1. PAGE HEADER BANNER --- */
+.page-header-banner {
+    background-color: darkgrey; 
+    padding: 80px 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.page-header-banner h1 {
+    font-size: 3.5em;
+    color: var(--secondary-accent);
+    margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255, 143, 0, 0.4);
+}
+
+.page-header-banner p {
+    font-size: 1.2em;
+    color: var(--text-muted);
+}
+
+/* --- 2. CONTACT GRID LAYOUT --- */
+.contact-grid-section {
+    /* background-color: darkgrey; */
+    padding: 80px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; 
+    gap: 50px;
+}
+
+/* --- COLUMN A: CONTACT FORM (Advanced Styling) --- */
+.form-column {
+    background-color:white; 
+    padding: 40px; 
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 5px rgba(255, 193, 7, 0.1); 
+    border-left: 5px solid var(--primary-accent); 
+    transition: transform 0.3s;
+}
+
+.form-column:hover {
+    transform: translateY(-3px);
+}
+
+.form-column h2 {
+    color: var(--primary-accent);
+    font-size: 2.2em;
+    margin-bottom: 30px;
+    border-bottom: 3px double var(--secondary-accent); 
+    padding-bottom: 15px;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    padding: 18px 15px; 
+    border: 1px solid green;
+    border-radius: 6px;
+    background-color: rgb(244, 243, 243); 
+    color: var(--text-light); 
+    font-size: 1em;
+    transition: all 0.3s;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 12px var(--primary-accent); 
+    background-color: #212130; 
+}
+
+.btn-primary {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: none;
+    padding: 18px;
+    border: 1px solid green; 
+    border-radius: 6px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+.btn-primary:hover {
+    background-color: #ffaa33;
+    box-shadow: 0 5px 20px rgba(255, 143, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+/* --- COLUMN B: INFO & MAP (Visually Distinct Background) --- */
+.info-column {
+    /* Uses a visually appealing background */
+    background-image: url('/assets/images/contact-milk-texture.jpg');
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Overlay for professional readability */
+.details-overlay {
+    background-color: rgba(252, 253, 253, 0.9); /* High opacity dark overlay for contrast */
+    padding: 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.details-box h2 {
+    color: var(--secondary-accent); 
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 10px;
+}
+
+.details-box p {
+    margin-bottom: 25px;
+    line-height: 1.5;
+    color: var(--text-light); /* Info text is crisp white */
+}
+
+.details-box a {
+    color: var(--primary-accent);
+    font-weight: 600;
+    transition: color 0.2s;
+}
+.details-box a:hover {
+    color: var(--secondary-accent);
+}
+
+.icon-label {
+    color: var(--secondary-accent);
+    font-weight: 700;
+}
+
+/* --- MAP STYLING --- */
+.map-container {
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    margin-top: -20px;
+    margin-bottom: 70px;
+}
+.map-container iframe {
+    border-radius: 8px;
+    border: 3px solid var(--secondary-accent); 
+}
+.map-heading {
+    color: var(--secondary-accent);
+    font-size: 1.5em;
+    margin-bottom: 15px;
+}
+
+/* --- 3. BULK ORDER CTA --- */
+.cta-bulk {
+    background-color: var(--dark-surface);
+    padding: 50px 20px;
+    text-align: center;
+    margin-top: 60px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--primary-accent); 
+}
+
+.cta-bulk h2 {
+    color: var(--secondary-accent);
+    font-size: 2.2em;
+}
+
+.cta-bulk p {
+    color: var(--text-muted);
+    font-size: 1.1em;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 900px) {
+    .contact-grid {
+        grid-template-columns: 1fr; 
+        gap: 30px;
+    }
+    .form-column {
+        order: 1; 
+    }
+    .info-column {
+        order: -1; 
+    }
+}

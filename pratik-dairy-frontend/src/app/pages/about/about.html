@@ -1,0 +1,68 @@
+<main class="about-page-container">
+  
+  <section class="page-header-banner">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Our Legacy of Purity</h1>
+      <p>Discover the journey of Pratik Dairy & Sweets—where tradition is our main ingredient.</p>
+    </div>
+  </section>
+
+  <section class="history-section">
+    <div class="content-block">
+      <h2>Rooted in <span class="highlight-primary">Generations of Trust</span></h2>
+      
+      <p>Pratik Dairy & Sweets was founded over two decades ago with a simple yet profound vision: to bring the **unadulterated taste of tradition** to every Indian home. Our story began with a small family dairy farm, driven by an unwavering commitment to purity in every single drop of milk. We understood that the foundation of true Indian flavor lies in the quality of its primary ingredients.</p>
+      
+      <p>Today, while our reach has expanded, our philosophy remains unchanged. We oversee every process, from the ethical sourcing of the purest milk to the final handcrafting of our mithai, ensuring each product carries forward a **legacy of trust** that our community depends on.</p>
+      
+      <a routerLink="/products" class="btn btn-primary">See Our Products</a>
+    </div>
+    
+  </section>
+
+  <section class="stats-section">
+    <div class="stats-grid">
+      @for (stat of stats; track stat.label) {
+        <div class="stat-item">
+          <p class="stat-value">{{ stat.value }}</p>
+          <p class="stat-label">{{ stat.label }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="commitment-section">
+    <h2>Our Commitment to <span class="highlight-secondary">Quality and Craftsmanship</span></h2>
+    <div class="commitment-grid">
+      
+      <div class="value-card">
+        <h3>Purest Sourcing 🥛</h3>
+        <p>We work directly with local farms to ensure our milk and mava are 100% fresh, natural, and free from additives.</p>
+      </div>
+
+      <div class="value-card">
+        <h3>Handmade Mithai 🤲</h3>
+        <p>Our sweets are hand-prepared by experienced artisans using time-tested recipes and only the finest pure ghee.</p>
+      </div>
+
+      <div class="value-card">
+        <h3>No Compromise on Flavor ✨</h3>
+        <p>We believe in the authentic taste of tradition—simple, rich, and truly nostalgic, just as you remember it.</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="testimonials-section">
+    <h2>What Our Customers Say</h2>
+    <div class="testimonial-grid">
+      @for (review of testimonials; track review.author) {
+        <div class="testimonial-card">
+          <p class="quote">"{{ review.quote }}"</p>
+          <p class="author">— {{ review.author }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+</main>

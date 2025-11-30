@@ -1,0 +1,59 @@
+<div class="dashboard-container">
+    
+    <h1>Dashboard Overview</h1>
+    
+    <section class="kpi-section">
+        @for (kpi of kpis; track kpi.title) {
+            <div class="kpi-card" [class]="'kpi-card-' + kpi.colorClass">
+                <h3>{{ kpi.title }}</h3>
+                <p class="value" [class]="kpi.colorClass">{{ kpi.value }}</p>
+                <span class="detail">{{ kpi.detail }}</span>
+            </div>
+        }
+    </section>
+
+    <section class="activity-section">
+        
+        <div class="panel recent-orders-panel">
+            <h2>Recent Orders</h2>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (order of recentOrders; track order.id) {
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.customer }}</td>
+                            <td>₹ {{ order.total | number:'1.0-0' }}</td>
+                            <td><span [class]="'status-' + order.status.toLowerCase()">{{ order.status }}</span></td>
+                            <td><a routerLink="/admin/orders" class="action-link">View</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a routerLink="/admin/orders" class="view-all-link">View All Orders →</a>
+        </div>
+        
+        <div class="panel inventory-snapshot-panel">
+            <h2>Inventory Snapshot (Low Stock)</h2>
+            <ul class="inventory-list">
+                @for (item of lowStockItems; track item.name) {
+                    <li [class.alert]="item.stock <= item.threshold">
+                        <span class="item-name">{{ item.name }}</span>
+                        <span class="item-stock">Stock: {{ item.stock }} kg</span>
+                        <span class="item-threshold">(Threshold: {{ item.threshold }} kg)</span>
+                    </li>
+                }
+            </ul>
+            <a routerLink="/admin/products" class="view-all-link">Manage Products →</a>
+        </div>
+    </section>
+
+</div>

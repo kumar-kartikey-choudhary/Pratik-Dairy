@@ -1,0 +1,38 @@
+<main class="products-page-container">
+  
+  <section class="page-header-banner">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Our Complete Product Range</h1>
+      <p>Explore all the freshness and flavor Pratik Dairy & Sweets has to offer.</p>
+    </div>
+  </section>
+
+  <section class="category-listing-section">
+    <h2>Select a Category to View Items</h2>
+    
+    <div class="category-grid">
+      @for (category of categories; track category.name) {
+        <a [routerLink]="category.link" class="category-card">
+          
+          <div class="card-image-wrapper">
+            <div class="card-image" [style.background-image]="'url(' + category.imagePath + ')'"></div>
+          </div>
+          
+          <div class="card-body">
+            <h3>{{ category.name }}</h3>
+            <p>{{ category.description }}</p>
+            <span class="btn-view">View Menu →</span>
+          </div>
+        </a>
+      }
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Can't find what you're looking for?</h2>
+    <p>Get in touch for bulk orders, customization, or seasonal specials.</p>
+    <a routerLink="/contact" class="btn btn-primary">Contact Us Now</a>
+  </section>
+
+</main>

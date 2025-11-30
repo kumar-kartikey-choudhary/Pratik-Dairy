@@ -1,0 +1,79 @@
+<main class="drinks-page-container">
+  
+  <section class="page-header-banner">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Soft Drinks & Essentials</h1>
+      <p>Your favorite carbonated beverages and chilled water, available for quick pickup or delivery.</p>
+    </div>
+  </section>
+
+  <section class="search-section">
+    <div class="search-input-wrapper">
+      <input 
+        type="text" 
+        placeholder="Search Coke, Sprite, or Fanta..." 
+        [(ngModel)]="filterText" 
+        class="search-input"
+        aria-label="Search Cold Drinks Menu"
+      >
+      <span class="search-icon">🔍</span>
+    </div>
+  </section>
+
+  <section class="menu-listing-section">
+    <h2>
+      @if (filterText) {
+        Filtered Drink Results
+      } @else {
+        All Soft Drinks & Essentials
+      }
+    </h2>
+    
+    @for (category of filteredCategories; track category.name) {
+      
+      @if (category.items.length > 0) {
+        
+        <div class="category-header">
+          <h3>{{ category.name }}</h3>
+        </div>
+        
+        <div class="menu-grid">
+          @for (drink of category.items; track drink.name) {
+            <div class="drink-card">
+              <div class="image-box">
+                 <img [src]="drink.imagePath" [alt]="drink.name" class="drink-image">
+                 <span class="category-tag">{{ drink.category }}</span>
+              </div>
+              
+              <div class="card-details">
+                <div class="name-price">
+                  <h3>{{ drink.name }}</h3>
+                  <span class="price-tag">{{ drink.price }}</span> 
+                </div>
+                
+                <p class="description">{{ drink.description }}</p>
+                
+                <button class="btn-order">Add to Cart</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    @if (filteredCategories.length === 0 && filterText) {
+      <div class="no-results">
+        <p>😔 No drinks found matching "{{ filterText }}". Please try a different item.</p>
+        <button class="btn-clear-filter" (click)="filterText = ''">Clear Search</button>
+      </div>
+    }
+  </section>
+
+  <section class="cta-section">
+    <h2>Need a large order of Soft Drinks or Water?</h2>
+    <p>Perfect for events and gatherings. Contact us for bulk pricing.</p>
+    <a routerLink="/contact" class="btn btn-primary">Bulk Order Inquiry</a>
+  </section>
+
+</main>

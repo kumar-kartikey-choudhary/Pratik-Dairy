@@ -1,0 +1,78 @@
+<main class="cart-page-container">
+    
+    <section class="page-header-banner">
+        <h1>Your Shopping Cart</h1>
+        <p>{{ cartItems.length }} items currently added.</p>
+    </section>
+
+    @if (cartItems.length === 0) {
+        <div class="empty-cart-message">
+            <p>Your cart is empty. Time to stock up on fresh dairy and sweets!</p>
+            <a routerLink="/products" class="btn btn-primary">Start Shopping →</a>
+        </div>
+    } @else {
+        <div class="cart-grid">
+            
+            <div class="cart-item-list">
+                @for (item of cartItems; track item.id) {
+                    <div class="cart-item-card">
+                        <img [src]="item.imagePath" [alt]="item.name" class="item-image">
+                        
+                        <div class="item-details">
+                            <h3>{{ item.name }}</h3>
+                            <p class="price-unit">₹ {{ item.price | number:'1.2-2' }} per unit</p>
+                            <button (click)="removeItem(item.id)" class="btn-remove">Remove</button>
+                        </div>
+                        
+                        <div class="item-quantity">
+                            <label for="qty-{{ item.id }}">Quantity:</label>
+                            <input 
+                                type="number" 
+                                id="qty-{{ item.id }}" 
+                                [value]="item.quantity"
+                                (change)="updateQuantity(item.id, $event.target.valueAsNumber)"
+                                min="1"
+                                class="qty-input"
+                            >
+                        </div>
+                        
+                        <div class="item-subtotal">
+                            Total: <span class="subtotal-value">
+                                ₹ {{ (item.price * item.quantity) | number:'1.2-2' }}
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="order-summary-panel">
+                <h2>Order Summary</h2>
+                
+                <div class="summary-details">
+                    <p>Subtotal ({{ cartItems.length }} items):</p>
+                    <span class="value">₹ {{ subtotal | number:'1.2-2' }}</span>
+                </div>
+                
+                <div class="summary-details">
+                    <p>Shipping Fee:</p>
+                    <span class="value">₹ {{ shippingFee | number:'1.2-2' }}</span>
+                </div>
+
+                <div class="summary-details tax-line">
+                    <p>GST/Tax ({{ taxRate * 100 }}%):</p>
+                    <span class="value">₹ {{ taxAmount | number:'1.2-2' }}</span>
+                </div>
+
+                <div class="summary-total">
+                    <h3>Grand Total:</h3>
+                    <span class="total-value">₹ {{ totalAmount | number:'1.2-2' }}</span>
+                </div>
+                
+                <button (click)="checkout()" class="btn btn-checkout">
+                    Proceed to Checkout
+                </button>
+                <a routerLink="/products" class="continue-shopping-link">← Continue Shopping</a>
+            </div>
+        </div>
+    }
+</main>

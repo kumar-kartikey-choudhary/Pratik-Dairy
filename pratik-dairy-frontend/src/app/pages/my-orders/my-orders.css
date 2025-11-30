@@ -1,0 +1,184 @@
+/* src/app/pages/my-orders/my-orders.component.css */
+
+/* Color Variables */
+:root {
+    --dark-bg: #1e1e2d;
+    --dark-surface: #262948;
+    --primary-accent: #ff8f00;  /* Orange/Action */
+    --secondary-accent: #FFC107; /* Gold/Yellow */
+    --text-light: #f4f4f4;
+    --text-muted: #a0a0a0;
+    --status-processing: #f1c40f; /* Yellow */
+    --status-shipped: #3498db;    /* Blue */
+    --status-delivered: #2ecc71;  /* Green */
+    --status-cancelled: #e74c3c;  /* Red */
+}
+
+.orders-page-container {
+    background-color: var(--dark-bg);
+    min-height: 80vh;
+    padding-bottom: 80px;
+    color: var(--text-light);
+}
+
+/* --- PAGE HEADER --- */
+.page-header-banner {
+    background-color: var(--dark-surface); 
+    padding: 60px 20px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.page-header-banner h1 {
+    font-size: 3em;
+    color: var(--secondary-accent);
+}
+
+.no-orders-message {
+    text-align: center;
+    padding: 80px 20px;
+}
+.no-orders-message p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+/* Reused button styling from home page */
+.btn-primary {
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    font-weight: 700;
+}
+
+/* --- ORDER LISTING --- */
+.order-list-section {
+    max-width: 1000px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+}
+
+.order-card {
+    background-color: var(--dark-surface);
+    margin-bottom: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    transition: box-shadow 0.3s;
+}
+
+.order-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* --- ORDER HEADER (Top Row) --- */
+.order-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-details {
+    text-align: left;
+}
+.order-id {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+.order-date, .order-total {
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+.total-value {
+    color: var(--primary-accent);
+    font-weight: 700;
+    font-size: 1.1em;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--dark-bg); /* Dark text on bright badge */
+}
+.status-processing { background-color: var(--status-processing); }
+.status-shipped { background-color: var(--status-shipped); color: white; }
+.status-delivered { background-color: var(--status-delivered); }
+.status-cancelled { background-color: var(--status-cancelled); }
+
+.btn-action {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+.btn-action.btn-details {
+    background: none;
+    color: var(--primary-accent);
+    border: 1px solid var(--primary-accent);
+}
+.btn-action.btn-details:hover {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+}
+.btn-action.btn-reorder {
+    background-color: var(--secondary-accent);
+}
+
+/* --- ITEM DETAILS BODY --- */
+.order-details-body {
+    padding: 15px 25px 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.details-heading {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+.item-list {
+    list-style: none;
+    padding: 0;
+}
+.item-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    color: var(--text-muted);
+}
+.item-qty {
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 768px) {
+    .order-summary-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

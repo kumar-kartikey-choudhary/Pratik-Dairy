@@ -1,0 +1,297 @@
+/* src/app/header/header.css */
+
+/* --- GLOBAL RESET (Assuming this is in styles.css, but including for reference) --- */
+/* body { margin: 0; padding: 0; } */
+
+
+/* --- 1. RUNNING MESSAGE / TOP-TICKER STYLES --- */
+.top-ticker {
+    /* Fixed height for the ticker strip */
+    height: 30px; 
+    background-color: #FFC107; /* Amber/Gold */
+    color: #1a237e; /* Deep blue/indigo */
+    text-align: center;
+    overflow: hidden; 
+    font-size: 0.9em;
+    font-weight: 600;
+    line-height: 30px;
+    
+    /* FIX: Make Ticker Sticky at the very top */
+    position: sticky; 
+    top: 0; 
+    
+    z-index: 1002; /* Must be the highest element */
+}
+
+.ticker-content {
+    margin: 0;
+    white-space: nowrap; 
+    animation: marquee 20s linear infinite;
+}
+
+.ticker-content span {
+    padding-right: 50px; 
+    display: inline-block;
+}
+
+@keyframes marquee {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+
+/* --- 2. BASE CONTAINER: DARK THEME & STICKY HEADER --- */
+.pratik-header.dark-theme {
+    position: sticky;
+    top: 30px; 
+    z-index: 1000; 
+
+    background-color: #2b3e50; 
+    color: #fff; 
+    /* border-bottom: 3px solid #f2f2f2;  */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); 
+    padding: 10px 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    /* FIX: Set padding to 0 for edge-to-edge alignment */
+    padding: 0; 
+}
+
+/* --- 3. LOGO/BRANDING --- */
+.logo-link {
+    text-decoration: none;
+    color: #ffd700; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 25px; /* Added padding to align content with old header */
+}
+
+.logo-image {
+    height: 50px; 
+    max-width: 100%;
+    margin-right: 8px; 
+}
+
+.logo-link h1 {
+    font-size: 1.5em; 
+    margin: 0;
+    font-family: 'Georgia', serif;
+    font-weight: 700;
+}
+
+.logo-link .tagline {
+    display: none; 
+}
+
+/* --- 4. DESKTOP NAVIGATION & DROPDOWN --- */
+.desktop-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+
+.desktop-nav li {
+    position: relative; /* CRITICAL for dropdown positioning */
+    margin: 0 15px; 
+}
+
+.desktop-nav a {
+    text-decoration: none;
+    color: #f2f2f2; 
+    font-weight: 500;
+    padding: 10px 5px;
+    transition: color 0.3s, border-bottom 0.3s;
+    display: flex;
+    align-items: center;
+}
+
+.desktop-nav a:hover {
+    color: #ffd700;
+}
+
+.desktop-nav a.active-link {
+    color: #ffd700; 
+    border-bottom: 2px solid #ff8f00; 
+}
+
+/* Dropdown Arrow */
+.dropdown-arrow {
+    font-size: 0.7em;
+    margin-left: 5px;
+    transition: transform 0.2s;
+}
+
+.dropdown-active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+/* DROPDOWN MENU PANEL STYLES */
+.dropdown-menu {
+    position: absolute;
+    top: 100%; 
+    left: 50%;
+    transform: translateX(-50%); 
+    
+    background-color: #3d5a71; /* Lighter dark background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+    overflow: hidden;
+    min-width: 180px;
+    
+    /* Visibility Control */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 1005; /* High z-index to ensure visibility */
+}
+
+.dropdown-menu.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dropdown-menu a {
+    color: #f2f2f2;
+    padding: 12px 20px;
+    display: block;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: 400;
+    border-bottom: 1px solid #4a6880; 
+}
+
+.dropdown-menu a:hover {
+    background-color: #4a6880;
+    color: #FFC107; 
+    border-bottom: none;
+}
+
+
+/* --- 5. UTILITY BLOCK (Right Side) --- */
+.utility-block {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-right: 25px; /* Added padding to align content with old header */
+}
+
+.phone-link {
+    color: #ffffff; 
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9em;
+    padding-right: 15px;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.icon-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.utility-icon {
+    font-size: 1.3em;
+    padding: 5px 8px;
+    color: #f2f2f2;
+    transition: color 0.2s;
+    text-decoration: none;
+}
+
+.utility-icon:hover {
+    color: #ffd700;
+}
+
+.logout-btn {
+    background-color: #ff8f00; 
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-transform: uppercase;
+}
+
+.logout-btn:hover {
+    background-color: #e57300;
+}
+
+/* --- 6. MOBILE TOGGLE BUTTON & NAVIGATION --- */
+.menu-toggle-btn {
+    display: none; 
+    background: none;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 1.2em;
+    margin-left: 15px;
+}
+
+.mobile-nav {
+    display: none;
+    position: absolute;
+    top: 100%; 
+    left: 0;
+    width: 100%;
+    background-color: #2b3e50; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.mobile-nav.open {
+    display: block;
+}
+
+.mobile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mobile-nav a {
+    display: block;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #f2f2f2;
+    border-bottom: 1px solid #3d5a71; 
+    transition: background-color 0.2s;
+}
+
+.mobile-nav a:hover {
+    background-color: #3d5a71;
+    color: #ffd700;
+}
+
+/* --- 7. MEDIA QUERY FOR RESPONSIVENESS --- */
+@media (max-width: 1050px) { 
+    .desktop-nav,
+    .phone-link,
+    .icon-group {
+        display: none; 
+    }
+
+    .menu-toggle-btn {
+        display: block; 
+    }
+}
+
+@media (max-width: 600px) {
+    .top-ticker {
+        display: none;
+    }
+    .pratik-header.dark-theme {
+        top: 0;
+    }
+}

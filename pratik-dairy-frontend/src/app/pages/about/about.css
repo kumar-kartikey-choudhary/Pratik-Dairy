@@ -1,0 +1,230 @@
+/* src/app/pages/about/about.component.css */
+
+/* Consistent Color Variables */
+:root {
+    --dark-bg: #1e1e2d;
+    --dark-surface: #262948;
+    --primary-accent: #ff8f00;  /* Orange */
+    --secondary-accent: #FFC107; /* Gold/Yellow */
+    --text-light: #f4f4f4;
+    --text-muted: #a0a0a0;
+}
+
+.about-page-container {
+    background-color: var(--dark-bg);
+    min-height: 80vh;
+    padding-bottom: 50px;
+    color: var(--text-light);
+}
+
+/* --- 1. PAGE HEADER BANNER (Consistent Styling) --- */
+.page-header-banner {
+    background-color: var(--dark-surface); 
+    padding: 80px 20px;
+    text-align: center;
+    color: var(--text-light);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.page-header-banner h1 {
+    font-size: 3.5em;
+    color: var(--secondary-accent); /* Gold heading */
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.page-header-banner p {
+    font-size: 1.2em;
+    font-weight: 300;
+    color: var(--text-muted);
+}
+
+/* --- 2. HISTORY SECTION --- */
+.history-section {
+    padding: 80px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.content-block {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.history-section h2 {
+    font-size: 2.8em;
+    color: var(--text-light);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.history-section p {
+    font-size: 1.1em;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: var(--text-muted);
+}
+
+.highlight-primary {
+    color: var(--primary-accent);
+    font-weight: bold;
+}
+.highlight-secondary {
+    color: var(--secondary-accent);
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: 2px solid var(--primary-accent);
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    display: inline-block;
+    margin-top: 15px;
+    transition: background-color 0.3s;
+}
+.btn-primary:hover {
+    background-color: #ffaa33;
+}
+
+/* --- 3. KEY STATISTICS --- */
+.stats-section {
+    background-color: var(--dark-surface);
+    padding: 40px 20px;
+}
+
+.stats-grid {
+    display: flex;
+    justify-content: space-around;
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    flex-basis: 200px;
+    padding: 10px;
+}
+
+.stat-value {
+    font-size: 3.5em;
+    font-weight: 900;
+    color: var(--secondary-accent); /* Gold/Yellow */
+    line-height: 1;
+    margin: 0 0 5px 0;
+}
+
+.stat-label {
+    font-size: 1em;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- 4. COMMITMENT & VALUES --- */
+.commitment-section {
+    padding: 80px 40px;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.commitment-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+.commitment-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.value-card {
+    background-color: var(--dark-surface);
+    flex: 1 1 300px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    border-top: 5px solid var(--primary-accent);
+}
+
+.value-card h3 {
+    color: var(--text-light);
+    font-size: 1.5em;
+    margin-top: 0;
+}
+
+.value-card p {
+    color: var(--text-muted);
+}
+
+/* --- 5. TESTIMONIALS --- */
+.testimonials-section {
+    background-color: var(--dark-bg);
+    padding: 80px 40px;
+    text-align: center;
+}
+
+.testimonials-section h2 {
+    font-size: 2.5em;
+    color: var(--primary-accent);
+    margin-bottom: 40px;
+}
+
+.testimonial-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.testimonial-card {
+    background-color: var(--dark-surface);
+    flex: 1 1 300px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    font-style: italic;
+}
+
+.quote {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    color: var(--text-light);
+}
+
+.author {
+    color: var(--secondary-accent);
+    font-weight: bold;
+    text-align: right;
+    display: block;
+    margin-top: 10px;
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 768px) {
+    .stats-grid {
+        flex-direction: column;
+    }
+    .commitment-grid, .testimonial-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .history-section, .commitment-section, .testimonials-section {
+        padding: 40px 20px;
+    }
+    .stat-value {
+        font-size: 3em;
+    }
+}

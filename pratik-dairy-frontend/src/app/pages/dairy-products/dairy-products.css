@@ -1,0 +1,181 @@
+/* src/app/pages/dairy-products/dairy-products.component.css */
+
+/* Use the same color variables for consistency */
+:root {
+    --dark-bg: #1e1e2d;
+    --dark-surface: #262948;
+    --primary-accent: #ff8f00;
+    --secondary-accent: #FFC107;
+    --text-light: #f4f4f4;
+    --text-muted: #a0a0a0;
+}
+
+.dairy-page-container {
+    background-color: var(--dark-bg);
+    min-height: 80vh;
+    padding-bottom: 50px;
+}
+
+/* --- PAGE HEADER BANNER --- */
+.page-header-banner {
+    background-color: #3d5a71; /* A contrasting deep blue for freshness/dairy */
+    padding: 60px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    color: var(--text-light);
+}
+
+.page-header-banner h1 {
+    font-size: 3em;
+    color: var(--secondary-accent);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.page-header-banner p {
+    font-size: 1.2em;
+    font-weight: 300;
+}
+
+/* --- PRODUCT LISTING SECTION --- */
+.product-listing-section {
+    padding: 50px 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.product-listing-section h2 {
+    font-size: 2.2em;
+    color: var(--secondary-accent);
+    margin-bottom: 50px;
+    text-transform: uppercase;
+}
+
+/* --- PRODUCT CARD GRID --- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 30px;
+}
+
+.product-card {
+    background-color: var(--dark-surface);
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+}
+
+.product-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--primary-accent);
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body h3 {
+    font-size: 1.6em;
+    color: var(--text-light);
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.description {
+    color: var(--text-muted);
+    font-size: 0.95em;
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+/* --- PRICE & ACTIONS --- */
+.price-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.price-tag {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: var(--secondary-accent);
+}
+
+.btn-add-to-cart {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-add-to-cart:hover {
+    background-color: #ffaa33;
+}
+
+/* --- CTA SECTION --- */
+.cta-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: var(--dark-surface);
+    margin-top: 40px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cta-section h2 {
+    color: var(--text-light);
+    margin-bottom: 25px;
+}
+
+.cta-actions a {
+    /* Use button styling from homepage for consistency */
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px; 
+    font-weight: 700;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-size: 1em;
+    margin: 0 10px;
+}
+.cta-actions .btn-primary {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: 2px solid var(--primary-accent);
+}
+.cta-actions .btn-secondary {
+    background-color: transparent;
+    color: var(--text-light);
+    border: 2px solid var(--text-light);
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    .price-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

@@ -1,0 +1,79 @@
+<main class="sweets-page-container">
+  
+  <section class="page-header-banner">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>The Sweets Menu</h1>
+      <p>Handmade with Love, Pure Ghee, and Traditional Recipes. Perfect for Celebrations.</p>
+    </div>
+  </section>
+
+  <section class="search-section">
+    <div class="search-input-wrapper">
+      <input 
+        type="text" 
+        placeholder="Search by Sweet Name or Category (e.g., Kaju, Ladoo)..." 
+        [(ngModel)]="filterText" 
+        class="search-input"
+        aria-label="Search Sweets Menu"
+      >
+      <span class="search-icon"></span>
+    </div>
+  </section>
+
+  <section class="menu-listing-section">
+    <h2>
+      @if (filterText) {
+        Filtered Results
+      } @else {
+        Our Complete Festive Collection
+      }
+    </h2>
+    
+    @for (category of filteredCategories; track category.name) {
+      
+      @if (category.items.length > 0) {
+        
+        <div class="category-header">
+          <h3>{{ category.name }}</h3>
+        </div>
+        
+        <div class="menu-grid">
+          @for (sweet of category.items; track sweet.name) {
+            <div class="sweet-card">
+              <div class="image-box">
+                 <img [src]="sweet.imageUrl" [alt]="sweet.name" class="sweet-image">
+                 <span class="category-tag">{{ sweet.category }}</span>
+              </div>
+              
+              <div class="card-details">
+                <div class="name-price">
+                  <h3>{{ sweet.name }}</h3>
+                  <span class="price-tag">{{ sweet.price }}/{{ sweet.stockUnit}}</span> 
+                </div>
+                
+                <p class="description">{{ sweet.description }}</p>
+                
+                <button class="btn-order">Add to Cart</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    @if (filteredCategories.length === 0 && filterText) {
+      <div class="no-results">
+        <p>😔 No sweets found matching "{{ filterText }}". Please try a different category or name.</p>
+        <button class="btn-clear-filter" (click)="filterText = ''">Clear Search</button>
+      </div>
+    }
+  </section>
+
+  <section class="cta-section">
+    <h2>Planning a Large Event?</h2>
+    <p>We offer customized sweet boxes and bulk discounts for weddings and festivals.</p>
+    <a routerLink="/contact" class="btn btn-primary">Inquire About Bulk Orders</a>
+  </section>
+
+</main>
