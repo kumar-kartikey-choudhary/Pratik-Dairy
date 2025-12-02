@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "Product-Service", primary = false)
+@FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false,url = "${products.url}")
 public interface ProductController {
 
     @PostMapping(path = "admin/addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -29,7 +29,8 @@ public interface ProductController {
     @GetMapping(path = "search")
     ResponseEntity<List<ProductDto>> searchProduct(@RequestParam String name);
 
-    ResponseEntity<ProductDto> update(Long id, ProductDto productDto);
+    @PutMapping(path = "admin/updateProduct/{id}")
+    ResponseEntity<ProductDto> update(@PathVariable(name = "id") Long id ,@RequestPart ProductDto productDto );
 
     @PutMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> update(@PathVariable(name = "id") Long id ,@RequestPart ProductDto productDto ,  @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl);

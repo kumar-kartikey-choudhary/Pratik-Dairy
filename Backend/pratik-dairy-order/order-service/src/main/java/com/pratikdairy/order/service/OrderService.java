@@ -11,7 +11,7 @@ public interface OrderService {
 
     List<OrderDto> findAll();
 
-    List<OrderDto> findByCustomerId(Long customerId);
+    List<OrderDto> findByCustomerName(String customerName);
 
     OrderDto updateStatus(Long id, OrderStatus status);
 

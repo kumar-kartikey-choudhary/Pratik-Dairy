@@ -14,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class OrderDto extends BaseDto {
 
-    private Long customerId;
+    private String customerName;
     private LocalTime orderTime = LocalTime.now();
     private LocalDate orderDate = LocalDate.now();
     private OrderStatus status = OrderStatus.NEW;

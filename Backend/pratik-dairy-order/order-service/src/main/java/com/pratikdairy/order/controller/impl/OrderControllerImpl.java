@@ -36,8 +36,8 @@ public class OrderControllerImpl implements OrderController {
     }
 
     @Override
-    public ResponseEntity<List<OrderDto>> findByCustomerId(Long customerId) {
-        return ResponseEntity.ok(this.orderService.findByCustomerId(customerId));
+    public ResponseEntity<List<OrderDto>> findByCustomerName(String customerName) {
+        return ResponseEntity.ok(this.orderService.findByCustomerId(customerName));
     }
 
     @Override

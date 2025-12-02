@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "User-Service" , url = "${user.url}", primary = false)
+@FeignClient(name = "PRATIK-DAIRY-USER" , url = "${user.url}", primary = false)
 public interface UserController {
 
     @PostMapping(path = "auth/register")

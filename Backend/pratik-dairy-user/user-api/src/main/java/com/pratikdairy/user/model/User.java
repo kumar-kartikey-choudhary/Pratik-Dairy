@@ -38,7 +38,7 @@ public class User extends BaseEntity {
 
     @NotNull
     @Column(name = "ROLE", columnDefinition = "VARCHAR(20) NOT NULL DEFAULT 'USER'" , nullable = false)
-    private String role = "user";
+    private String role = "CUSTOMER";
 
     @NotNull
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$")

@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> findByCustomerId(Long customerId) {
+    public List<OrderDto> findByCustomerName(String customerName) {
         return List.of();
     }
 

@@ -17,8 +17,8 @@ import java.util.List;
 public class Order extends  BaseEntity{
 
     @NotNull
-    @Column(name = "CUSTOMER_ID", nullable = false)
-    private Long customerId;
+    @Column(name = "CUSTOMER_Name", nullable = false)
+    private String customerName;
 
     @Column(name = "ORDER_TIME", nullable = false)
     private LocalTime orderTime = LocalTime.now();

@@ -20,8 +20,8 @@ public interface OrderController {
     @GetMapping(path = "admin/findAll")
     ResponseEntity<List<OrderDto>> findAll();
 
-    @GetMapping(path = "/customer/{customerId}")
-    ResponseEntity<List<OrderDto>> findByCustomerId(@PathVariable("customerId") Long customerId);
+    @GetMapping(path = "/customer/{customerName}")
+    ResponseEntity<List<OrderDto>> findByCustomerName(@PathVariable("customerName") String customerName);
 
     @PutMapping(path = "admin/updateStatus/{id}")
     ResponseEntity<OrderDto> updateStatus(
