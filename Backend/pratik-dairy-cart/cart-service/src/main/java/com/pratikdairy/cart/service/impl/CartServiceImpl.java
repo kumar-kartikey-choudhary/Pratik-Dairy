@@ -46,7 +46,7 @@ public class CartServiceImpl implements CartService {
     public CartDto addItemToCart(AddToCart request) {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         ResponseEntity<ProductDto> response = controller.find(request.getProductId());
-        try {
+
             if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
                 throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
             }
@@ -73,10 +73,6 @@ public class CartServiceImpl implements CartService {
             this.cartItemRepository.saveAndFlush(cartItem);
 
             return buildCartDto();
-        }catch (Exception e)
-        {
-            throw new RuntimeException("Error");
-        }
     }
 
     @Override

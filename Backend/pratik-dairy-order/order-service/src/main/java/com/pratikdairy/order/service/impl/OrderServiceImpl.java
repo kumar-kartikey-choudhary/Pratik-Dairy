@@ -71,4 +71,9 @@ public class OrderServiceImpl implements OrderService {
     public void delete(Long id) {
 
     }
+
+    @Override
+    public List<OrderDto> findByCustomerId(String customerName) {
+        return List.of();
+    }
 }

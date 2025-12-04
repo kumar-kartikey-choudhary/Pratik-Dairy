@@ -12,20 +12,20 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "PRATIK-DAIRY-CART")
 public interface CartController {
 
-    @PostMapping(path = "/cart/items")
+    @PostMapping(path = "items")
     ResponseEntity<CartDto> addItemToCart(
 //            @RequestHeader(CART_ID_HEADER) String cartIdentifier, // Session ID/Unique Cart ID
             @Valid @RequestBody AddToCart request
     );
 
-    @PutMapping(path = "/cart/items/{productId}")
+    @PutMapping(path = "items/{productId}")
     ResponseEntity<CartDto> updateQuantity(
 //            @RequestHeader(CART_ID_HEADER) String cartIdentifier,
             @PathVariable Long productId,
             @RequestParam int quantity
     );
 
-    @GetMapping(path = "/cart")
+    @GetMapping
     ResponseEntity<CartDto> getCart(
 //            @RequestHeader(CART_ID_HEADER) String cartIdentifier
     );

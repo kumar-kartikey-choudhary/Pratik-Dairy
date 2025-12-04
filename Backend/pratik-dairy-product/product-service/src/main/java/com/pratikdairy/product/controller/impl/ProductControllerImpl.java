@@ -22,7 +22,7 @@ import java.util.List;
         methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
         allowedHeaders = "*")
 @Primary
-@RequestMapping("/")
+@RequestMapping("products")
 public class ProductControllerImpl implements ProductController {
 
     private final ProductService productService;
