@@ -1,4 +1,4 @@
-package com.pratikdairy.user.dto;
+package com.pratikdairy.jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

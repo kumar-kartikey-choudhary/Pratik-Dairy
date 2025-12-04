@@ -1,7 +1,7 @@
 package com.pratikdairy.user.service;
 
-import com.pratikdairy.user.dto.LoginRequest;
-import com.pratikdairy.user.dto.LoginResponse;
+import com.pratikdairy.jwt.dto.LoginRequest;
+import com.pratikdairy.jwt.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
 
 import java.util.List;

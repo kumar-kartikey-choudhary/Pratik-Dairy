@@ -1,8 +1,8 @@
 package com.pratikdairy.user.service.impl;
 
 import com.pratikdairy.parent.utility.MapperUtility;
-import com.pratikdairy.user.dto.LoginRequest;
-import com.pratikdairy.user.dto.LoginResponse;
+import com.pratikdairy.jwt.dto.LoginRequest;
+import com.pratikdairy.jwt.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
 import com.pratikdairy.user.model.User;
 import com.pratikdairy.user.repository.UserRepository;

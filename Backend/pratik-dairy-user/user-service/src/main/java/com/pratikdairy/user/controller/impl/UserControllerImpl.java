@@ -1,8 +1,8 @@
 package com.pratikdairy.user.controller.impl;
 
 import com.pratikdairy.user.controller.UserController;
-import com.pratikdairy.user.dto.LoginRequest;
-import com.pratikdairy.user.dto.LoginResponse;
+import com.pratikdairy.jwt.dto.LoginRequest;
+import com.pratikdairy.jwt.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
 import com.pratikdairy.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
