@@ -1,6 +1,7 @@
-package com.pratikdairy.parent.config;
+package com.pratikdairy.user.config;
 
 
+import com.pratikdairy.parent.config.GatewayAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,20 +19,17 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final GatewayAuthFilter gatewayAuthFilter;
 
     @Autowired
-    public SecurityConfig(GatewayAuthFilter gatewayAuthFilter)
-    {
-        this.gatewayAuthFilter = gatewayAuthFilter;
-    }
+    private GatewayAuthFilter gatewayAuthFilter;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
         return http.authorizeHttpRequests(request ->
-                request.requestMatchers("user/register", "user/login").permitAll()
-                        .anyRequest().authenticated())
+                        request.requestMatchers("users/register", "users/login").permitAll()
+                                .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(gatewayAuthFilter, BasicAuthenticationFilter.class)

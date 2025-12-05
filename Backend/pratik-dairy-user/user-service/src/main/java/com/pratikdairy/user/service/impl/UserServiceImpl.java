@@ -8,7 +8,6 @@ import com.pratikdairy.user.dto.UserDto;
 import com.pratikdairy.user.model.User;
 import com.pratikdairy.user.repository.UserRepository;
 import com.pratikdairy.user.service.UserService;
-import io.jsonwebtoken.Jwt;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
