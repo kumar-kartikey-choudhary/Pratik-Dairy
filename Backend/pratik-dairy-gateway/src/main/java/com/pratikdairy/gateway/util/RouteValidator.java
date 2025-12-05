@@ -12,7 +12,7 @@ public class RouteValidator {
     // Define paths that are publicly accessible (no token required)
     public static final List<String> openApiEndpoints = List.of(
             "/users/login",
-            "/users/create",
+            "/users/register",
             "/eureka" // Important for Eureka clients
             // Add public product paths if needed, e.g., "/products/all", "/products/find"
     );
