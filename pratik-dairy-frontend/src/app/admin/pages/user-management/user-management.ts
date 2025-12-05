@@ -1,69 +1,170 @@
 // src/app/admin/pages/user-management/user-management.component.ts
 
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgFor, DatePipe } from '@angular/common';
+import { AdminService } from '../../service/admin-service';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  registeredDate: Date;
-  totalOrders: number;
-  status: 'Active' | 'Blocked';
-}
+interface User{
+    id: number;
+    firstName : string;
+    LastName : string;
+    email : string;
+    username: string;
+    role : string; 
+  }
 
 @Component({
   selector: 'app-user-management',
   templateUrl: './user-management.html',
   styleUrls: ['./user-management.css'],
   standalone: true,
-  imports: [RouterLink, FormsModule, NgFor, DatePipe]
+  imports: [ FormsModule, ]
 })
 export class UserManagement {
-  
-  // Mock User Data
-  allUsers: User[] = [
-    { id: 1001, name: 'Priya Sharma', email: 'priya@test.com', phone: '9876543210', registeredDate: new Date('2025-08-15'), totalOrders: 5, status: 'Active' },
-    { id: 1002, name: 'Rahul Kirti', email: 'rahul@test.com', phone: '9988776655', registeredDate: new Date('2025-09-01'), totalOrders: 0, status: 'Active' },
-    { id: 1003, name: 'Mohan Das', email: 'mohan@test.com', phone: '9000011111', registeredDate: new Date('2025-07-20'), totalOrders: 12, status: 'Active' },
-    { id: 1004, name: 'Blocked User X', email: 'block@test.com', phone: '9111122222', registeredDate: new Date('2025-10-01'), totalOrders: 1, status: 'Blocked' },
-  ];
-  
-  // State for Filtering
-  searchTerm: string = '';
-  selectedStatus: string = 'Active';
-  
-  statusOptions = ['Active', 'Blocked', 'All'];
+ private adminService = inject(AdminService);
+   
+  // Signals for state management
+  users = signal<User[]>([]);
+  isLoading = signal(false);
+  error = signal<string | null>(null);
 
-  // Getter for filtered users
-  get filteredUsers(): User[] {
-    let users = this.allUsers;
-    const term = this.searchTerm.toLowerCase().trim();
-
-    // 1. Filter by Status
-    if (this.selectedStatus !== 'All') {
-      users = users.filter(user => user.status === this.selectedStatus);
-    }
-
-    // 2. Filter by Search Term (Name or Email)
-    if (term) {
-      users = users.filter(user => 
-        user.name.toLowerCase().includes(term) || 
-        user.email.toLowerCase().includes(term) ||
-        user.phone.includes(term)
-      );
-    }
-    
-    // Sort by registration date (newest first)
-    return users.sort((a, b) => b.registeredDate.getTime() - a.registeredDate.getTime());
+  // Load all users immediately on initialization
+  constructor() {
+    this.loadAllUsers();
   }
 
-  // Placeholder action methods
-  blockUser(id: number): void {
-    alert(`User #${id} has been blocked.`);
-    // In a real app, this would update the user's status in the database
+  /**
+   * Loads all users using the dedicated service method.
+   */
+  loadAllUsers(): void {
+    this.isLoading.set(true);
+    this.error.set(null);
+    this.users.set([]); 
+
+    this.adminService.getAllUsers().subscribe(
+      (data) => {
+        const filteredData = data.filter(user => user.role !== 'ADMIN');
+        this.users.set(filteredData);
+        this.isLoading.set(false);
+      },
+      (err) => {
+        console.error('Failed to fetch all users:', err);
+        this.error.set(`Failed to load all users from Is the backend running?`);
+        this.isLoading.set(false);
+      }
+    );
   }
 }
+
+
+
+
+
+
+
+
+
+// to display number of user add last three days 
+
+
+
+// src/app/admin/pages/user-management/user-management.component.ts
+
+// import { Component, inject, signal, OnInit } from '@angular/core'; // Add OnInit
+// import { RouterLink } from '@angular/router';
+// import { FormsModule } from '@angular/forms';
+// import { NgFor } from '@angular/common';
+// import { AdminService, User } from '../../service/admin-service'; 
+// // Note: User interface must include 'registeredDate' as a string field.
+
+// @Component({
+//   selector: 'app-user-management',
+//   templateUrl: './user-management.html',
+//   styleUrls: ['./user-management.css'],
+//   standalone: true,
+//   imports: [ FormsModule, NgFor, RouterLink] // Added RouterLink back for actions
+// })
+// export class UserManagement implements OnInit { // Implements OnInit
+//   private adminService = inject(AdminService);
+    
+//   // Signals for state management
+//   users = signal<User[]>([]);
+//   newUsersCount = signal(0); // NEW: To display count on the dashboard
+//   isLoading = signal(false);
+//   error = signal<string | null>(null);
+
+//   // Filter state (if you want to show only new users)
+//   filterNewUsers = signal(false);
+
+//   // Load all users immediately on initialization
+//   ngOnInit() {
+//     this.loadAllUsers();
+//   }
+  
+//   /**
+//    * Helper function to determine if a user registered within the last 3 days.
+//    * Assumes dateString is in ISO format (e.g., "2025-11-29T00:00:00Z").
+//    */
+//   isNewUser(dateString: string): boolean {
+//       if (!dateString) return false;
+
+//       // 1. Convert the input string date to a Date object
+//       const registrationDate = new Date(dateString);
+//       const today = new Date();
+      
+//       // 2. Calculate the difference in milliseconds
+//       const timeDifference = today.getTime() - registrationDate.getTime();
+      
+//       // 3. Define 3 days in milliseconds (3 days * 24 hours * 60 minutes * 60 seconds * 1000 ms)
+//       const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+      
+//       // 4. Check if the registration date is within the last 3 days
+//       return timeDifference <= threeDaysInMs;
+//   }
+
+//   /**
+//    * Loads all users and filters out Admin users.
+//    */
+//   loadAllUsers(): void {
+//     this.isLoading.set(true);
+//     this.error.set(null);
+//     this.users.set([]); 
+
+//     this.adminService.getAllUsers().subscribe(
+//       (data) => {
+//         // 1. Filter out Admin accounts
+//         const customerUsers = data.filter(user => user.role !== 'ADMIN');
+        
+//         // 2. Calculate the count of new users
+//         const newUsers = customerUsers.filter(user => this.isNewUser(user.registeredDate));
+        
+//         this.users.set(customerUsers);
+//         this.newUsersCount.set(newUsers.length);
+//         this.isLoading.set(false);
+//       },
+//       (err) => {
+//         console.error('Failed to fetch all users:', err);
+//         this.error.set(`Failed to load all users.`);
+//         this.isLoading.set(false);
+//       }
+//     );
+//   }
+  
+//   /**
+//    * Getter to apply the 'New User' visual filter on the table.
+//    */
+//   get visibleUsers(): User[] {
+//       if (this.filterNewUsers()) {
+//           // If the filter toggle is ON, show only users registered in the last 3 days
+//           return this.users().filter(user => this.isNewUser(user.registeredDate));
+//       }
+//       return this.users();
+//   }
+  
+//   // Placeholder methods for actions (needed for HTML buttons)
+//   blockUser(id: number): void {
+//       alert(`Blocking user #${id}...`);
+//   }
+// }

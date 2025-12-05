@@ -33,7 +33,7 @@ interface SweetCategory {
   templateUrl: './sweets-menu.html',
   styleUrls: ['./sweets-menu.css'],
   standalone: true,
-  imports: [RouterLink, FormsModule, NgFor]
+  imports: [RouterLink, FormsModule,]
 })
 export class SweetsMenu implements OnInit {
 

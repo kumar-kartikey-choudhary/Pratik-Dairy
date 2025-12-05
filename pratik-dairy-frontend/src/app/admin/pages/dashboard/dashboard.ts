@@ -31,7 +31,7 @@ interface LowStockItem {
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'], 
   standalone: true,
-  imports: [RouterLink, NgFor, DecimalPipe]
+  imports: [RouterLink,  DecimalPipe]
 })
 export class AdminDashboardComponent {
   

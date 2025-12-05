@@ -69,7 +69,7 @@ interface DairyProduct {
     styleUrls: ['./dairy-products.css'],
     standalone: true,
     // Add required imports
-    imports: [RouterLink, NgFor, FormsModule] 
+    imports: [RouterLink, FormsModule] 
 })
 export class DairyProducts implements OnInit { // <-- Implement OnInit
 

@@ -18,7 +18,7 @@ interface Order {
   templateUrl: './order-management.html',
   styleUrls: ['./order-management.css'],
   standalone: true,
-  imports: [RouterLink, FormsModule, NgFor, DatePipe, DecimalPipe]
+  imports: [RouterLink, FormsModule,  DatePipe, DecimalPipe]
 })
 export class OrderManagement {
   

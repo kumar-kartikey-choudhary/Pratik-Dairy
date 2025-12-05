@@ -1,69 +1,71 @@
+<!-- src/app/admin/pages/user-management/user-management.component.html -->
+
 <div class="user-management-container">
-    
-    <h1><span class="icon">👥</span> User Accounts Management</h1>
-    
-    <div class="controls-bar">
-        <div class="search-group">
-            <input 
-                type="text" 
-                placeholder="Search by Name, Email, or Phone..." 
-                [(ngModel)]="searchTerm" 
-                class="search-input"
-            >
-            <span class="search-icon">🔍</span>
-        </div>
+    <h1>👥 User Accounts Management</h1>
 
-        <div class="filter-group">
-            <label for="status-filter">Filter by Status:</label>
-            <select id="status-filter" [(ngModel)]="selectedStatus" class="status-select">
-                @for (status of statusOptions; track status) {
-                    <option [value]="status">{{ status }}</option>
-                }
-            </select>
+    <!-- Loading State -->
+    @if (isLoading()) {
+        <div class="panel loading-message">
+            <p>Loading user data... Please wait.</p>
         </div>
-    </div>
+    }
 
-    <div class="user-table-panel panel">
-        <h2>Registered Users ({{ filteredUsers.length }} found)</h2>
-        
-        @if (filteredUsers.length > 0) {
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>User Name</th>
-                        <th>Contact Email</th>
-                        <th>Registered On</th>
-                        <th>Orders</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (user of filteredUsers; track user.id) {
-                        <tr [class.blocked]="user.status === 'Blocked'">
-                            <td class="user-id">#{{ user.id }}</td>
-                            <td class="user-name">{{ user.name }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.registeredDate | date:'mediumDate' }}</td>
-                            <td class="total-orders">{{ user.totalOrders }}</td>
-                            <td>
-                                <span [class]="'status-badge status-' + user.status.toLowerCase()">
-                                    {{ user.status }}
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn-action btn-view">View History</button>
-                                @if (user.status === 'Active') {
-                                    <button class="btn-action btn-danger" (click)="blockUser(user.id)">Block</button>
-                                }
-                            </td>
+    <!-- Error State -->
+    @if (error()) {
+        <div class="panel error-message-box">
+            <p>Error: {{ error() }}</p>
+            <button (click)="loadAllUsers()" class="btn-retry">
+                Retry Load
+            </button>
+        </div>
+    }
+
+    <!-- Data Table -->
+    @if (!isLoading() && !error()) {
+        <div class="panel user-table-panel">
+            <h2>Registered Users ({{ users().length }} Total)</h2>
+            
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>USERNAME</th>
+                            <th>FIRST-NAME</th>
+                            <th>LAST-NAME</th>
+                            <th>EMAIL</th>
+                            <th>ROLE</th>
+                            <th>Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        } @else {
-            <p class="no-users-message">No users found matching the current filters.</p>
-        }
-    </div>
+                    </thead>
+                    <tbody>
+                        @for (user of users(); track user.id) {
+                            <tr>
+                                <td class="user-id">#{{ user.id }}</td>
+                                <td class="user-name">{{ user.username }}</td>
+                                <td class="user-name">{{ user.firstName }}</td>
+                                <td class="user-name">{{ user.LastName }}</td>
+                                <td>{{ user.email }}</td>
+                                <td><span class="role-badge">{{ user.role }}</span></td>
+                                <!-- <td><span class="status-badge status-{{ user.status.toLowerCase() }}">{{ user.status }}</span></td> -->
+                                <td>
+                                    <button class="btn-view">View History</button>
+                                    <!-- @if (user.status === 'Active') {
+                                        <button class="btn-action btn-danger" (click)="blockUser(user.id)">Block</button>
+                                    } -->
+                                </td>
+                            </tr>
+                        }
+                        
+                        <!-- No Data Message -->
+                        @if (users().length === 0) {
+                            <tr>
+                                <td colspan="6" class="no-data">No users found in the system.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
 </div>

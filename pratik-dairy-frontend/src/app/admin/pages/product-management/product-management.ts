@@ -32,7 +32,7 @@ interface Product {
   templateUrl: './product-management.html',
   styleUrls: ['./product-management.css'],
   standalone: true,
-  imports: [ FormsModule, NgFor, DecimalPipe]
+  imports: [ FormsModule,  DecimalPipe]
 })
 export class ProductManagement implements OnInit {
 

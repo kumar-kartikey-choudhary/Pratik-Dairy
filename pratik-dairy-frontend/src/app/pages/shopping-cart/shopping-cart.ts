@@ -18,7 +18,7 @@ interface CartItem {
   templateUrl: './shopping-cart.html',
   styleUrls: ['./shopping-cart.css'],
   standalone: true,
-  imports: [RouterLink, FormsModule, NgFor, CurrencyPipe, DecimalPipe]
+  imports: [RouterLink, FormsModule, DecimalPipe]
 })
 export class ShoppingCart {
   

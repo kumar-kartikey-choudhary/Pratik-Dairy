@@ -22,7 +22,7 @@ interface Order {
   templateUrl: './my-orders.html',
   styleUrls: ['./my-orders.css'],
   standalone: true,
-  imports: [RouterLink, NgFor, DatePipe, DecimalPipe]
+  imports: [RouterLink, DatePipe, DecimalPipe]
 })
 export class MyOrders{
   

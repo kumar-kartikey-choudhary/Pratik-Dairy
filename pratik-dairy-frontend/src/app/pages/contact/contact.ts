@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './contact.html',
   styleUrls: ['./contact.css'],
   standalone: true,
-  imports: [RouterLink] // No need for FormsModule yet, as the form is static/mocked
+  imports: [] // No need for FormsModule yet, as the form is static/mocked
 })
 export class Contact {
   storeInfo = {

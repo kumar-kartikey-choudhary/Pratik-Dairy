@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './user-accounts.html',
   styleUrls: ['./user-accounts.css'],
   standalone: true,
-  imports: [RouterLink, FormsModule] // FormsModule for input binding
+  imports: [FormsModule] // FormsModule for input binding
 })
 export class UserAccounts {
   

@@ -9,147 +9,146 @@
     --text-muted: #a0a0a0;
     --accent-danger: #e74c3c;    /* Red (Blocked/Danger) */
     --accent-success: #2ecc71;   /* Green (Active) */
-    --accent-info: #3498db;      /* Blue */
+    --accent-info: #3498db;      /* Blue (Loading/Info) */
 }
 
 .user-management-container {
-    padding: 10px;
+    padding: 20px;
+    color: var(--admin-text-dark);
 }
+
 .user-management-container h1 {
     font-size: 2em;
     margin-bottom: 25px;
     color: var(--admin-text-dark);
 }
 
-/* --- 1. CONTROLS BAR (Search & Filter) --- */
-.controls-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* --- Status/Message Panels --- */
+.panel {
     background-color: var(--admin-surface);
-    padding: 15px 25px;
-    margin-bottom: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.search-group, .filter-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.search-input {
-    padding: 10px 10px 10px 35px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    transition: border-color 0.3s;
-    width: 300px;
-}
-.search-input:focus {
-    border-color: var(--admin-primary);
-    outline: none;
-}
-.search-group { position: relative; }
-.search-icon { position: absolute; left: 10px; color: var(--text-muted); }
-
-.filter-group label { font-weight: 600; color: var(--admin-text-dark); }
-.status-select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; }
-
-
-/* --- 2. USER TABLE PANEL --- */
-.user-table-panel {
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    background-color: var(--admin-surface);
+    margin-bottom: 20px;
 }
 
+.loading-message {
+    text-align: center;
+    padding: 40px;
+    color: var(--accent-info);
+    font-weight: 600;
+}
+
+.error-message-box {
+    background-color: #fcebeb; /* Light red background */
+    border: 1px solid var(--accent-danger);
+    color: var(--accent-danger);
+    font-weight: 600;
+    padding: 15px;
+}
+.btn-retry {
+    background-color: var(--admin-primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+/* --- DATA TABLE --- */
 .user-table-panel h2 {
     font-size: 1.5em;
     margin-bottom: 20px;
-    color: var(--admin-text-dark);
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
 
-/* Data Table Styling */
+.table-wrapper {
+    overflow-x: auto;
+}
 .data-table {
     width: 100%;
+    min-width: 800px;
     border-collapse: collapse;
     font-size: 0.95em;
-    margin-bottom: 20px;
 }
+
 .data-table th, .data-table td {
-    padding: 15px 10px;
+    padding: 12px 10px;
     text-align: left;
     border-bottom: 1px solid #f0f0f0;
 }
-.data-table th { color: var(--text-muted); font-weight: 600; }
-.data-table tbody tr:hover { background-color: #fcfcfc; }
-
-/* User Details */
-.user-id { font-weight: 600; color: var(--text-muted); }
-.user-name { font-weight: 600; color: var(--admin-text-dark); }
-.total-orders { color: var(--accent-info); }
-
-/* Row Status */
-.data-table tr.blocked {
-    background-color: #ffeaea;
-    color: #e74c3c;
-}
-.data-table tr.blocked .user-name, 
-.data-table tr.blocked .user-id {
-    color: var(--accent-danger);
+.data-table th {
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-/* Status Badges */
-.status-badge {
-    padding: 4px 8px;
+.data-table tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* User Status/Roles */
+.role-badge {
+    /* Style for the Role (e.g., CUSTOMER, ADMIN) */
+    background-color: var(--admin-primary); 
+    color: green;
+    padding: 3px 8px;
     border-radius: 4px;
     font-size: 0.8em;
     font-weight: 600;
+}
+/* Placeholder for Status badge if enabled later (Active/Blocked) */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 700;
     text-transform: uppercase;
     color: white;
 }
-
 .status-active { background-color: var(--accent-success); }
 .status-blocked { background-color: var(--accent-danger); }
 
-/* Action Buttons */
-.btn-action {
+
+/* Actions */
+.btn-action, .btn-view {
     background: none;
     color: var(--admin-primary);
     border: 1px solid var(--admin-primary);
     padding: 6px 10px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.8em;
+    font-size: 0.85em;
     margin-right: 5px;
     transition: all 0.2s;
 }
+.btn-view {
+    border-color: var(--accent-info);
+    color: var(--accent-info);
+}
 
-.btn-action:hover {
+.btn-action:hover, .btn-view:hover {
     background-color: var(--admin-primary);
     color: white;
 }
-.btn-danger {
-    background-color: var(--accent-danger);
-    border-color: var(--accent-danger);
+.btn-view:hover {
+    background-color: var(--accent-info);
     color: white;
 }
-.btn-danger:hover {
+.btn-action.btn-danger {
+    background-color: var(--accent-danger);
+    color: white;
+    border-color: var(--accent-danger);
+}
+.btn-action.btn-danger:hover {
     background-color: #c0392b;
 }
 
-
-/* MEDIA QUERIES */
-@media (max-width: 900px) {
-    .controls-bar {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .search-group { width: 100%; }
-    .user-table-panel { overflow-x: auto; }
-    .data-table { min-width: 800px; }
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-muted);
 }
