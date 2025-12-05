@@ -33,17 +33,17 @@ public class CartControllerImpl implements CartController {
 
 
     @Override
-    public ResponseEntity<CartDto> addItemToCart(AddToCart request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.cartService.addItemToCart(request));
+    public ResponseEntity<CartDto> addItemToCart(Long userId,AddToCart request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.cartService.addItemToCart(userId,request));
     }
 
     @Override
-    public ResponseEntity<CartDto> updateQuantity(Long productId, int quantity) {
-        return ResponseEntity.ok(this.cartService.updateQuantity(productId,quantity));
+    public ResponseEntity<CartDto> updateQuantity(Long userId,Long productId, int quantity) {
+        return ResponseEntity.ok(this.cartService.updateQuantity(userId,productId,quantity));
     }
 
     @Override
-    public ResponseEntity<CartDto> getCart() {
-        return ResponseEntity.ok(this.cartService.getCart());
+    public ResponseEntity<CartDto> getCart(Long userId) {
+        return ResponseEntity.ok(this.cartService.getCart(userId));
     }
 }

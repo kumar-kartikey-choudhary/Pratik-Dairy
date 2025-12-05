@@ -7,12 +7,17 @@ import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 @Component
 public class AuthenticationFilter implements GatewayFilter {
@@ -66,7 +71,15 @@ public class AuthenticationFilter implements GatewayFilter {
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
-        // Optional: Add logging here
-        return response.setComplete();
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON); // Set content type
+
+        // Create a simple JSON error body
+        String jsonError = String.format("{\"timestamp\": \"%s\", \"status\": %d, \"error\": \"Authentication Failed\", \"message\": \"%s\", \"path\": \"%s\"}",
+                java.time.ZonedDateTime.now(), httpStatus.value(), err, exchange.getRequest().getPath());
+
+        DataBufferFactory dataBufferFactory = response.bufferFactory();
+        DataBuffer buffer = dataBufferFactory.wrap(jsonError.getBytes(StandardCharsets.UTF_8));
+
+        return response.writeWith(Mono.just(buffer));
     }
 }

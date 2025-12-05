@@ -25,9 +25,6 @@ import java.util.Optional;
 @Slf4j
 public class CartServiceImpl implements CartService {
 
-    // WARNING: This fixed ID breaks multi-user functionality. this will change when implement authentication
-    private static final Long FIXED_CART_ID = 1L;
-
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductController controller;
@@ -43,7 +40,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartDto addItemToCart(AddToCart request) {
+    public CartDto addItemToCart(Long userId,AddToCart request) {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         ResponseEntity<ProductDto> response = controller.find(request.getProductId());
 
@@ -51,10 +48,8 @@ public class CartServiceImpl implements CartService {
                 throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
             }
             ProductDto productDto = response.getBody();
-            Cart cart = getOrCreateFixedCart();
-
-            Optional<CartItem> existingItem = this.cartItemRepository.findByCartIdAndProductId(FIXED_CART_ID, request.getProductId());
-
+            Cart cart = getOrCreateFixedCart(userId);
+            Optional<CartItem> existingItem = this.cartItemRepository.findByCartIdAndProductId(cart.getId(),request.getProductId());
             CartItem cartItem = null;
             int netQuantity;
             if(existingItem.isPresent())
@@ -66,65 +61,56 @@ public class CartServiceImpl implements CartService {
                 createNewCartItem(cart, productDto);
                 netQuantity = request.getQuantity();;
             }
-
             validateStock(productDto, netQuantity);
-            assert cartItem != null;
             cartItem.setQuantity(netQuantity);
             this.cartItemRepository.saveAndFlush(cartItem);
-
-            return buildCartDto();
+            return buildCartDto(cart);
     }
 
     @Override
     @Transactional
-    public CartDto updateQuantity(Long productId, int quantity) {
+    public CartDto updateQuantity(Long userId,Long productId, int quantity) {
         log.info("Inside @class CartServiceImpl @method updateQuantity ");
-
         if(quantity <= 0)
         {
-            return this.removeItem(productId);
+            return this.removeItem(productId , userId);
         }
-        Cart cart = getOrCreateFixedCart();
+        Cart cart = getOrCreateFixedCart(userId);
         ResponseEntity<ProductDto> response = controller.find(productId);
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
         }
         ProductDto productDto = response.getBody();
-
-        CartItem cartItem = this.cartItemRepository.findByCartIdAndProductId(FIXED_CART_ID, productId).orElseThrow(() -> new RuntimeException("CartItemNotFoundException"));
-
+        CartItem cartItem = this.cartItemRepository.findByCartIdAndProductId(cart.getId(), productId).orElseThrow(() -> new RuntimeException("CartItemNotFoundException"));
         validateStock(productDto, quantity);
-
         cartItem.setQuantity(quantity);
         this.cartItemRepository.saveAndFlush(cartItem);
-
-        return buildCartDto();
+        return buildCartDto(cart);
     }
 
     
     @Transactional
-    private CartDto removeItem(Long productId) {
+    private CartDto removeItem(Long productId, Long userId) {
         log.info("Inside @class CartServiceImpl @method removeItem  ");
-        Cart cart = getOrCreateFixedCart();
+        Cart cart = getOrCreateFixedCart(userId);
         ResponseEntity<ProductDto> response = controller.find(productId);
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
         }
         ProductDto productDto = response.getBody();
-
-        CartItem cartItem = this.cartItemRepository.findByCartIdAndProductId(FIXED_CART_ID, productId).orElseThrow(() -> new RuntimeException("CartItemNotFoundException"));
-
+        CartItem cartItem = this.cartItemRepository.findByCartIdAndProductId(cart.getId(), productId).orElseThrow(() -> new RuntimeException("CartItemNotFoundException"));
         this.cartItemRepository.delete(cartItem);
-        return buildCartDto();
+        return buildCartDto(cart);
     }
 
     @Override
-    public CartDto getCart() {
-        return buildCartDto();
+    public CartDto getCart(Long userId) {
+        Cart cart = getOrCreateFixedCart(userId);
+        return buildCartDto(cart);
     }
 
-    private Cart getOrCreateFixedCart() {
-        return cartRepository.findById(FIXED_CART_ID)
+    private Cart getOrCreateFixedCart(Long userId) {
+        return cartRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Setup Error: Fixed Cart (ID 1) not found in DB."));
     }
 
@@ -142,8 +128,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-    private CartDto buildCartDto(){
-        Cart cart = getOrCreateFixedCart();
+    private CartDto buildCartDto(Cart cart){
         List<CartItem> items = cart.getItems();
 
         BigDecimal grandTotal = items.stream()
@@ -162,11 +147,9 @@ public class CartServiceImpl implements CartService {
 
             return dto;
         }).toList();
-
         CartDto cartDto = new CartDto();
         cartDto.setItems(itemDtos);
         cartDto.setGrandTotal(grandTotal);
-
         return cartDto;
     }
 }
