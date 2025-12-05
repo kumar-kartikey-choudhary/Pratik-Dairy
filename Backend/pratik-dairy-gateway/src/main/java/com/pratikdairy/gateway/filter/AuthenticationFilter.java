@@ -48,7 +48,7 @@ public class AuthenticationFilter implements GatewayFilter {
                 exchange.getRequest().mutate()
                         // Use userId and role from JWT claims
                         .header("X-Auth-UserId", claims.get("userId", String.class))
-                        .header("X-Auth-Role", claims.get("role", String.class))
+                        .header("X-Auth-Role", claims.get("userRole", String.class))
                         .build();
 
             } catch (JwtException e) {

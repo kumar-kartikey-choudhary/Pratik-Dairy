@@ -1,5 +1,6 @@
 package com.pratikdairy.user.service.impl;
 
+import com.pratikdairy.parent.utility.JwtUtil;
 import com.pratikdairy.parent.utility.MapperUtility;
 import com.pratikdairy.jwt.dto.LoginRequest;
 import com.pratikdairy.jwt.dto.LoginResponse;
@@ -7,10 +8,17 @@ import com.pratikdairy.user.dto.UserDto;
 import com.pratikdairy.user.model.User;
 import com.pratikdairy.user.repository.UserRepository;
 import com.pratikdairy.user.service.UserService;
+import io.jsonwebtoken.Jwt;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +29,19 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager manager;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository)
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder,
+                           AuthenticationManager manager, JwtUtil jwtUtil)
     {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.manager = manager;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -38,7 +54,8 @@ public class UserServiceImpl implements UserService {
 //            throw new IllegalCallerException("User id must be null");
 //        }
         try {
-            User user = MapperUtility.sourceToTarget(userDto, User.class);
+            User user = MapperUtility.sourceToTarget(userDto, User.class,"password");
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             log.info("Save user object to db");
             try{
             user = userRepository.saveAndFlush(user);
@@ -47,7 +64,8 @@ public class UserServiceImpl implements UserService {
             }
             return MapperUtility.sourceToTarget(user, UserDto.class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Error during user creation: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to register user.", e);
         }
     }
 
@@ -60,11 +78,21 @@ public class UserServiceImpl implements UserService {
         {
             throw new IllegalCallerException("Login request object can not be null");
         }
-        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new RuntimeException("User not found with that user name"));
-        log.info("user:{}",user);
-        String role = user.getRole();
-        log.info("role:{}",role);
-        return new LoginResponse(user.getId(),user.getUsername(), role);
+        try {
+            Authentication authenticate = manager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(() -> new RuntimeException("User not found with that user name"));
+            String token = jwtUtil.generateToken(loginRequest.getUsername(), user.getId(), user.getRole());
+            log.info("user:{}",user);
+            String role = user.getRole();
+            log.info("role:{}",role);
+            return new LoginResponse(user.getId(),user.getUsername(), role,token);
+        }catch (AuthenticationException e) {
+            log.error("Authentication failed for user {}: {}", loginRequest.getUsername(), e.getMessage());
+            throw new BadCredentialsException("Invalid username or password");
+        } catch (Exception e) {
+            log.error("Internal error during login: {}", e.getMessage(), e);
+            throw new RuntimeException("Login failed due to an unexpected error");
+        }
     }
 
 
@@ -76,11 +104,7 @@ public class UserServiceImpl implements UserService {
             throw new IllegalCallerException("User id can not be null");
         }
         try {
-            User user = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException());
-            if(user == null)
-            {
-                log.info("Can not find user by that id :{}" ,id);
-            }
+            User user = this.userRepository.findById(id).orElseThrow(RuntimeException::new);
             return MapperUtility.sourceToTarget(user, UserDto.class,"password");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -114,20 +138,17 @@ public class UserServiceImpl implements UserService {
         }
         try{
             User user = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-            
             user.setFirstName(userDto.getFirstName());
             user.setMiddleName(userDto.getMiddleName());
             user.setLastName(userDto.getLastName());
             user.setUsername(userDto.getUsername());
             user.setEmail(userDto.getEmail());
-            user.setPassword(userDto.getPassword());
-
+            if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            }
             log.info("User with id {} updated successfully", id);
-            
             User user1 = this.userRepository.saveAndFlush(user);
-
             return MapperUtility.sourceToTarget(user1, UserDto.class,"password");
-
         } catch (Exception e) {
             log.error("Error while updating user with id {}: {}", id, e.getMessage(), e);
             throw new RuntimeException("Failed to update user", e);
@@ -136,14 +157,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-
         log.info("Inside @class UserServiceImpl @method delete @Param id :{}", id);
-
         if (id == null) {
             log.warn("User ID is null. Cannot delete user.");
             throw new IllegalArgumentException("User ID cannot be null");
         }
-
         try {
             // Step 1: Check if user exists
             Optional<User> existingUserOpt = userRepository.findById(id);
@@ -151,16 +169,12 @@ public class UserServiceImpl implements UserService {
                 log.warn("User with id {} not found. Nothing to delete.", id);
                 throw new EntityNotFoundException("User not found with id: " + id);
             }
-
-            // Step 2: Delete the user
             userRepository.deleteById(id);
             log.info("User with id {} deleted successfully", id);
-
         } catch (Exception e) {
             log.error("Error while deleting user with id {}: {}", id, e.getMessage(), e);
             throw new RuntimeException("Failed to delete user", e);
         }
-
     }
 
 

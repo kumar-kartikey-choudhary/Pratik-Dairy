@@ -1,4 +1,4 @@
-package com.pratikdairy.user.config;
+package com.pratikdairy.parent.config;
 
 
 import com.pratikdairy.parent.utility.JwtUtil;

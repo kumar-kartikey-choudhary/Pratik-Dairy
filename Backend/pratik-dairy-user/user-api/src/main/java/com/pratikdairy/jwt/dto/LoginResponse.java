@@ -10,6 +10,6 @@ public class LoginResponse {
     private Long id;
     private String username;
     private String role;
-//    private String tokenType = "Bearer";
+    private String token;
 
 }
