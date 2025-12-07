@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class CartItemDto  extends BaseDto {
 
-    private Long productId;
+    private String productId;
     private String productName;
     private int quantity;
     private BigDecimal pricePerUnit;

@@ -49,15 +49,13 @@ public class AuthenticationFilter implements GlobalFilter {
             String token = authHeader.substring(7);
 
             try {
-                // 2. Validate Token (signature and expiration check)
-                // If validation fails, JwtUtil will throw a JwtException
                 jwtUtil.validateToken(token);
                 Claims claims = jwtUtil.getAllClaimsFromToken(token);
 
                 // 3. Inject authenticated user identity into request headers
                 exchange.getRequest().mutate()
                         // Use userId and role from JWT claims
-                        .header("X-Auth-UserId", claims.get("userId", String.class))
+                        .header("X-Auth-UserId", claims.get("userId", Long.class).toString())
                         .header("X-Auth-Role", claims.get("userRole", String.class))
                         .build();
 
@@ -70,7 +68,6 @@ public class AuthenticationFilter implements GlobalFilter {
                 return this.onError(exchange, "Internal token processing error", HttpStatus.UNAUTHORIZED);
             }
         }
-
         // 4. Continue to the downstream service
         return chain.filter(exchange);
     }

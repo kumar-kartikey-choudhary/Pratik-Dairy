@@ -27,13 +27,13 @@ public class GatewayAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String userIdHeader = request.getHeader("X-Auth-UserId");
+        String userId = request.getHeader("X-Auth-UserId");
         String role = request.getHeader("X-Auth-Role");
 
-        if(userIdHeader != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null)
+        if(userId != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null)
         {
             try {
-                long userId = Long.parseLong(userIdHeader);
+
                 User user = new User(userId, role);
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

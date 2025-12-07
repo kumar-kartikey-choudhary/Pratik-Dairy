@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class CartItem extends BaseEntity {
 
     @Column(name = "PRODUCT_ID", nullable = false)
-    private Long productId;
+    private String productId;
 
     @Column(name = "QUANTITY" , nullable = false)
     private int quantity;

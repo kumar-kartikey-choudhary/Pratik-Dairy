@@ -40,7 +40,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartDto addItemToCart(Long userId,AddToCart request) {
+    public CartDto addItemToCart(String userId,AddToCart request) {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         ResponseEntity<ProductDto> response = controller.find(request.getProductId());
 
@@ -69,7 +69,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartDto updateQuantity(Long userId,Long productId, int quantity) {
+    public CartDto updateQuantity(String userId,String productId, int quantity) {
         log.info("Inside @class CartServiceImpl @method updateQuantity ");
         if(quantity <= 0)
         {
@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
 
     
     @Transactional
-    private CartDto removeItem(Long productId, Long userId) {
+    private CartDto removeItem(String productId, String userId) {
         log.info("Inside @class CartServiceImpl @method removeItem  ");
         Cart cart = getOrCreateFixedCart(userId);
         ResponseEntity<ProductDto> response = controller.find(productId);
@@ -104,12 +104,12 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto getCart(Long userId) {
+    public CartDto getCart(String userId) {
         Cart cart = getOrCreateFixedCart(userId);
         return buildCartDto(cart);
     }
 
-    private Cart getOrCreateFixedCart(Long userId) {
+    private Cart getOrCreateFixedCart(String userId) {
         return cartRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Setup Error: Fixed Cart (ID 1) not found in DB."));
     }

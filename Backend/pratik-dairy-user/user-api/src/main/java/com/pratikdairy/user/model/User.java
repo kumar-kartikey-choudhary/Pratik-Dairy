@@ -53,7 +53,7 @@ public class User extends BaseEntity  implements UserDetails {
     @Column(name = "PASSWORD", columnDefinition = "VARCHAR(1000) NOT NULL" , nullable = false)
     private String password;
 
-    public User(long userId, String role) {
+    public User(String userId, String role) {
         this.setId(userId);
         this.role = role;
     }

@@ -10,6 +10,7 @@ import com.pratikdairy.user.repository.UserRepository;
 import com.pratikdairy.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.UserTransaction;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -96,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserDto find(Long id) {
+    public UserDto find(String id) {
         log.info("Inside @class UserServiceImpl @method find @Param id :{}", id);
         if(id == null)
         {
@@ -129,7 +130,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto update(UserDto userDto, Long id) {
+    public UserDto update(UserDto userDto, String id) {
         log.info("Inside @class UserServiceImpl @method update @Param id :{}", id);
         if(id == null)
         {
@@ -155,7 +156,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         log.info("Inside @class UserServiceImpl @method delete @Param id :{}", id);
         if (id == null) {
             log.warn("User ID is null. Cannot delete user.");

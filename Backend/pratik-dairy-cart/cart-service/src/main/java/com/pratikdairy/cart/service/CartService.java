@@ -6,9 +6,9 @@ import com.pratikdairy.cart.dto.CartDto;
 public interface CartService {
 
 
-    CartDto addItemToCart(Long userId,AddToCart request);
+    CartDto addItemToCart(String userId,AddToCart request);
 
-    CartDto updateQuantity(Long userId,Long productId, int quantity);
+    CartDto updateQuantity(String userId,String productId, int quantity);
 
-    CartDto getCart(Long userId);
+    CartDto getCart(String userId);
 }

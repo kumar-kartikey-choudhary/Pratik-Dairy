@@ -10,13 +10,13 @@ public interface UserService {
 
     UserDto create(UserDto userDto);
 
-    UserDto find(Long id);
+    UserDto find(String id);
 
     List<UserDto> findAll();
 
-    UserDto update(UserDto userDto, Long id);
+    UserDto update(UserDto userDto, String id);
 
-    void delete(Long id);
+    void delete(String id);
 
     LoginResponse login(LoginRequest loginRequest);
 

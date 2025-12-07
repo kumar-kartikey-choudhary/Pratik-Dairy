@@ -21,7 +21,7 @@ public interface UserController {
     ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest);
 
     @GetMapping(path = "admin/find/{id}")
-    ResponseEntity<UserDto> find(@PathVariable("id") Long id);
+    ResponseEntity<UserDto> find(@PathVariable("id") String id);
 
     @GetMapping(path = "admin/findAll")
     ResponseEntity<List<UserDto>> findAll();
@@ -30,8 +30,8 @@ public interface UserController {
 //    ResponseEntity<List<UserDto>> findUserByName(@RequestParam(name = "name") String name);
 
     @PutMapping(path = "update/{id}")
-    ResponseEntity<UserDto> update(@Valid @RequestBody UserDto userDto, @PathVariable(name = "id") Long id);
+    ResponseEntity<UserDto> update(@Valid @RequestBody UserDto userDto, @PathVariable(name = "id") String id);
 
     @DeleteMapping(path = "delete/{id}")
-    void delete(@PathVariable(name = "id") Long id);
+    void delete(@PathVariable(name = "id") String id);
 }

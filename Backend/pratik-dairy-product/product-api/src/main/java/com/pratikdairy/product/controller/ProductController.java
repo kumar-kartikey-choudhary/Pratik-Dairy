@@ -18,25 +18,25 @@ public interface ProductController {
     ResponseEntity<ProductDto> create(@RequestPart ProductDto productDto , @RequestPart(value = "imageFile", required = false) MultipartFile imageFile);
 
     @GetMapping(path = "product/{id}")
-    ResponseEntity<ProductDto> find(@PathVariable(name = "id") Long id);
+    ResponseEntity<ProductDto> find(@PathVariable(name = "id") String id);
 
     @GetMapping(path = "products")
     ResponseEntity<List<ProductDto>> findAll();
 
     @GetMapping(path = "{productId}/image")
-    ResponseEntity<byte[]> getImageByProductId(@PathVariable Long productId);
+    ResponseEntity<byte[]> getImageByProductId(@PathVariable String productId);
 
     @GetMapping(path = "search")
     ResponseEntity<List<ProductDto>> searchProduct(@RequestParam String name);
 
     @PutMapping(path = "admin/updateProduct/{id}")
-    ResponseEntity<ProductDto> update(@PathVariable(name = "id") Long id ,@RequestPart ProductDto productDto );
+    ResponseEntity<ProductDto> update(@PathVariable(name = "id") String id ,@RequestPart ProductDto productDto );
 
     @PutMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    ResponseEntity<ProductDto> update(@PathVariable(name = "id") Long id ,@RequestPart ProductDto productDto ,  @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl);
+    ResponseEntity<ProductDto> update(@PathVariable(name = "id") String id ,@RequestPart ProductDto productDto ,  @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl);
 
     @DeleteMapping(path = "admin/deleteProduct/{id}")
-    void delete(@PathVariable(name = "id") Long id);
+    void delete(@PathVariable(name = "id") String id);
 
 
 }

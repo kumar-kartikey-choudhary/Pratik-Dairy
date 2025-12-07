@@ -7,7 +7,7 @@ import java.time.ZonedDateTime;
 @Data
 public class BaseDto {
 
-    private Long id;
+    private String id;
     private String createdBy;
     private ZonedDateTime createdAt;
     private String modifiedBy;

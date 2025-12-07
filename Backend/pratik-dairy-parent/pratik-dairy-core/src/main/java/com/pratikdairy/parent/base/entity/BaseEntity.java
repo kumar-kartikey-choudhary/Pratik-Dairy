@@ -19,8 +19,8 @@ import java.time.ZonedDateTime;
 public class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @CreatedBy
     @Column(name = "CREATED_BY" ,columnDefinition = "CHAR(100) NOT NULL DEFAULT 'ADMIN'", updatable = false)

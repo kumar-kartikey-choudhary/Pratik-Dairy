@@ -38,7 +38,7 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public ResponseEntity<ProductDto> find(Long id) {
+    public ResponseEntity<ProductDto> find(String id) {
         return ResponseEntity.ok(this.productService.find(id));
     }
 
@@ -48,7 +48,7 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public ResponseEntity<byte[]> getImageByProductId(Long productId) {
+    public ResponseEntity<byte[]> getImageByProductId(String productId) {
         ProductDto productDto = this.productService.find(productId);
         byte[] imageData = productDto.getImageData();
         return ResponseEntity.ok()
@@ -65,17 +65,17 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public ResponseEntity<ProductDto> update(Long id, ProductDto productDto) {
+    public ResponseEntity<ProductDto> update(String id, ProductDto productDto) {
         return ResponseEntity.ok(this.productService.update(productDto,id));
     }
 
     @Override
-    public ResponseEntity<ProductDto> update( Long id,ProductDto productDto, MultipartFile imageFile) {
+    public ResponseEntity<ProductDto> update( String id,ProductDto productDto, MultipartFile imageFile) {
         return ResponseEntity.ok(this.productService.update(productDto,id,imageFile));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         this.productService.delete(id);
     }
 }

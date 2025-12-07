@@ -13,9 +13,9 @@ public interface OrderService {
 
     List<OrderDto> findByCustomerName(String customerName);
 
-    OrderDto updateStatus(Long id, OrderStatus status);
+    OrderDto updateStatus(String id, OrderStatus status);
 
-    void delete(Long id);
+    void delete(String id);
 
     List<OrderDto> findByCustomerId(String customerName);
 }

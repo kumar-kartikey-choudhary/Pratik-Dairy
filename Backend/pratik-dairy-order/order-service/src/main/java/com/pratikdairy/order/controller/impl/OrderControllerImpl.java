@@ -46,12 +46,12 @@ public class OrderControllerImpl implements OrderController {
     }
 
     @Override
-    public ResponseEntity<OrderDto> updateStatus(Long id, OrderStatus status) {
+    public ResponseEntity<OrderDto> updateStatus(String id, OrderStatus status) {
         return ResponseEntity.ok(this.orderService.updateStatus(id,status));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         this.orderService.delete(id);
     }
 }

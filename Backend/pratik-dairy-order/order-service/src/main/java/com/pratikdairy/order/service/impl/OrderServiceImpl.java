@@ -63,12 +63,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto updateStatus(Long id, OrderStatus status) {
+    public OrderDto updateStatus(String id, OrderStatus status) {
         return null;
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
 
     }
 

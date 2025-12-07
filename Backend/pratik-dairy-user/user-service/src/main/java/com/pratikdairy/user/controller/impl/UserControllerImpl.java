@@ -40,7 +40,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserDto> find(Long id) {
+    public ResponseEntity<UserDto> find(String id) {
         return ResponseEntity.ok(this.userService.find(id));
     }
 
@@ -55,12 +55,12 @@ public class UserControllerImpl implements UserController {
 //    }
 
     @Override
-    public ResponseEntity<UserDto> update(UserDto userDto, Long id) {
+    public ResponseEntity<UserDto> update(UserDto userDto, String id) {
         return ResponseEntity.ok(this.userService.update(userDto, id));
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(String id) {
         this.userService.delete(id);
     }
 }

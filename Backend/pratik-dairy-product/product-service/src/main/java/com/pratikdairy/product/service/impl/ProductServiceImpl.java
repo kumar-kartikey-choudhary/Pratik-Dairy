@@ -51,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto find(Long id) {
+    public ProductDto find(String id) {
         log.info("Inside @class ProductServiceImpl @method find @Param id :{}", id);
         if (id == null) {
             throw new IllegalCallerException("Product id can not be null");
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public ProductDto update(ProductDto productDto, Long id) {
+    public ProductDto update(ProductDto productDto, String id) {
         log.info("Inside @class ProductServiceImpl @method update @Param id :{} , productDto :{}", id, productDto);
         if (id == null) {
             throw new RuntimeException("Id must not be null");
@@ -114,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
 
  @Override
     @Transactional
-    public ProductDto update(ProductDto productDto, Long id, MultipartFile imageFile) {
+    public ProductDto update(ProductDto productDto, String id, MultipartFile imageFile) {
         log.info("Inside @class ProductServiceImpl @method update @Param id :{} , productDto :{} , imageFile :{}", id, productDto , imageFile);
         if (id == null) {
             throw new RuntimeException("Id must not be null");
@@ -147,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void delete(Long id) {
+    public void delete(String id) {
         log.info("Inside @class ProductServiceImpl @method delete @Param id :{}", id);
 
         if (id == null) {

@@ -16,18 +16,18 @@ public interface CartController {
 
     @PostMapping(path = "items")
     ResponseEntity<CartDto> addItemToCart(
-            @RequestHeader(USER_ID_HEADER) Long userId,
+            @RequestHeader(USER_ID_HEADER) String userId,
             @Valid @RequestBody AddToCart request
     );
 
     @PutMapping(path = "items/{productId}")
     ResponseEntity<CartDto> updateQuantity(
-            @RequestHeader(USER_ID_HEADER) Long userId,
-            @PathVariable Long productId,
+            @RequestHeader(USER_ID_HEADER) String userId,
+            @PathVariable String productId,
             @RequestParam int quantity
     );
 
     @GetMapping
     ResponseEntity<CartDto> getCart(
-           @RequestHeader(USER_ID_HEADER) Long userId);
+           @RequestHeader(USER_ID_HEADER) String userId);
 }

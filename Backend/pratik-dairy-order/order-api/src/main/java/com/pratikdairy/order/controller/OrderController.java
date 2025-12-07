@@ -25,10 +25,10 @@ public interface OrderController {
 
     @PutMapping(path = "admin/updateStatus/{id}")
     ResponseEntity<OrderDto> updateStatus(
-            @PathVariable("id") Long id,
+            @PathVariable("id") String id,
             @RequestParam("status") OrderStatus status
     );
 
     @DeleteMapping(path = "admin/delete/{id}")
-    void delete(@PathVariable(name = "id") Long id);
+    void delete(@PathVariable(name = "id") String id);
 }

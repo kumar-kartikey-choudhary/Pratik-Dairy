@@ -8,16 +8,16 @@ import java.util.List;
 public interface ProductService {
     ProductDto create(ProductDto productDto, MultipartFile imageFile);
 
-    ProductDto find(Long id);
+    ProductDto find(String id);
 
     List<ProductDto> findAll();
 
-    ProductDto update(ProductDto productDto, Long id);
+    ProductDto update(ProductDto productDto, String id);
 
 
-    ProductDto update(ProductDto productDto, Long id, MultipartFile imageFile);
+    ProductDto update(ProductDto productDto, String id, MultipartFile imageFile);
 
-    void delete(Long id);
+    void delete(String id);
 
     List<ProductDto> searchProduct(String name);
 }
