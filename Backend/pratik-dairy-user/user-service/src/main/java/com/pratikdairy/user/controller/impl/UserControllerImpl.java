@@ -1,8 +1,6 @@
 package com.pratikdairy.user.controller.impl;
 
 import com.pratikdairy.user.controller.UserController;
-import com.pratikdairy.jwt.dto.LoginRequest;
-import com.pratikdairy.jwt.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
 import com.pratikdairy.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,7 @@ import java.util.List;
         methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
         allowedHeaders = "*")
 @Primary
-@RequestMapping("/users")
+@RequestMapping
 public class UserControllerImpl implements UserController {
 
     private final UserService userService;
@@ -35,11 +33,6 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
-        return ResponseEntity.ok(this.userService.login(loginRequest));
-    }
-
-    @Override
     public ResponseEntity<UserDto> find(String id) {
         return ResponseEntity.ok(this.userService.find(id));
     }
@@ -48,11 +41,6 @@ public class UserControllerImpl implements UserController {
     public ResponseEntity<List<UserDto>> findAll() {
         return ResponseEntity.ok(this.userService.findAll());
     }
-
-//    @Override
-//    public ResponseEntity<List<UserDto>> findUserByName(String name) {
-//        return ResponseEntity.ok(this.userService.findUserByName(name));
-//    }
 
     @Override
     public ResponseEntity<UserDto> update(UserDto userDto, String id) {
