@@ -1,7 +1,8 @@
 package com.pratikdairy.user.config;
 
 
-import com.pratikdairy.parent.config.GatewayAuthFilter;
+import com.pratikdairy.jwt.config.GatewayAuthFilter;
+import com.pratikdairy.jwt.helper.JwtAuthEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,15 +15,21 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private GatewayAuthFilter gatewayAuthFilter;
 
+    private final GatewayAuthFilter gatewayAuthFilter;
+    private final JwtAuthEntryPoint entryPoint;
+
+    @Autowired
+    public SecurityConfig(GatewayAuthFilter gatewayAuthFilter, JwtAuthEntryPoint entryPoint) {
+        this.gatewayAuthFilter = gatewayAuthFilter;
+        this.entryPoint = entryPoint;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
@@ -32,7 +39,8 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(gatewayAuthFilter, BasicAuthenticationFilter.class)
+                .addFilterBefore(gatewayAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
                 .build();
     }
 

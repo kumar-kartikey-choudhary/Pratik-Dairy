@@ -4,9 +4,12 @@ import com.pratikdairy.gateway.util.RouteValidator;
 import com.pratikdairy.parent.utility.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpStatus;
@@ -20,17 +23,19 @@ import reactor.core.publisher.Mono;
 import java.nio.charset.StandardCharsets;
 
 @Component
-public class AuthenticationFilter implements GatewayFilter {
+public class AuthenticationFilter implements GlobalFilter {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthenticationFilter.class);
     @Autowired
     private JwtUtil jwtUtil; // From pratik-dairy-core
     @Autowired
     private RouteValidator validator;
 
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-
+        System.out.println("Inside @class Authentication @method filter");
         if (validator.isSecured.test(request)) {
             // 1. Check for Authorization header
             if (!request.getHeaders().containsKey("Authorization")) {
@@ -38,6 +43,7 @@ public class AuthenticationFilter implements GatewayFilter {
             }
 
             String authHeader = request.getHeaders().getFirst("Authorization");
+            log.info("AuthHeader:{}", authHeader);
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return this.onError(exchange, "Invalid Authorization header format", HttpStatus.UNAUTHORIZED);
             }
@@ -58,8 +64,10 @@ public class AuthenticationFilter implements GatewayFilter {
 
             } catch (JwtException e) {
                 // Handle token errors (Expired, Signature, etc.)
+                log.info("Invalid or Expired JWT Token:{}", HttpStatus.UNAUTHORIZED);
                 return this.onError(exchange, "Invalid or Expired JWT Token", HttpStatus.UNAUTHORIZED);
             } catch (Exception e) {
+                log.info("Internal token processing error:{}", HttpStatus.UNAUTHORIZED);
                 return this.onError(exchange, "Internal token processing error", HttpStatus.UNAUTHORIZED);
             }
         }

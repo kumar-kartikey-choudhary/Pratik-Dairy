@@ -1,5 +1,6 @@
-package com.pratikdairy.parent.config;
+package com.pratikdairy.jwt.config;
 
+import com.pratikdairy.user.model.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,19 +15,27 @@ import java.io.IOException;
 @Component
 public class GatewayAuthFilter extends OncePerRequestFilter {
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+
+        String path = request.getRequestURI();
+        return path.endsWith("/users/register") || path.endsWith("/users/login");
+    }
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String userIdHeader = request.getHeader("X-Auth-UserId");
-        String roleHeader = request.getHeader("X-Auth-Role");
+        String role = request.getHeader("X-Auth-Role");
 
-        if(userIdHeader != null && roleHeader != null && SecurityContextHolder.getContext().getAuthentication() == null)
+        if(userIdHeader != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null)
         {
             try {
                 long userId = Long.parseLong(userIdHeader);
-                GatewayPrincipal gatewayPrincipal = new GatewayPrincipal(userId, roleHeader);
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(gatewayPrincipal, null, gatewayPrincipal.getAuthorities());
+                User user = new User(userId, role);
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }catch (NumberFormatException e)
             {

@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.context.annotation.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +22,7 @@ import java.util.List;
 @Table(name = "`user`")
 @Data
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 public class User extends BaseEntity  implements UserDetails {
     @Column(name = "FIRST_NAME" , columnDefinition = "VARCHAR(20) NOT NULL" , nullable = false)
     @NotNull
@@ -50,6 +52,11 @@ public class User extends BaseEntity  implements UserDetails {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$")
     @Column(name = "PASSWORD", columnDefinition = "VARCHAR(1000) NOT NULL" , nullable = false)
     private String password;
+
+    public User(long userId, String role) {
+        this.setId(userId);
+        this.role = role;
+    }
 
 
     @Override
