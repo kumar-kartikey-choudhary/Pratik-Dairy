@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +20,15 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder encoder;
 
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository)
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder)
     {
         this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
 
@@ -38,7 +41,8 @@ public class UserServiceImpl implements UserService {
 //            throw new IllegalCallerException("User id must be null");
 //        }
         try {
-            User user = MapperUtility.sourceToTarget(userDto, User.class);
+            User user = MapperUtility.sourceToTarget(userDto, User.class,"password");
+            user.setPassword(encoder.encode(userDto.getPassword()));
             log.info("Save user object to db");
             try{
             user = userRepository.saveAndFlush(user);

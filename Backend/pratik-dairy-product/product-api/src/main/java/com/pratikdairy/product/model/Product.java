@@ -43,9 +43,6 @@ public class Product extends BaseEntity {
     @Column(name = "DESCRIPTION", columnDefinition = "VARCHAR(1000)")
     private String description;
 
-    // CRITICAL: Used to trigger low stock alerts on the dashboard
-//    @Column(name = "REORDER_THRESHOLD", columnDefinition = "INT DEFAULT '10'")
-//    private int reorderThreshold = 10;
 
     @Column(name = "IMAGE_NAME")
     private String imageName;

@@ -16,7 +16,7 @@ import java.util.List;
         methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
         allowedHeaders = "*")
 @Primary
-@RequestMapping
+@RequestMapping(path = "users")
 public class UserControllerImpl implements UserController {
 
     private final UserService userService;
