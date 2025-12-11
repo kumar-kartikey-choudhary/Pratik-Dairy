@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @EnableFeignClients
 @EnableJpaAuditing
 @EntityScan(basePackageClasses = User.class)
-@ComponentScan(basePackages ={"com.pratikdairy.parent"})
+//@ComponentScan(basePackages ={"com.pratikdairy.parent"})
 public class PratikDairyUserApplication {
 
 	public static void main(String[] args) {

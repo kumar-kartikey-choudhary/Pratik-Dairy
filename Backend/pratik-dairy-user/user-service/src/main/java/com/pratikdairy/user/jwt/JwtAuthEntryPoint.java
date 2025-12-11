@@ -1,4 +1,4 @@
-package com.pratikdairy.parent.helper;
+package com.pratikdairy.user.jwt;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

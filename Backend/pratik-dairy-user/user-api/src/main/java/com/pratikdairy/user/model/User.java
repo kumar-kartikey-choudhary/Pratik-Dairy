@@ -50,7 +50,7 @@ public class User extends BaseEntity implements UserDetails {
     private String role = "CUSTOMER";
 
     @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$")
     @Column(name = "PASSWORD", columnDefinition = "VARCHAR(1000) NOT NULL" , nullable = false)
     private String password;
 

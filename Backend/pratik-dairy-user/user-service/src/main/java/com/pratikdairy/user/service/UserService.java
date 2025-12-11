@@ -1,5 +1,7 @@
 package com.pratikdairy.user.service;
 
+import com.pratikdairy.user.dto.LoginRequest;
+import com.pratikdairy.user.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
 
 import java.util.List;
@@ -16,4 +18,5 @@ public interface UserService {
 
     void delete(String id);
 
+    LoginResponse login(LoginRequest loginRequest);
 }

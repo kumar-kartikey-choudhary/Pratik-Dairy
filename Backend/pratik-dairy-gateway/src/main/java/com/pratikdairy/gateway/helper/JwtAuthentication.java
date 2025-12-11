@@ -1,6 +1,7 @@
 package com.pratikdairy.gateway.helper;
 
-import com.pratikdairy.parent.utility.JwtUtils;
+
+import com.pratikdairy.user.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -21,6 +22,8 @@ public class JwtAuthentication implements GatewayFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+
+
         return null;
     }
 }

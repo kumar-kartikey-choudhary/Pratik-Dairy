@@ -1,6 +1,8 @@
 package com.pratikdairy.user.controller.impl;
 
 import com.pratikdairy.user.controller.UserController;
+import com.pratikdairy.user.dto.LoginRequest;
+import com.pratikdairy.user.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
 import com.pratikdairy.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,11 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<UserDto> create(UserDto userDto) {
         return new ResponseEntity<>(this.userService.create(userDto), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
+        return ResponseEntity.ok(this.userService.login(loginRequest));
     }
 
     @Override

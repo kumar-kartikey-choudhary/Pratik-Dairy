@@ -1,4 +1,4 @@
-package com.pratikdairy.parent.utility;
+package com.pratikdairy.user.jwt;
 
 
 import io.jsonwebtoken.*;
@@ -38,7 +38,7 @@ public class JwtUtils {
 
     public <T> T extractClaim(String token , Function<Claims , T> claimsResolver)
     {
-       final Claims claims = extractAllClaims(token);
+        final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
@@ -62,7 +62,7 @@ public class JwtUtils {
                 .getBody()
                 .getSubject();
     }
-    
+
     public boolean isTokenExpired(String token)
     {
 //        Date expiration = Jwts.parserBuilder()

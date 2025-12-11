@@ -1,6 +1,5 @@
-package com.pratikdairy.jwt;
+package com.pratikdairy.user.jwt;
 
-import com.pratikdairy.parent.utility.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

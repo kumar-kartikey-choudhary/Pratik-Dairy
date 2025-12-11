@@ -1,9 +1,8 @@
 package com.pratikdairy.user.config;
 
 
-import com.pratikdairy.jwt.CustomUserDetailService;
-import com.pratikdairy.jwt.JwtAuthFilter;
-import com.pratikdairy.parent.helper.JwtAuthEntryPoint;
+import com.pratikdairy.user.jwt.CustomUserDetailService;
+import com.pratikdairy.user.jwt.JwtAuthFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -27,15 +26,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Slf4j
 public class SecurityConfig {
 
-    private final JwtAuthEntryPoint entryPoint;
+//    private final JwtAuthEntryPoint entryPoint;
     private final CustomUserDetailService detailService;
     private final JwtAuthFilter authFilter;
 
     @Autowired
-    public SecurityConfig(JwtAuthEntryPoint entryPoint,
-                          CustomUserDetailService detailService, JwtAuthFilter authFilter)
+    public SecurityConfig(CustomUserDetailService detailService, JwtAuthFilter authFilter)
     {
-        this.entryPoint = entryPoint;
+//        this.entryPoint = entryPoint;
         this.detailService = detailService;
         this.authFilter = authFilter;
     }
@@ -44,11 +42,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register" , "/users/login").permitAll()
+                        .requestMatchers("/users/register" , "/users/login", "/user-docs").permitAll()
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
+//                .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(this.provider());
 

@@ -1,7 +1,10 @@
 package com.pratikdairy.user.service.impl;
 
 import com.pratikdairy.parent.utility.MapperUtility;
+import com.pratikdairy.user.dto.LoginRequest;
+import com.pratikdairy.user.dto.LoginResponse;
 import com.pratikdairy.user.dto.UserDto;
+import com.pratikdairy.user.jwt.JwtUtils;
 import com.pratikdairy.user.model.User;
 import com.pratikdairy.user.repository.UserRepository;
 import com.pratikdairy.user.service.UserService;
@@ -9,7 +12,13 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +30,19 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
+    private final AuthenticationManager manager;
+    private final JwtUtils jwtUtils;
 
 
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder)
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder,
+                           AuthenticationManager manager, JwtUtils jwtUtils)
     {
         this.userRepository = userRepository;
         this.encoder = encoder;
+        this.manager = manager;
+        this.jwtUtils = jwtUtils;
     }
 
 
@@ -41,7 +55,7 @@ public class UserServiceImpl implements UserService {
 //            throw new IllegalCallerException("User id must be null");
 //        }
         try {
-            User user = MapperUtility.sourceToTarget(userDto, User.class,"password");
+            User user = MapperUtility.sourceToTarget(userDto, User.class);
             user.setPassword(encoder.encode(userDto.getPassword()));
             log.info("Save user object to db");
             try{
@@ -134,6 +148,33 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error("Error while deleting user with id {}: {}", id, e.getMessage(), e);
             throw new RuntimeException("Failed to delete user", e);
+        }
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse login(LoginRequest loginRequest) {
+        log.info("Inside @class UserServiceImpl @method delete @Param loginRequest :{}", loginRequest);
+        try {
+            Authentication authentication = manager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+            User userDetails = (User)authentication.getPrincipal();
+            String userId = userDetails.getId();
+            String userRole = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().getFirst();
+            String jwtToken = jwtUtils.generateToken(userId, userRole);
+            log.info("User {} logged in successfully.", loginRequest.getUsername());
+            return LoginResponse.builder()
+                    .username(userDetails.getUsername())
+                    .roles(userRole)
+                    .token(jwtToken)
+                    .build();
+        }catch (Exception e)
+        {
+            throw new RuntimeException("Login failed");
         }
     }
 }

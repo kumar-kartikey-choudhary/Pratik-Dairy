@@ -1,4 +1,4 @@
-package com.pratikdairy.jwt;
+package com.pratikdairy.user.jwt;
 
 import com.pratikdairy.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
