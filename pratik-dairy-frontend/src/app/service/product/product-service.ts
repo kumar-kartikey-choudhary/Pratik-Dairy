@@ -22,7 +22,7 @@ interface Product {
   providedIn: 'root'
 })
 export class ProductService {
-  private readonly API_URL = "http://localhost:8082";
+  private readonly API_URL = "http://localhost:8080/products";
 
   constructor(private http: HttpClient) { }
 
@@ -45,7 +45,7 @@ export class ProductService {
    * Retrieve list of products from the backend.
    */
   getAllProducts(): Observable<Product[]> {
-    const url = `${this.API_URL}/products`;
+    const url = `${this.API_URL}/all`;
     return this.http.get<Product[]>(url);
   }
 

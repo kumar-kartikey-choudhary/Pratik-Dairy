@@ -30,7 +30,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         this.jwtUtils = jwtUtils;
         this.detailService = detailService;
     }
-
     private static final List<String> PUBLIC_PATH = List.of(
             "/users/register",
             "/users/login"
@@ -64,14 +63,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         token = header.substring(7);
         try {
             username = jwtUtils.extractUsername(token);
+            log.info("username :{}",username);
         }catch (Exception e) {
             System.err.println("JWT extraction failed: " + e.getMessage());
             filterChain.doFilter(request, response);
             return;
         }
-
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null)
         {
+            log.info("Going to CustomUserDetailService");
             UserDetails userDetails = this.detailService.loadUserByUsername(username);
             if(this.jwtUtils.isTokenValidate(token, userDetails))
             {

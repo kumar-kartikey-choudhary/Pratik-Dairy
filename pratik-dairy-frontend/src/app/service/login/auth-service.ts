@@ -22,7 +22,7 @@ interface JwtResponse {
 })
 export class AuthService {
   
-  private readonly AUTH_API_URL = 'http://localhost:8081'; // FIX: Base URL set to port 8081
+  private readonly AUTH_API_URL = 'http://localhost:8080/users'; // FIX: Base URL set to port 8080
   
   private readonly TOKEN_KEY = 'AUTH_TOKEN';
   private readonly USER_ROLE_KEY = 'USER_ROLE';
@@ -42,7 +42,7 @@ export class AuthService {
    * Sends login credentials to the Spring Boot backend and processes the JWT response.
    */
   login(credentials: LoginRequest): Observable<JwtResponse> {
-    const url = `${this.AUTH_API_URL}/auth/login`; // FIX: Corrected path
+    const url = `${this.AUTH_API_URL}/login`; // FIX: Corrected path
     
     return this.http.post<JwtResponse>(url, credentials).pipe(
       tap(response => {
@@ -67,12 +67,14 @@ export class AuthService {
    */
   public navigateBasedOnRole(): void {
     const role = this.getUserRole();
+    console.log(role)
 
     if (role === 'ADMIN') {
       this.router.navigate(['/admin/dashboard']); 
     } else if (role === 'CUSTOMER') {
       this.router.navigate(['/home']); 
     } else {
+      console.log("error")
       this.router.navigate(['/login']); 
     }
   }

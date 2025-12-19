@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@ComponentScan(basePackages = {"com.pratikdairy.user", "com.pratikdairy.gateway"})
 public class PratikDairyGatewayApplication {
 
 	public static void main(String[] args) {

@@ -162,14 +162,17 @@ public class UserServiceImpl implements UserService {
                             loginRequest.getPassword()
                     )
             );
+            log.info("authentication");
             User userDetails = (User)authentication.getPrincipal();
-            String userId = userDetails.getId();
+            String username = userDetails.getUsername();
+//            String userId = userDetails.getId();
             String userRole = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().getFirst();
-            String jwtToken = jwtUtils.generateToken(userId, userRole);
+            log.info("role :{}",userRole);
+            String jwtToken = jwtUtils.generateToken(username, userRole);
             log.info("User {} logged in successfully.", loginRequest.getUsername());
             return LoginResponse.builder()
                     .username(userDetails.getUsername())
-                    .roles(userRole)
+                    .role(userRole)
                     .token(jwtToken)
                     .build();
         }catch (Exception e)

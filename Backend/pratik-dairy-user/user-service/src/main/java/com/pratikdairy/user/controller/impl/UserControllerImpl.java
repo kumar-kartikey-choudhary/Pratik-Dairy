@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200",
-        methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
-        allowedHeaders = "*")
+//@CrossOrigin(origins = "http://localhost:4200",
+//        methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
+//        allowedHeaders = "*")
 @Primary
 @RequestMapping(path = "users")
 public class UserControllerImpl implements UserController {

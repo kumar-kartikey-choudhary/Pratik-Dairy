@@ -29,7 +29,7 @@ interface UserDto{
 })
 export class SignupService {
 
-  private readonly SIGNUP_URL = 'http://localhost:8081';
+  private readonly SIGNUP_URL = 'http://localhost:8080/users';
 
   constructor(private http : HttpClient){}
 
@@ -39,7 +39,7 @@ export class SignupService {
    * @returns - userDto 
    */
   onSignUp(credentials : SignUp) : Observable<UserDto>{
-    const url = `${this.SIGNUP_URL}/auth/register`;
+    const url = `${this.SIGNUP_URL}/register`;
     return this.http.post<UserDto>(url, credentials).pipe(
       tap(() =>{
         console.log(`Registration request sent for ${credentials.username}`);

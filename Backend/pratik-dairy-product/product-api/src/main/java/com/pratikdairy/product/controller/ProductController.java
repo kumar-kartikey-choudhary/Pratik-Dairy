@@ -20,7 +20,7 @@ public interface ProductController {
     @GetMapping(path = "product/{id}")
     ResponseEntity<ProductDto> find(@PathVariable(name = "id") String id);
 
-    @GetMapping(path = "products")
+    @GetMapping(path = "all")
     ResponseEntity<List<ProductDto>> findAll();
 
     @GetMapping(path = "{productId}/image")
