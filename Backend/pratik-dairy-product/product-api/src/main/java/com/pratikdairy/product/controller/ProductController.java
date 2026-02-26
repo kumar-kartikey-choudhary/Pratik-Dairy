@@ -29,10 +29,10 @@ public interface ProductController {
     @GetMapping(path = "search")
     ResponseEntity<List<ProductDto>> searchProduct(@RequestParam String name);
 
-    @PutMapping(path = "admin/updateProduct/{id}")
+    @PatchMapping(path = "admin/updateProduct/{id}")
     ResponseEntity<ProductDto> update(@PathVariable(name = "id") String id ,@RequestPart ProductDto productDto );
 
-    @PutMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> update(@PathVariable(name = "id") String id ,@RequestPart ProductDto productDto ,  @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl);
 
     @DeleteMapping(path = "admin/deleteProduct/{id}")
