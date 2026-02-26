@@ -98,7 +98,7 @@
 
 /* --- PAGE HEADER BANNER --- */
 .page-header-banner {
-    background-color: var(--dark-surface); 
+    background-color: #3d5a71; 
     padding: 60px 20px;
     text-align: center;
     color: var(--text-light);

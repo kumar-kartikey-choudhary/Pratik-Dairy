@@ -22,7 +22,7 @@ interface JwtResponse {
 })
 export class AuthService {
   
-  private readonly AUTH_API_URL = 'http://localhost:8080/users'; // FIX: Base URL set to port 8080
+  private readonly AUTH_API_URL = 'http://localhost:8081/users'; // FIX: Base URL set to port 8080
   
   private readonly TOKEN_KEY = 'AUTH_TOKEN';
   private readonly USER_ROLE_KEY = 'USER_ROLE';

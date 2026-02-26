@@ -29,7 +29,7 @@ interface UserDto{
 })
 export class SignupService {
 
-  private readonly SIGNUP_URL = 'http://localhost:8080/users';
+  private readonly SIGNUP_URL = 'http://localhost:8081/users';
 
   constructor(private http : HttpClient){}
 
