@@ -19,7 +19,7 @@
   })
   export class AdminService {
     
-    private apiUrl = "http://localhost:8081/admin/findAll";
+    private apiUrl = "http://localhost:8080/admin/findAll";
 
     constructor(private http : HttpClient){}
 

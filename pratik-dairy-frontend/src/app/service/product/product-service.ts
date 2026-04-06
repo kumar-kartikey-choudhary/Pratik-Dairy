@@ -22,7 +22,7 @@ interface Product {
   providedIn: 'root'
 })
 export class ProductService {
-  private readonly API_URL = "http://localhost:8082/products";
+  private readonly API_URL = "http://localhost:8080/products";
 
   constructor(private http: HttpClient) { }
 

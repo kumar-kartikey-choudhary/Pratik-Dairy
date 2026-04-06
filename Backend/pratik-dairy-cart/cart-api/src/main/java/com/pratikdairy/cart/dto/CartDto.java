@@ -12,7 +12,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class CartDto extends BaseDto {
 
-    private String cartIdentifier;
     private List<CartItemDto> items;
     private BigDecimal grandTotal;
 }

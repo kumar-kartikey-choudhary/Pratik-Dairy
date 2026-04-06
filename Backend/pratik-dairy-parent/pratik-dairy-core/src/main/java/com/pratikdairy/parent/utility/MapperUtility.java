@@ -1,7 +1,6 @@
 package com.pratikdairy.parent.utility;
 
 import org.springframework.beans.BeanUtils;
-
 import java.lang.reflect.InvocationTargetException;
 
 public class MapperUtility {

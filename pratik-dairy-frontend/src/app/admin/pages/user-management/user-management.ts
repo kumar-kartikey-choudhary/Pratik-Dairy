@@ -66,11 +66,11 @@ export class UserManagement {
 
 
 
-// to display number of user add last three days 
+// // to display number of user add last three days 
 
 
 
-// src/app/admin/pages/user-management/user-management.component.ts
+// // src/app/admin/pages/user-management/user-management.component.ts
 
 // import { Component, inject, signal, OnInit } from '@angular/core'; // Add OnInit
 // import { RouterLink } from '@angular/router';

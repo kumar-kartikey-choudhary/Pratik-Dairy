@@ -38,5 +38,4 @@ public interface ProductController {
     @DeleteMapping(path = "admin/deleteProduct/{id}")
     void delete(@PathVariable(name = "id") String id);
 
-
 }

@@ -2,6 +2,7 @@ package com.pratikdairy.gateway.helper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,9 @@ public class JwtUtils {
 
     private Key getSecretKey()
     {
+//        byte[] decode = Decoders.BASE64.decode(SECRET);
+//        return Keys.hmacShaKeyFor(decode);
+
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 

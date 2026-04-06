@@ -22,7 +22,7 @@ public class OrderItems extends BaseEntity {
     @Column(name = "PRICE_AT_PURCHASE")
     private BigDecimal priceAtPurchase;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     @JsonIgnore
     private Order order;

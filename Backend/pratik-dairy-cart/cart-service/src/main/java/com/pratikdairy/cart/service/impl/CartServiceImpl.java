@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
 
     
     @Transactional
-    private CartDto removeItem(String productId, String userId) {
+    public CartDto removeItem(String productId, String userId) {
         log.info("Inside @class CartServiceImpl @method removeItem  ");
         Cart cart = getOrCreateFixedCart(userId);
         ResponseEntity<ProductDto> response = controller.find(productId);
@@ -153,6 +153,3 @@ public class CartServiceImpl implements CartService {
         return cartDto;
     }
 }
-
-
-

@@ -6,7 +6,9 @@ import com.pratikdairy.parent.base.dto.BaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -14,11 +16,11 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class OrderDto extends BaseDto {
 
-    private String customerName;
-    private LocalTime orderTime = LocalTime.now();
-    private LocalDate orderDate = LocalDate.now();
+    private String customerId;
+    private BigDecimal totalAmount;
     private OrderStatus status = OrderStatus.NEW;
     private String shippingAddress;
+    private LocalDateTime orderDateTime = LocalDateTime.now();
     private List<OrderItems> items;
 
 }

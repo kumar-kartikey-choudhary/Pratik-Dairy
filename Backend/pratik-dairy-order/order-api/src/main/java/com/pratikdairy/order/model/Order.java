@@ -6,8 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,13 +21,11 @@ public class Order extends  BaseEntity{
 
     @NotNull
     @Column(name = "CUSTOMER_Name", nullable = false)
-    private String customerName;
+    private String customerId;
 
     @Column(name = "ORDER_TIME", nullable = false)
-    private LocalTime orderTime = LocalTime.now();
+    private LocalDateTime orderDateTime = LocalDateTime.now();
 
-    @Column(name = "ORDER_DATE", nullable = false)
-    private LocalDate orderDate = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ORDER_STATUS" , nullable = false)
@@ -35,7 +36,11 @@ public class Order extends  BaseEntity{
     private String shippingAddress;
 
     @NotNull
+    @Column(name = "TOTAL_AMOUNT")
+    private BigDecimal totalAmount;
+
+    @NotNull
     @OneToMany(cascade = CascadeType.ALL , mappedBy = "order",orphanRemoval = true)
-    private List<OrderItems> items;
+    private List<OrderItems> items  = new ArrayList<>();
 
 }

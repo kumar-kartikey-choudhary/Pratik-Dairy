@@ -5,6 +5,7 @@ import com.pratikdairy.parent.base.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 
 import java.math.BigDecimal;
 
@@ -31,6 +32,7 @@ public class CartItem extends BaseEntity {
 
     public BigDecimal calculateSubtotal()
     {
+        if(priceSnapshot == null) return  BigDecimal.ZERO;
         return priceSnapshot.multiply(BigDecimal.valueOf(quantity));
     }
 }
