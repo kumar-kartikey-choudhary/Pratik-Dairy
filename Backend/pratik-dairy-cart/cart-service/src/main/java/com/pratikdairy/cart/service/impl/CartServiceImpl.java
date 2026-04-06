@@ -43,14 +43,13 @@ public class CartServiceImpl implements CartService {
     public CartDto addItemToCart(String userId,AddToCart request) {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         ResponseEntity<ProductDto> response = controller.find(request.getProductId());
-
-            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-                throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
-            }
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+           throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
+        }
             ProductDto productDto = response.getBody();
             Cart cart = getOrCreateFixedCart(userId);
             Optional<CartItem> existingItem = this.cartItemRepository.findByCartIdAndProductId(cart.getId(),request.getProductId());
-            CartItem cartItem = null;
+            CartItem cartItem;
             int netQuantity;
             if(existingItem.isPresent())
             {
@@ -58,12 +57,13 @@ public class CartServiceImpl implements CartService {
                 netQuantity = cartItem.getQuantity() + request.getQuantity();
             }else
             {
-                createNewCartItem(cart, productDto);
-                netQuantity = request.getQuantity();;
+                cartItem = createNewCartItem(cart, productDto);
+                netQuantity = request.getQuantity();
             }
             validateStock(productDto, netQuantity);
             cartItem.setQuantity(netQuantity);
             this.cartItemRepository.saveAndFlush(cartItem);
+            cart = getOrCreateFixedCart(userId);
             return buildCartDto(cart);
     }
 

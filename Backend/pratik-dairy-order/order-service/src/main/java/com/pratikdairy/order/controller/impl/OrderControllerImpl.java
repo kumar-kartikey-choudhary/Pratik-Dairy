@@ -31,7 +31,8 @@ public class OrderControllerImpl implements OrderController {
 
 
     @Override
-    public ResponseEntity<OrderDto> create(OrderDto orderDto) {
+    public ResponseEntity<OrderDto> create(String userId,OrderDto orderDto) {
+        orderDto.setCustomerId(userId);
         return new ResponseEntity<>(this.orderService.create(orderDto), HttpStatus.CREATED);
     }
 
@@ -43,6 +44,11 @@ public class OrderControllerImpl implements OrderController {
     @Override
     public ResponseEntity<List<OrderDto>> findByCustomerName(String customerName) {
         return ResponseEntity.ok(this.orderService.findByCustomerId(customerName));
+    }
+
+    @Override
+    public ResponseEntity<List<OrderDto>> findMyOrders(String userId) {
+        return ResponseEntity.ok(this.orderService.findByCustomerId(userId));
     }
 
     @Override

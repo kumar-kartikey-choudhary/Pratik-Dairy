@@ -14,11 +14,18 @@ import java.util.List;
 @FeignClient(name = "Order-Service" , primary = false)
 public interface OrderController {
 
+    String USER_ID_HEADER = "X-Auth-UserId";
+
     @PostMapping(path = "create")
-    ResponseEntity<OrderDto> create(@Valid @RequestBody OrderDto orderDto);
+    ResponseEntity<OrderDto> create(
+            @RequestHeader(USER_ID_HEADER) String userId,
+            @Valid @RequestBody OrderDto orderDto);
 
     @GetMapping(path = "admin/findAll")
     ResponseEntity<List<OrderDto>> findAll();
+
+    @GetMapping(path = "/my-orders")
+    ResponseEntity<List<OrderDto>> findMyOrders(@RequestHeader(USER_ID_HEADER) String userId);
 
     @GetMapping(path = "/customer/{customerName}")
     ResponseEntity<List<OrderDto>> findByCustomerName(@PathVariable("customerName") String customerName);
