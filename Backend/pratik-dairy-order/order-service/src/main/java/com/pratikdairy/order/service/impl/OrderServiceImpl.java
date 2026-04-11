@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findByCustomerId(String customerId) {
-        return this.orderRepository.findByCustomerIdOrderByOrderDateDesc(customerId).stream()
+        return this.orderRepository.findByCustomerId(customerId).stream()
                 .map(order -> {
                     try {
                         return MapperUtility.sourceToTarget(order, OrderDto.class);
