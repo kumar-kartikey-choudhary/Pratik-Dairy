@@ -15,5 +15,4 @@ public class CartDto extends BaseDto {
     private List<CartItemDto> items;
     private String userId;
     private BigDecimal grandTotal;
-    private String userId;
 }
