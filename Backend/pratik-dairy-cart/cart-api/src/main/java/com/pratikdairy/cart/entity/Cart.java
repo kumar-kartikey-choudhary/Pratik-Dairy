@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class Cart extends BaseEntity {
     @Column(name = "CART_IDENTIFIER", unique = true, nullable = false, length = 100)
     private String cartIdentifier;
 
+    @Column(name = "USER_ID", nullable = false)
     private String userId;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
