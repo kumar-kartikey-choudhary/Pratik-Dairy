@@ -19,6 +19,8 @@ public class Cart extends BaseEntity {
     @Column(name = "CART_IDENTIFIER", unique = true, nullable = false, length = 100)
     private String cartIdentifier;
 
+    private String userId;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
 

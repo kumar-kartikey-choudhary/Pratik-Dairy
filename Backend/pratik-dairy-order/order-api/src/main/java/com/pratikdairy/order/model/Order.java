@@ -26,6 +26,7 @@ public class Order extends  BaseEntity{
     @Column(name = "ORDER_TIME", nullable = false)
     private LocalDateTime orderDateTime = LocalDateTime.now();
 
+    private String userId;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ORDER_STATUS" , nullable = false)

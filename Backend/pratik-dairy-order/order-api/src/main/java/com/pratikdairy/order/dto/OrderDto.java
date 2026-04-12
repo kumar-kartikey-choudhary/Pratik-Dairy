@@ -17,6 +17,7 @@ import java.util.List;
 public class OrderDto extends BaseDto {
 
     private String customerId;
+    private String userId;
     private BigDecimal totalAmount;
     private OrderStatus status = OrderStatus.NEW;
     private String shippingAddress;
