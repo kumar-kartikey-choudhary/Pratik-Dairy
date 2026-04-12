@@ -38,7 +38,15 @@ export class ProductService {
     formData.append('productDto', productDtoBlob, 'productDto.json');
     formData.append('imageFile', imageFile, imageFile.name);
 
-    return this.http.post<Product>(url, formData);
+
+    const authToken = localStorage.getItem("AUTH_TOKEN");
+    console.log(authToken);
+    return this.http.post<Product>(url, formData,
+    {
+        headers:{
+            Authorization : `Bearer ${authToken}` 
+        }
+    });
   }
 
   /**

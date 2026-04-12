@@ -110,7 +110,7 @@
 }
 
 .btn-primary {
-    background-color: var(--primary-accent);
+    background-color: linear-gradient(135deg, #ff8f00, #FFC107)greenyellow;
     color: var(--dark-bg);
     padding: 15px 25px;
     border: none;

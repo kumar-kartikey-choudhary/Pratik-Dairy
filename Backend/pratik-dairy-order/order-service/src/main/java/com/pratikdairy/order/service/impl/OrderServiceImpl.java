@@ -93,6 +93,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> findByCustomerId(String customerId) {
+<<<<<<< HEAD
 //        return this.orderRepository.findByCustomerId(customerId).stream()
 //                .map(order -> {
 //                    try {
@@ -109,5 +110,22 @@ public class OrderServiceImpl implements OrderService {
 //                })
 //                .collect(Collectors.toList());
         return List.of();
+=======
+        return this.orderRepository.findByCustomerId(customerId).stream()
+                .map(order -> {
+                    try {
+                        return MapperUtility.sourceToTarget(order, OrderDto.class);
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    } catch (InstantiationException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .collect(Collectors.toList());
+>>>>>>> d077dc6c66d57db3c8844f683c379dab12387ba6
     }
 }
