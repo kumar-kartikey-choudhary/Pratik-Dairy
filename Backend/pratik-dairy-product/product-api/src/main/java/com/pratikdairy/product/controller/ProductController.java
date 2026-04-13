@@ -23,9 +23,7 @@ public interface ProductController {
 
 
     @GetMapping(path = "product/{id}")
-    ResponseEntity<ProductDto> find(
-            @RequestHeader("X-Auth-")
-            @PathVariable(name = "id") String id);
+    ResponseEntity<ProductDto> find(@PathVariable(name = "id") String id);
 
 
 

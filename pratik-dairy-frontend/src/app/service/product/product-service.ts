@@ -31,7 +31,7 @@ export class ProductService {
    * to create a new product.
    */
   addProduct(productData: Product, imageFile: File): Observable<Product> {
-    const url = `${this.API_URL}/admin/addProduct`;
+    const url = `${this.API_URL}/addProduct`;
     const formData: FormData = new FormData();
     const productDtoBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
 
