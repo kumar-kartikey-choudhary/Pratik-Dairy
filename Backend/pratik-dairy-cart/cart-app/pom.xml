@@ -20,6 +20,16 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>com.pratikdairy.user</groupId>
+            <artifactId>user-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pratikdairy.product</groupId>
+            <artifactId>product-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.pratikdairy.cart</groupId>
             <artifactId>cart-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>

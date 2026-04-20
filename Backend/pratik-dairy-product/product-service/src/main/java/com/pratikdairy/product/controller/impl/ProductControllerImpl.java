@@ -31,11 +31,11 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public ResponseEntity<ProductDto> create(String userRole,ProductDto productDto, MultipartFile imageFile) {
-        if(!userRole.equals("ADMIN"))
-        {
-            return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    public ResponseEntity<ProductDto> create(ProductDto productDto, MultipartFile imageFile) {
+//        if(!userRole.equals("ADMIN"))
+//        {
+//            return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
         return new ResponseEntity<ProductDto>(this.productService.create(productDto, imageFile) , HttpStatus.CREATED);
     }
 

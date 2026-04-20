@@ -1,84 +1,109 @@
 package com.pratikdairy.order.service.impl;
 
-import com.pratikdairy.order.dto.OrderDto;
+import com.pratikdairy.cart.controller.CartController;
+import com.pratikdairy.cart.dto.CartItemDto;
+import com.pratikdairy.order.dto.OrderItemDto;
+import com.pratikdairy.order.dto.OrderResponse;
 import com.pratikdairy.order.model.Order;
 import com.pratikdairy.order.model.OrderItems;
 import com.pratikdairy.order.model.OrderStatus;
 import com.pratikdairy.order.repository.OrderRepository;
 import com.pratikdairy.order.service.OrderService;
 import com.pratikdairy.parent.utility.MapperUtility;
+import com.pratikdairy.user.controller.UserController;
+import com.pratikdairy.user.dto.UserDto;
+import com.pratikdairy.user.model.User;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+    private final CartController cartController;
+    private final UserController userController;
 
-    @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository)
-    {
-        this.orderRepository = orderRepository;
-    }
+
 
     @Override
-    public OrderDto create(OrderDto orderDto) {
-        log.info("Inside @class OrderServiceImpl @method create @Param orderDto :{}",orderDto);
-        if(orderDto == null || orderDto.getItems() == null || orderDto.getItems().isEmpty())
+    public OrderResponse create(String userId) {
+        log.info("Inside @class OrderServiceImpl @method create @Param userId :{}",userId);
+        //validate for cart item
+//        List<CartItemDto> cartItems = cartController.getCart(userId).getBody();
+
+        List<CartItemDto> cartItems = cartController.getCart(userId).getBody();
+
+        if(cartItems.isEmpty())
         {
-            log.warn("Order object can not be null");
-            throw new IllegalCallerException("Order object can not null");
+           throw new NullPointerException("Cart item is empty");
         }
-        try {
-            Order order = MapperUtility.sourceToTarget(orderDto, Order.class);
-            log.info("@Param order :{}",order);
-            BigDecimal calculateddTotal = BigDecimal.ZERO;
-            if (order.getItems() != null) {
-                for (OrderItems item : order.getItems()) {
-                    // Assign the parent Order object to the child item
-                    item.setOrder(order);
-                    BigDecimal itemSubTotal = item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity()));
-                    calculateddTotal = calculateddTotal.add(itemSubTotal);
-                }
-            }
-            order.setTotalAmount(calculateddTotal);
-            order = this.orderRepository.saveAndFlush(order);
 
-            return MapperUtility.sourceToTarget(order, OrderDto.class);
+        //calculate total price
+        BigDecimal totalPrice = cartItems.stream()
+                .map(item -> item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        //create order
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setStatus(OrderStatus.CONFIRMED);
+        order.setTotalAmount(totalPrice);
+        List<OrderItems> orderItems = cartItems.stream()
+                .map(item -> new OrderItems(
+                        item.getProductId(),
+                        item.getQuantity(),
+                        item.getPricePerUnit(),
+                        order
+                ))
+                .toList();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        order.setItems(orderItems);
+        Order order1 = orderRepository.saveAndFlush(order);
+        //clear cart
+        cartController.clearCart(userId);
+
+        return mapToOrderResponse(order1);
+    }
+
+    private OrderResponse mapToOrderResponse(Order order) {
+
+        return  new OrderResponse(
+                order.getId(),
+                order.getStatus(),
+                order.getTotalAmount(),
+                order.getItems()
+                        .stream()
+                        .map(item -> new OrderItemDto(
+                                item.getId(),
+                                item.getProductId(),
+                                item.getQuantity(),
+                                item.getPrice(),
+                                item.getPrice().multiply(new BigDecimal(item.getQuantity()))
+                        ))
+                        .toList()
+        );
     }
 
     @Override
-    public List<OrderDto> findAll() {
+    public List<OrderResponse> findAll() {
         return this.orderRepository.findAll().stream()
-                .map(order -> {
-                    try {
-                        return MapperUtility.sourceToTarget(order, OrderDto.class);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
+                .map(this::mapToOrderResponse)
+                .toList();
     }
 
     @Override
-    public OrderDto updateStatus(String id, OrderStatus status) {
+    public OrderResponse updateStatus(String id, OrderStatus status) {
       try {
           Order order = this.orderRepository.findById(id)
                   .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
           order.setStatus(status);
           order = this.orderRepository.saveAndFlush(order);
-          return MapperUtility.sourceToTarget(order, OrderDto.class);
+          return mapToOrderResponse(order);
       }
       catch (Exception e)
       {
@@ -89,24 +114,5 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delete(String id) {
         this.orderRepository.deleteById(id);
-    }
-
-    @Override
-    public List<OrderDto> findByCustomerId(String customerId) {
-        return this.orderRepository.findByCustomerId(customerId).stream()
-                .map(order -> {
-                    try {
-                        return MapperUtility.sourceToTarget(order, OrderDto.class);
-                    } catch (NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    } catch (InstantiationException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
     }
 }

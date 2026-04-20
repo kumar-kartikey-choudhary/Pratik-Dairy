@@ -5,11 +5,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import com.pratikdairy.user.model.User;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +18,6 @@ import java.util.List;
 @Table(name = "ORDERS")
 public class Order extends  BaseEntity{
 
-    @NotNull
-    @Column(name = "CUSTOMER_Name", nullable = false)
-    private String customerId;
 
     @Column(name = "ORDER_TIME", nullable = false)
     private LocalDateTime orderDateTime = LocalDateTime.now();
@@ -32,11 +28,8 @@ public class Order extends  BaseEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ORDER_STATUS" , nullable = false)
-    private OrderStatus status = OrderStatus.NEW;
+    private OrderStatus status = OrderStatus.PROCESSING;
 
-    @NotNull
-    @Column(name = "SHIPPING_ADDRESS")
-    private String shippingAddress;
 
     @NotNull
     @Column(name = "TOTAL_AMOUNT")

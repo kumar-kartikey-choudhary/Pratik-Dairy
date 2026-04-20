@@ -2,6 +2,8 @@ package com.pratikdairy.cart.dto;
 
 
 import com.pratikdairy.parent.base.dto.BaseDto;
+import com.pratikdairy.product.model.Product;
+import com.pratikdairy.user.model.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,8 +13,8 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class CartItemDto  extends BaseDto {
 
+    private String userId;
     private String productId;
-    private String productName;
     private int quantity;
     private BigDecimal pricePerUnit;
     private BigDecimal subtotal;

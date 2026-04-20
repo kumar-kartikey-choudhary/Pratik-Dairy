@@ -17,7 +17,7 @@ public interface ProductController {
 
     @PostMapping(path = "addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> create(
-            @RequestHeader("X-Auth-Role") String userRole,
+//            @RequestHeader("X-Auth-Role") String userRole,
             @RequestPart ProductDto productDto , @RequestPart(value = "imageFile", required = false) MultipartFile imageFile);
 
 

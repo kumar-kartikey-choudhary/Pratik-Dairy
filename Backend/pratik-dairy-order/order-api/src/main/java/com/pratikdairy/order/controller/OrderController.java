@@ -1,9 +1,8 @@
 package com.pratikdairy.order.controller;
 
 
-import com.pratikdairy.order.dto.OrderDto;
+import com.pratikdairy.order.dto.OrderResponse;
 import com.pratikdairy.order.model.OrderStatus;
-import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,21 +16,16 @@ public interface OrderController {
     String USER_ID_HEADER = "X-Auth-UserId";
 
     @PostMapping(path = "create")
-    ResponseEntity<OrderDto> create(
-            @RequestHeader(USER_ID_HEADER) String userId,
-            @Valid @RequestBody OrderDto orderDto);
+    ResponseEntity<OrderResponse> create(
+            @RequestHeader(USER_ID_HEADER) String userId);
 
     @GetMapping(path = "admin/findAll")
-    ResponseEntity<List<OrderDto>> findAll();
+    ResponseEntity<List<OrderResponse>> findAll();
 
-    @GetMapping(path = "/my-orders")
-    ResponseEntity<List<OrderDto>> findMyOrders(@RequestHeader(USER_ID_HEADER) String userId);
 
-    @GetMapping(path = "/customer/{customerName}")
-    ResponseEntity<List<OrderDto>> findByCustomerName(@PathVariable("customerName") String customerName);
 
     @PutMapping(path = "admin/updateStatus/{id}")
-    ResponseEntity<OrderDto> updateStatus(
+    ResponseEntity<OrderResponse> updateStatus(
             @PathVariable("id") String id,
             @RequestParam("status") OrderStatus status
     );

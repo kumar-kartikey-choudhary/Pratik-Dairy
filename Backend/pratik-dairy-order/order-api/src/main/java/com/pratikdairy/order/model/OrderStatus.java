@@ -1,8 +1,9 @@
 package com.pratikdairy.order.model;
 
 public enum OrderStatus {
-    NEW,
+
     PROCESSING,
+    CONFIRMED,
     SHIPPED,
     DELIVERED,
     CANCELLED

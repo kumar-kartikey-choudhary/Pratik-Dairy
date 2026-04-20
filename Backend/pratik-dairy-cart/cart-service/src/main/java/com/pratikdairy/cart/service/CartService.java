@@ -1,14 +1,19 @@
 package com.pratikdairy.cart.service;
 
 import com.pratikdairy.cart.dto.AddToCart;
-import com.pratikdairy.cart.dto.CartDto;
+import com.pratikdairy.cart.dto.CartItemDto;
+import jdk.dynalink.linker.LinkerServices;
+
+import java.util.List;
 
 public interface CartService {
 
 
-    CartDto addItemToCart(String userId,AddToCart request);
+    boolean addItemToCart(String userId, AddToCart request);
 
-    CartDto updateQuantity(String userId,String productId, int quantity);
+    List<CartItemDto> getCart(String userId);
 
-    CartDto getCart(String userId);
+    void clearCart(String userId);
+
+    boolean deleteItemFromCart(String userId, String productId);
 }

@@ -1,6 +1,8 @@
 package com.pratikdairy.cart.repository;
 
 import com.pratikdairy.cart.entity.CartItem;
+import com.pratikdairy.product.model.Product;
+import com.pratikdairy.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, String> {
-    Optional<CartItem> findByCartIdAndProductId(String cartId, String productId);
-    List<CartItem> findAllByCartId(String cartId);
+    void deleteByUserIdAndProductId(String userId, String productId);
+    void deleteByUserId(String userId);
+    CartItem findByUserIdAndProductId(String userId, String productId);
+    List<CartItem> findByUserId(String userId);
 }

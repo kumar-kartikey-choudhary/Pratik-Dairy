@@ -2,7 +2,7 @@ package com.pratikdairy.cart.controller.impl;
 
 import com.pratikdairy.cart.controller.CartController;
 import com.pratikdairy.cart.dto.AddToCart;
-import com.pratikdairy.cart.dto.CartDto;
+import com.pratikdairy.cart.dto.CartItemDto;
 import com.pratikdairy.cart.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -33,17 +35,27 @@ public class CartControllerImpl implements CartController {
 
 
     @Override
-    public ResponseEntity<CartDto> addItemToCart(String userId,AddToCart request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.cartService.addItemToCart(userId,request));
+    public ResponseEntity<String> addItemToCart(String userId,AddToCart request) {
+        if(!cartService.addItemToCart(userId,request))
+        {
+            return ResponseEntity.badRequest().body("Product out of stock or User Not found Or Product not found");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
-    public ResponseEntity<CartDto> updateQuantity(String userId,String productId, int quantity) {
-        return ResponseEntity.ok(this.cartService.updateQuantity(userId,productId,quantity));
+    public ResponseEntity<Void> removeFromCart(String userId, String productId) {
+        boolean deleted = cartService.deleteItemFromCart(userId,productId);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @Override
-    public ResponseEntity<CartDto> getCart(String userId) {
+    public ResponseEntity<List<CartItemDto>> getCart(String userId) {
         return ResponseEntity.ok(this.cartService.getCart(userId));
+    }
+
+    @Override
+    public void clearCart(String userId) {
+         cartService.clearCart(userId);
     }
 }

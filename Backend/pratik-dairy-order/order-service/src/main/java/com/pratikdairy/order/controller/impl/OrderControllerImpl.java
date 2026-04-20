@@ -1,7 +1,7 @@
 package com.pratikdairy.order.controller.impl;
 
 import com.pratikdairy.order.controller.OrderController;
-import com.pratikdairy.order.dto.OrderDto;
+import com.pratikdairy.order.dto.OrderResponse;
 import com.pratikdairy.order.model.OrderStatus;
 import com.pratikdairy.order.service.OrderService;
 import org.springframework.context.annotation.Primary;
@@ -31,28 +31,18 @@ public class OrderControllerImpl implements OrderController {
 
 
     @Override
-    public ResponseEntity<OrderDto> create(String userId,OrderDto orderDto) {
-        orderDto.setCustomerId(userId);
-        return new ResponseEntity<>(this.orderService.create(orderDto), HttpStatus.CREATED);
+    public ResponseEntity<OrderResponse> create(String userId) {
+        return new ResponseEntity<>(this.orderService.create(userId), HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<List<OrderDto>> findAll() {
+    public ResponseEntity<List<OrderResponse>> findAll() {
         return ResponseEntity.ok(this.orderService.findAll());
     }
 
-    @Override
-    public ResponseEntity<List<OrderDto>> findByCustomerName(String customerName) {
-        return ResponseEntity.ok(this.orderService.findByCustomerId(customerName));
-    }
 
     @Override
-    public ResponseEntity<List<OrderDto>> findMyOrders(String userId) {
-        return ResponseEntity.ok(this.orderService.findByCustomerId(userId));
-    }
-
-    @Override
-    public ResponseEntity<OrderDto> updateStatus(String id, OrderStatus status) {
+    public ResponseEntity<OrderResponse> updateStatus(String id, OrderStatus status) {
         return ResponseEntity.ok(this.orderService.updateStatus(id,status));
     }
 

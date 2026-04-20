@@ -42,11 +42,12 @@ export class ProductService {
     const authToken = localStorage.getItem("AUTH_TOKEN");
     console.log(authToken);
     return this.http.post<Product>(url, formData,
-    {
-        headers:{
-            Authorization : `Bearer ${authToken}` 
-        }
-    });
+    // {
+    //     headers:{
+    //         Authorization : `Bearer ${authToken}` 
+    //     }
+    // }
+    );
   }
 
   /**
