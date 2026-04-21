@@ -9,10 +9,6 @@ import com.pratikdairy.order.model.OrderItems;
 import com.pratikdairy.order.model.OrderStatus;
 import com.pratikdairy.order.repository.OrderRepository;
 import com.pratikdairy.order.service.OrderService;
-import com.pratikdairy.parent.utility.MapperUtility;
-import com.pratikdairy.user.controller.UserController;
-import com.pratikdairy.user.dto.UserDto;
-import com.pratikdairy.user.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,7 +23,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final CartController cartController;
-    private final UserController userController;
 
 
 
@@ -35,10 +30,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponse create(String userId) {
         log.info("Inside @class OrderServiceImpl @method create @Param userId :{}",userId);
         //validate for cart item
-//        List<CartItemDto> cartItems = cartController.getCart(userId).getBody();
-
         List<CartItemDto> cartItems = cartController.getCart(userId).getBody();
-
         if(cartItems.isEmpty())
         {
            throw new NullPointerException("Cart item is empty");
