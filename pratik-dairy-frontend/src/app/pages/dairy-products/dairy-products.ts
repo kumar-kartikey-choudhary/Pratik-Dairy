@@ -1,49 +1,4 @@
 
-//   {
-//     name: 'Misthi Dahi (Curd)',
-//     description: 'Thick Probiotic Curd. Naturally fermented to achieve a thick, smooth, and cooling consistency. Probiotic-rich and essential for raitas, lassi, or enjoying plain.',
-//     price: '₹ 100',
-//     unit: 'per Kg',
-//     imagePath: 'assets/images/dairy/sweet-curd.jpg'
-//   },
-//   {
-//     name: 'Pure Buffalo Ghee',
-//     description: 'Dense, White, High-Heat Ghee. Prepared exclusively from Buffalo\'s milk. Known for its higher fat content, resulting in a denser, whiter, and highly stable ghee, ideal for deep frying and rich sweets.',
-//     price: '₹ 750',
-//     unit: 'per Kg',
-//     imagePath: 'assets/images/dairy/bghee.jpg'
-//   },
-//   {
-//     name: 'Cheese',
-//     description: 'Soft, Versatile Processing Cheese. High-quality, smooth cheese block suitable for baking, grilling, or slicing. A great source of protein for quick snacks.',
-//     price: '₹ 700',
-//     unit: 'per kg',
-//     imagePath: 'assets/images/dairy/cheese.jpg'
-//   },
-//   {
-//     name: 'Butter',
-//     description: 'Freshly Churned Salted Butter. Creamy, rich dairy butter with a classic salted flavor. Excellent for spreading, baking, and enhancing the taste of daily meals.',
-//     price: '₹ 600',
-//     unit: 'per Kg',
-//     imagePath: 'assets/images/dairy/butter.jpg'
-//   },
-//   {
-//     name: 'Namkeen Chhach',
-//     description: 'Spicy, Refreshing Buttermilk. Thin, spiced buttermilk seasoned with mint, ginger, green chili, and salt. A perfect digestive and cooling beverage.',
-//     price: '₹ 80',
-//     unit: 'per liter',
-//     imagePath: 'assets/images/dairy/chhach.jpg'
-//   },
-//   {
-//     name: 'Lassi',
-//     description: 'Traditional Sweet Lassi. Thick, churned yogurt drink sweetened to perfection, often topped with cream. A rich, classic beverage for instant refreshment.',
-//     price: '₹ 30',
-//     unit: 'per unit', // Changed from Kg for better accuracy
-//     imagePath: 'assets/images/dairy/lassi.jpg'
-//   },
-//   
-
-
 // src/app/pages/dairy-products/dairy-products.component.ts
 
 import { Component, OnInit } from '@angular/core'; // <-- Add OnInit
@@ -52,6 +7,7 @@ import { NgFor } from '@angular/common'; // <-- Needed for *ngFor
 import { ProductService } from '../../service/product/product-service'; // <-- Import ProductService
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'; // <-- Necessary for Base64 images
 import { FormsModule } from '@angular/forms'; // <-- Needed for cart logic (optional but good practice)
+import { CartService } from '../../service/cart/CartService';
 
 // Revised interface to match API data structure and allow sanitized URLs
 interface DairyProduct {
@@ -71,7 +27,8 @@ interface DairyProduct {
     // Add required imports
     imports: [RouterLink, FormsModule] 
 })
-export class DairyProducts implements OnInit { // <-- Implement OnInit
+export class DairyProducts implements OnInit {
+[x: string]: any; // <-- Implement OnInit
 
     // Component properties
     dairyProducts: DairyProduct[] = [];
@@ -79,18 +36,34 @@ export class DairyProducts implements OnInit { // <-- Implement OnInit
     
     // NOTE: For cart logic, product ID must be used. Initializing cartState.
     cartState: { [productId: number]: number } = {};
+    loadingState: { [productId: number]: boolean } = {};
 
     // Inject ProductService and DomSanitizer
     constructor(
         private productService: ProductService,
+        private cartService: CartService,
         private sanitizer: DomSanitizer // Required for handling Base64 images
     ) {}
 
     ngOnInit(): void {
         this.loadDairyProducts();
+        this.syncCartFromBackend();
     }
 
     // --- Data Loading and Mapping ---
+
+    // Fetch existing cart so quantities are correct on page load
+    syncCartFromBackend(): void {
+        this.cartService.getCart().subscribe({
+            next: (cart: any) => {
+                const items: any[] = cart?.items || cart || [];
+                items.forEach((item: any) => {
+                    this.cartState[item.productId] = item.quantity;
+                });
+            },
+            error: (err) => console.error('Could not load cart:', err)
+        });
+    }
 
     /** Fetches products from API, filters by 'Dairy', and maps data. */
     loadDairyProducts(): void {
@@ -152,8 +125,42 @@ export class DairyProducts implements OnInit { // <-- Implement OnInit
 
     // 3. Adds the item to the cart (sets quantity to 1)
     addToCart(productId: number): void {
-        this.cartState[productId] = 1;
-        console.log(`Product ${productId} added to cart!`);
+        this.loadingState[productId] = true;
+        this.cartService.addItemToCart(String(productId), 1).subscribe({
+            next: () => {
+                this.cartState[productId] = 1;
+                this.loadingState[productId] = false;
+            },
+            error: (err) => {
+                console.error('Add to cart failed:', err);
+                this.loadingState[productId] = false;
+            }
+        });
+    }
+
+    // Increase quantity
+    increment(productId: number): void {
+        const newQty = (this.cartState[productId] || 0) + 1;
+        this.cartService.updateQuantity(String(productId), newQty).subscribe({
+            next: () => this.cartState[productId] = newQty,
+            error: (err) => console.error('Update failed:', err)
+        });
+    }
+
+    // Decrease quantity — removes item when reaching 0
+    decrement(productId: number): void {
+        const newQty = (this.cartState[productId] || 0) - 1;
+        if (newQty <= 0) {
+            this.cartService.removeItem(String(productId)).subscribe({
+                next: () => delete this.cartState[productId],
+                error: (err) => console.error('Remove failed:', err)
+            });
+        } else {
+            this.cartService.updateQuantity(String(productId), newQty).subscribe({
+                next: () => this.cartState[productId] = newQty,
+                error: (err) => console.error('Update failed:', err)
+            });
+        }
     }
 
     // 4. Handles quantity changes (+ / -)

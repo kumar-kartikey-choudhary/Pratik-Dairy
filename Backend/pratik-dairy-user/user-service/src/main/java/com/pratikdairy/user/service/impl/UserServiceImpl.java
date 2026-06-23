@@ -170,6 +170,7 @@ public class UserServiceImpl implements UserService {
             log.info("role :{}",userRole);
             String jwtToken = jwtUtils.generateToken(username, userRole);
             log.info("User {} logged in successfully.", loginRequest.getUsername());
+            log.info(jwtToken);
             return LoginResponse.builder()
                     .username(userDetails.getUsername())
                     .role(userRole)

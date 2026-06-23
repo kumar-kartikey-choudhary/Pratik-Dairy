@@ -15,11 +15,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.pratikdairy.order</groupId>
-            <artifactId>order-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>com.pratikdairy.user</groupId>
             <artifactId>user-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>

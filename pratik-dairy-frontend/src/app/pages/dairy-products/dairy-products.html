@@ -1,5 +1,5 @@
-<main class="dairy-page-container">
-  
+<!-- <main class="dairy-page-container">
+
   <section class="page-header-banner">
     <div class="header-overlay"></div>
     <div class="header-content">
@@ -10,22 +10,102 @@
 
   <section class="product-listing-section">
     <h2>Available Today</h2>
-    
+
     <div class="product-grid">
       @for (product of dairyProducts; track product.name) {
-        <div class="product-card">
-          <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
-          
-          <div class="card-body">
-            <h3>{{ product.name }}</h3>
-            <p class="description">{{ product.description }}</p>
-            
-            <div class="price-actions">
-              <span class="price-tag">{{ product.price }} / {{ product.unit }}</span>
-              <button class="btn-add-to-cart">Add to Cart</button>
+      <div class="product-card">
+        <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+
+        <div class="card-body">
+          <h3>{{ product.name }}</h3>
+          <p class="description">{{ product.description }}</p>
+
+          <div class="price-actions">
+            <span class="price-tag">{{ product.price }} / {{ product.unit }}</span>
+            @if (!isInCart(product.id)) {
+            <button class="btn-add-to-cart" [disabled]="loadingState[product.id]" (click)="addToCart(product.id)">
+              {{ loadingState[product.id] ? 'Adding...' : 'Add to Cart' }}
+            </button>
+            }
+
+            IN cart → show quantity controls
+            @if (isInCart(product.id)) {
+            <div class="quantity-controls">
+              <button class="btn-qty" (click)="decrement(product.id)">−</button>
+              <span class="qty-display">{{ getQuantity(product.id) }}</span>
+              <button class="btn-qty" (click)="increment(product.id)">+</button>
             </div>
+            }
           </div>
         </div>
+      </div>
+      }
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Looking for Ghee or Festive Sweets?</h2>
+    <div class="cta-actions">
+      <a routerLink="/products/sweets" class="btn btn-primary">View Sweets Menu 🍬</a>
+      <a routerLink="/contact" class="btn btn-secondary">Bulk Order Inquiry</a>
+    </div>
+  </section>
+
+</main> -->
+
+
+<main class="dairy-page-container">
+
+  <section class="page-header-banner">
+    <div class="header-overlay"></div>
+    <div class="header-content">
+      <h1>Our Dairy Products</h1>
+      <p>Pure Milk. Pure Ingredients. Pure Trust. Taste the freshness delivered daily.</p>
+    </div>
+  </section>
+
+  <section class="product-listing-section">
+    <h2>Available Today</h2>
+
+    <div class="product-grid">
+      @for (product of dairyProducts; track product.id) {
+      <div class="product-card">
+        <img [src]="product.imageUrl" [alt]="product.name" class="product-image">
+
+        <div class="card-body">
+          <h3>{{ product.name }}</h3>
+          <p class="description">{{ product.description }}</p>
+
+          <div class="price-actions">
+            <span class="price-tag">{{ product.price }} / {{ product.unit }}</span>
+
+            <!-- Cart mein NAHI hai → Add to Cart button dikhao -->
+            @if (!isInCart(product.id)) {
+            <button
+              class="btn-add-to-cart"
+              [class.loading]="loadingState[product.id]"
+              [disabled]="loadingState[product.id]"
+              (click)="addToCart(product.id)">
+              @if (loadingState[product.id]) {
+                <span class="spinner"></span> Adding...
+              } @else {
+                🛒 Add to Cart
+              }
+            </button>
+            }
+
+            <!-- Cart mein HAI → Quantity controls dikhao (image jaisi) -->
+            @if (isInCart(product.id)) {
+            <div class="quantity-controls" [class.animate-in]="loadingState[product.id]">
+              <button class="btn-qty btn-minus" (click)="decrement(product.id)">−</button>
+              <span class="qty-display">{{ getQuantity(product.id) }}</span>
+              <button class="btn-qty btn-plus" (click)="increment(product.id)">+</button>
+            </div>
+            }
+
+          </div>
+        </div>
+      </div>
       }
     </div>
   </section>

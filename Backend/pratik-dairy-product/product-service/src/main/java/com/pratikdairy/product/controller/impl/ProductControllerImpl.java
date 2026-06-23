@@ -67,11 +67,11 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public ResponseEntity<ProductDto> update(String userRole,String id, ProductDto productDto) {
-        if(!userRole.equals("ADMIN"))
-        {
-            return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+    public ResponseEntity<ProductDto> update(String id, ProductDto productDto) {
+//        if(!userRole.equals("ADMIN"))
+//        {
+//            return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
         return ResponseEntity.ok(this.productService.update(productDto,id));
     }
 

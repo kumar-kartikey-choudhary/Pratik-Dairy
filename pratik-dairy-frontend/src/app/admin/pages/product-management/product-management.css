@@ -116,7 +116,7 @@
     border-radius: 4px;
     cursor: pointer;
 }
-.btn-edit:hover { background: var(--admin-primary); color: white; }
+.btn-edit:hover { background: var(--admin-primary); color: rgb(204, 16, 16); }
 
 /* --- PRODUCT FORM PANEL (Column B) --- */
 .product-form-panel {

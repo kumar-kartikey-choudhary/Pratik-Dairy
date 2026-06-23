@@ -42,7 +42,7 @@ public interface ProductController {
 
     @PatchMapping(path = "admin/updateProduct/{id}")
     ResponseEntity<ProductDto> update(
-            @RequestHeader("X-Auth-Role") String userRole,
+//            @RequestHeader("X-Auth-Role") String userRole,
             @PathVariable(name = "id") String id ,@RequestPart ProductDto productDto );
 
 

@@ -19,8 +19,8 @@ public class CartItem extends BaseEntity {
     @Column(name = "PRODUCT_ID", nullable = false)
     private String productId;
 
-    @Column(name = "USER_ID", nullable = false)
-    private String userId;
+    @Column(name = "USER_NAME", nullable = false)
+    private String username;
 
     @Column(name = "QUANTITY" , nullable = false)
     private int quantity;

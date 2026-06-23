@@ -1,18 +1,15 @@
-// src/app/app.component.ts
-
 import { Component, signal } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router'; // <-- IMPORT Router HERE
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { Header } from "./header/header";
 import { Footer } from "./footer/footer";
-// Import the Auth service to handle logout logic in the template (optional, but good practice)
 import { AuthService } from './service/login/auth-service';
 import { AdminHeader } from "./admin/pages/admin-header/admin-header"; 
 import { CommonModule } from '@angular/common';
-// import { AppRoutingModule } from './app.routes';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Header, Footer, AdminHeader,CommonModule],
+  imports: [RouterOutlet, Header, Footer, AdminHeader, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css',
   standalone: true
@@ -20,22 +17,32 @@ import { CommonModule } from '@angular/common';
 export class App {
   protected readonly title = signal('pratik-dairy-frontend');
 
- constructor(public router: Router, private authService: AuthService) { } 
-    
-    // Check if the current route is the public login page
-    isAuthRoute(): boolean {
-        // Check if the URL starts with /login or /signup
-        return this.router.url.includes('/login') || this.router.url.includes('/signup'); 
-    }
+  isAdminRoute = false;
+  isAuthRoute = false;
 
-    // Check if the user is logged in AND is an admin
-    isAdminLoggedIn(): boolean {
-        // This relies on the JWT having been set in local storage
-        return this.authService.isLoggedIn() && this.authService.getUserRole() === 'ADMIN'; 
-    }
-    
-    // Check if the user is a standard customer/user
-    isCustomerLoggedIn(): boolean {
-        return this.authService.isLoggedIn() && this.authService.getUserRole() === 'CUSTOMER'; 
-    }
+  constructor(public router: Router, private authService: AuthService) {
+    // URL change hone par har baar check karo
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const url = event.urlAfterRedirects;
+        this.isAdminRoute = url.startsWith('/admin');
+        this.isAuthRoute = url === '/login' || url === '/signup';
+      });
+  }
+
+  // Sirf /admin/* routes pe AND admin logged in ho
+  showAdminHeader(): boolean {
+    return this.isAdminRoute && this.authService.isLoggedIn() 
+           && this.authService.getUserRole() === 'ADMIN';
+  }
+
+  // Customer header: na admin route, na login/signup page
+  showCustomerHeader(): boolean {
+    return !this.isAdminRoute && !this.isAuthRoute;
+  }
+
+  showFooter(): boolean {
+    return !this.isAdminRoute && !this.isAuthRoute;
+  }
 }

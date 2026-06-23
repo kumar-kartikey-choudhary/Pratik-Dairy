@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 public class CartItemDto  extends BaseDto {
 
-    private String userId;
+    private String username;
     private String productId;
     private int quantity;
     private BigDecimal pricePerUnit;

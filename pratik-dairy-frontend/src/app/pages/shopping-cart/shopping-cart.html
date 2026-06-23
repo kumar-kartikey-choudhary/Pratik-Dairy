@@ -1,4 +1,4 @@
-<main class="cart-page-container">
+<!-- <main class="cart-page-container">
     
     <section class="page-header-banner">
         <h1>Your Shopping Cart</h1>
@@ -64,4 +64,76 @@
             <button class="btn-continue-shopping" routerLink="/products">Continue Shopping</button>
         </aside>
     </div>
-</main>
+</main> -->
+
+
+
+<div class="cart-container">
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Cart load ho raha hai...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMsg && !isLoading" class="error-msg">
+    {{ errorMsg }}
+  </div>
+
+  <!-- Empty Cart -->
+  <div *ngIf="!isLoading && cartItems.length === 0 && !errorMsg" class="empty-cart">
+    <i class="ti ti-shopping-cart-off"></i>
+    <h3>Aapka cart khali hai</h3>
+    <a routerLink="/products">Products dekhein</a>
+  </div>
+
+  <!-- Cart Items -->
+  <div *ngIf="!isLoading && cartItems.length > 0" class="cart-content">
+
+    <h2 class="cart-title">Mera Cart ({{ totalItems }} items)</h2>
+
+    <div class="cart-items">
+      <div *ngFor="let item of cartItems" class="cart-item">
+
+        <div class="item-info">
+          <p class="product-id">Product: {{ item.productId }}</p>
+          <p class="price">₹{{ item.pricePerUnit }} / unit</p>
+        </div>
+
+        <div class="quantity-controls">
+          <button (click)="decreaseQuantity(item)" class="qty-btn">−</button>
+          <span class="qty">{{ item.quantity }}</span>
+          <button (click)="increaseQuantity(item)" class="qty-btn">+</button>
+        </div>
+
+        <div class="item-subtotal">
+          <p>₹{{ item.subtotal }}</p>
+        </div>
+
+        <button (click)="removeItem(item.productId)" class="remove-btn">
+          <i class="ti ti-trash"></i>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+      <div class="summary-row">
+        <span>Subtotal ({{ totalItems }} items)</span>
+        <span>₹{{ totalAmount }}</span>
+      </div>
+      <div class="summary-row">
+        <span>Delivery</span>
+        <span class="free">FREE</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <span>₹{{ totalAmount }}</span>
+      </div>
+      <button class="checkout-btn">Checkout karo</button>
+    </div>
+
+  </div>
+</div>

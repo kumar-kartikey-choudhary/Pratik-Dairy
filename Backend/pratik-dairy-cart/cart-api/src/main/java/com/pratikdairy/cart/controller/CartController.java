@@ -14,27 +14,27 @@ import java.util.List;
 @FeignClient(name = "PRATIK-DAIRY-CART")
 public interface CartController {
 
-    String USER_ID_HEADER = "X-Auth-UserId";
+    String USER_NAME_HEADER = "X-Auth-Username";
 
     @PostMapping(path = "items")
     ResponseEntity<String> addItemToCart(
-            @RequestHeader(USER_ID_HEADER) String userId,
+            @RequestHeader(USER_NAME_HEADER) String username,
             @Valid @RequestBody AddToCart request
     );
 
-//    @PutMapping(path = "items/{productId}")
-//    ResponseEntity<CartDto> updateQuantity(
-//            @RequestHeader(USER_ID_HEADER) String userId,
-//            @PathVariable String productId,
-//            @RequestParam int quantity
-//    );
-//
+    @PatchMapping(path = "items/{productId}")
+    ResponseEntity<CartItemDto> updateQuantity(
+            @RequestHeader(USER_NAME_HEADER) String username,
+            @PathVariable String productId,
+            @RequestParam int quantity
+    );
+
     @GetMapping
     ResponseEntity<List<CartItemDto>> getCart(
-           @RequestHeader(USER_ID_HEADER) String userId);
+           @RequestHeader(USER_NAME_HEADER) String username);
 
     @DeleteMapping(path = "items/{productId}")
-    ResponseEntity<Void> removeFromCart(@RequestHeader(USER_ID_HEADER) String userId, @PathVariable String productId);
+    ResponseEntity<Void> removeFromCart(@RequestHeader(USER_NAME_HEADER) String username, @PathVariable String productId);
 
-    void clearCart(String userId);
+    void clearCart(@RequestHeader(USER_NAME_HEADER) String username);
 }

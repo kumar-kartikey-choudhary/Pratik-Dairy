@@ -112,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
- @Override
+    @Override
     @Transactional
     public ProductDto update(ProductDto productDto, String id, MultipartFile imageFile) {
         log.info("Inside @class ProductServiceImpl @method update @Param id :{} , productDto :{} , imageFile :{}", id, productDto , imageFile);
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
             product.setManufactureDate(productDto.getManufactureDate());
             product.setExpiryDate(productDto.getExpiryDate());
 
-            if(!imageFile.isEmpty())
+            if(imageFile != null && !imageFile.isEmpty())
             {
                 product.setImageName(imageFile.getOriginalFilename());
                 product.setImageType(imageFile.getContentType());
