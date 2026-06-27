@@ -34,9 +34,8 @@ public class CartControllerImpl implements CartController {
 
     @Override
     public ResponseEntity<String> addItemToCart(
-            @RequestHeader(USER_NAME_HEADER) String username,
             @Valid @RequestBody AddToCart request) {
-        if (!cartService.addItemToCart(username, request)) {
+        if (!cartService.addItemToCart(request)) {
             return ResponseEntity.badRequest()
                     .body("Product out of stock or not found");
         }
@@ -45,10 +44,9 @@ public class CartControllerImpl implements CartController {
 
     @Override
     public ResponseEntity<CartItemDto> updateQuantity(
-            @RequestHeader(USER_NAME_HEADER) String username,
             @PathVariable String productId,
             @RequestParam int quantity) {
-        CartItemDto updated = cartService.updateQuantity(username, productId, quantity);
+        CartItemDto updated = cartService.updateQuantity(productId, quantity);
         if (updated == null) {
             return ResponseEntity.notFound().build();
         }
@@ -56,18 +54,18 @@ public class CartControllerImpl implements CartController {
     }
 
     @Override
-    public ResponseEntity<Void> removeFromCart(String username, String productId) {
-        boolean deleted = cartService.deleteItemFromCart(username,productId);
+    public ResponseEntity<Void> removeFromCart(String productId) {
+        boolean deleted = cartService.deleteItemFromCart(productId);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @Override
-    public ResponseEntity<List<CartItemDto>> getCart(String username) {
-        return ResponseEntity.ok(this.cartService.getCart(username));
+    public ResponseEntity<List<CartItemDto>> getCart() {
+        return ResponseEntity.ok(this.cartService.getCart());
     }
 
     @Override
-    public void clearCart(String username) {
-         cartService.clearCart(username);
+    public void clearCart() {
+         cartService.clearCart();
     }
 }

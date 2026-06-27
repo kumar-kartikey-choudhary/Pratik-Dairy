@@ -9,13 +9,13 @@ import java.util.List;
 public interface CartService {
 
 
-    boolean addItemToCart(String username, AddToCart request);
+    boolean addItemToCart( AddToCart request);
 
-    CartItemDto updateQuantity(String username, String productId, int quantity);
+    CartItemDto updateQuantity( String productId, int quantity);
 
-    List<CartItemDto> getCart(String username);
+    List<CartItemDto> getCart();
 
-    void clearCart(String userId);
+    void clearCart();
 
-    boolean deleteItemFromCart(String username, String productId);
+    boolean deleteItemFromCart(String productId);
 }

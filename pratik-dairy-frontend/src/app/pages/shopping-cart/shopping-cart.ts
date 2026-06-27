@@ -112,10 +112,12 @@ export class ShoppingCart implements OnInit {
     this.isLoading = true;
     this.cartService.getCart().subscribe({
       next: (items) => {
+        console.log('Cart response:', items);
         this.cartItems = items;
         this.isLoading = false;
       },
       error: (err) => {
+        console.error('Cart error:', err); 
         this.errorMsg = 'Cart load nahi ho saka. Dobara try karein.';
         this.isLoading = false;
       }

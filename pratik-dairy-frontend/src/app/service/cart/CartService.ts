@@ -41,7 +41,7 @@
 
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient  } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface CartItemDto {
@@ -65,39 +65,24 @@ export class CartService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const username = localStorage.getItem('USERNAME') || '';
-    return new HttpHeaders({
-      'X-Auth-Username': username
-    });
-  }
 
   getCart(): Observable<CartItemDto[]> {
-    return this.http.get<CartItemDto[]>(this.baseUrl, 
-      { headers: this.getHeaders() }
-    );
+    return this.http.get<CartItemDto[]>(this.baseUrl);
   }
 
   addItemToCart(productId: string, quantity: number): Observable<any> {
     const payload: AddToCart = { productId, quantity };
-    return this.http.post<any>(`${this.baseUrl}/items`, payload, 
-      { headers: this.getHeaders() }
-    );
+    return this.http.post<any>(`${this.baseUrl}/items`, payload);
   }
 
   updateQuantity(productId: string, newQty: number): Observable<any> {
     const payload = { productId, quantity: newQty };
     return this.http.patch<any>(
-      `${this.baseUrl}/items/${productId}`,
-      payload,
-      { headers: this.getHeaders() }
-    );
+      `${this.baseUrl}/items/${productId}`, payload);
   }
 
   removeItem(productId: string): Observable<void> {
     return this.http.delete<void>(
-      `${this.baseUrl}/items/${productId}`,
-      { headers: this.getHeaders() }
-    );
+      `${this.baseUrl}/items/${productId}`);
   }
 }

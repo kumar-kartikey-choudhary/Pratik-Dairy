@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false)
+@FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false, path = "products")
 public interface ProductController {
 
     @PostMapping(path = "addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

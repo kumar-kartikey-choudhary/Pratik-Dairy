@@ -10,11 +10,14 @@ import com.pratikdairy.product.controller.ProductController;
 import com.pratikdairy.product.dto.ProductDto;
 import com.pratikdairy.product.model.Product;
 import com.pratikdairy.user.controller.UserController;
+import com.pratikdairy.user.jwt.JwtAuthFilter;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,11 +40,20 @@ public class CartServiceImpl implements CartService {
         this.controller = controller;
     }
 
+    private String getUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RuntimeException("User not authenticated");
+        }
+        return auth.getName();
+    }
+
 
     @Override
     @Transactional
-    public boolean addItemToCart(String username, AddToCart request) {
+    public boolean addItemToCart(AddToCart request) {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
+        String username = this.getUsername();
         ResponseEntity<ProductDto> response = controller.find(request.getProductId());
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
             throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
@@ -79,8 +91,9 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartItemDto updateQuantity(String username, String productId, int quantity) {
-        log.info("updateQuantity: userId={}, productId={}, quantity={}", username, productId, quantity);
+    public CartItemDto updateQuantity(String productId, int quantity) {
+        String username = this.getUsername();
+        log.info("updateQuantity: username:{} productId={}, quantity={}", username, productId, quantity);
 
         if (quantity <= 0) {
             // CHANGED: quantity 0 ya negative ho to item remove kar do
@@ -127,10 +140,12 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public List<CartItemDto> getCart(String username) {
+    public List<CartItemDto> getCart() {
         log.info("Inside @class CartServiceImpl @method getCart");
+        String username = this.getUsername();
          return cartItemRepository.findByUsername(username).stream().map(item -> {
                         try {
+                            log.info("Mapping CartItem to CartItemDto :");
                             return MapperUtility.sourceToTarget(item, CartItemDto.class);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -139,16 +154,18 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void clearCart(String username) {
+    public void clearCart() {
         log.info("Inside @class CartServiceImpl @method clearCart ");
+        String username = this.getUsername();
         cartItemRepository.deleteByUsername(username);
     }
 
 
     @Transactional
     @Override
-    public boolean deleteItemFromCart(String username, String productId) {
+    public boolean deleteItemFromCart( String productId) {
         log.info("Inside @class CartServiceImpl @method deleteItemFromCart ");
+        String username = this.getUsername();
         if(!productId.isEmpty() && !username.isEmpty())
         {
             cartItemRepository.deleteByUsernameAndProductId(username, productId);

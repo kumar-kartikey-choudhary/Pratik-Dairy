@@ -3,12 +3,14 @@ import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './interceptor/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
-      withFetch()
+      withFetch(),
+      withInterceptors([authInterceptor])
     ),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
@@ -16,8 +18,7 @@ export const appConfig: ApplicationConfig = {
       
       // 2. CRITICAL FIX: Move scroll properties to withInMemoryScrolling
       withInMemoryScrolling({
-        scrollPositionRestoration: 'enabled', // <-- MOVED PROPERTY
-        // This is necessary if you want the user to be able to jump to fragments (e.g., /contact#details)
+        scrollPositionRestoration: 'enabled',
         anchorScrolling: 'enabled', 
       })
     ), provideClientHydration(withEventReplay())
