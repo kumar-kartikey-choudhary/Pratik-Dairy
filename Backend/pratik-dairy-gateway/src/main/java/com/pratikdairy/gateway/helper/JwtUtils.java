@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -15,14 +16,15 @@ import java.util.function.Function;
 @Slf4j
 public class JwtUtils {
 
-    private final String SECRET = "PratikDairyAndSweetsSecretKeyForWebsite";
+    @Value("${jwt.secret}")
+    private  String SECRET;
 
 
     private Key getSecretKey()
     {
-//        byte[] decode = Decoders.BASE64.decode(SECRET);
-//        return Keys.hmacShaKeyFor(decode);
-
+        if (SECRET == null || SECRET.length() < 32) {
+            throw new IllegalStateException("JWT secret must be at least 32 characters. Check jwt.secret in application.properties.");
+        }
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
@@ -47,13 +49,6 @@ public class JwtUtils {
 
     public boolean isTokenExpired(String token)
     {
-//        Date expiration = Jwts.parserBuilder()
-//                .setSigningKey(getSecretKey())
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody()
-//                .getExpiration();
-
         final Date expiration = this.extractClaim(token, Claims::getExpiration);
         return expiration.before(new Date());
     }
