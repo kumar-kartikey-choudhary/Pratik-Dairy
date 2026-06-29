@@ -129,8 +129,7 @@ public class CartServiceImpl implements CartService {
         cartItem.setPriceSnapshot(
                 product.getPrice().multiply(BigDecimal.valueOf(quantity))
         );
-        cartItemRepository.saveAndFlush(cartItem);
-
+        cartItem = cartItemRepository.saveAndFlush(cartItem);
         try {
             return MapperUtility.sourceToTarget(cartItem, CartItemDto.class);
         } catch (Exception e) {

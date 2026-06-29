@@ -6,6 +6,7 @@ import org.apache.http.Header;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false, path = "products")
 public interface ProductController {
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(path = "addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> create(
 //            @RequestHeader("X-Auth-Role") String userRole,
@@ -39,7 +41,7 @@ public interface ProductController {
     ResponseEntity<List<ProductDto>> searchProduct(@RequestParam String name);
 
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(path = "admin/updateProduct/{id}")
     ResponseEntity<ProductDto> update(
 //            @RequestHeader("X-Auth-Role") String userRole,
@@ -47,12 +49,14 @@ public interface ProductController {
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> update(@PathVariable(name = "id") String id ,@RequestPart ProductDto productDto ,  @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl);
 
 
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping(path = "admin/deleteProduct/{id}")
     void delete(@PathVariable(name = "id") String id);
 

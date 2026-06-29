@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "PRATIK-DAIRY-CART")
+@FeignClient(name = "PRATIK-DAIRY-CART", url = "carts" , primary = false)
 public interface CartController {
 
     String USER_NAME_HEADER = "X-Auth-Username";

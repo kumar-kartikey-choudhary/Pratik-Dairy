@@ -1,0 +1,57 @@
+<div class="account-container">
+
+  <div *ngIf="isLoading" class="loading-state">
+    <p>Profile load ho raha hai...</p>
+  </div>
+
+  <div *ngIf="errorMsg" class="error-msg">{{ errorMsg }}</div>
+  <div *ngIf="successMsg" class="success-msg">{{ successMsg }}</div>
+
+  <div *ngIf="!isLoading && profile" class="profile-card">
+    <h2>Mera Account</h2>
+
+    <div *ngIf="!isEditing" class="profile-view">
+      <div class="profile-row">
+        <span>Naam:</span>
+        <strong>{{ profile.firstName }} {{ profile.middleName }} {{ profile.lastName }}</strong>
+      </div>
+      <div class="profile-row">
+        <span>Username:</span>
+        <strong>{{ profile.username }}</strong>
+      </div>
+      <div class="profile-row">
+        <span>Email:</span>
+        <strong>{{ profile.email }}</strong>
+      </div>
+      <div class="profile-row">
+        <span>Role:</span>
+        <strong>{{ profile.role }}</strong>
+      </div>
+      <button class="btn-edit" (click)="startEdit()">Edit Profile</button>
+    </div>
+
+    <div *ngIf="isEditing" class="profile-edit">
+      <div class="form-group">
+        <label>First Name</label>
+        <input [(ngModel)]="editData.firstName" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Middle Name</label>
+        <input [(ngModel)]="editData.middleName" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input [(ngModel)]="editData.lastName" type="text" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input [(ngModel)]="editData.email" type="email" />
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" (click)="saveProfile()">Save</button>
+        <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -34,7 +34,7 @@ export class App {
   // Sirf /admin/* routes pe AND admin logged in ho
   showAdminHeader(): boolean {
     return this.isAdminRoute && this.authService.isLoggedIn() 
-           && this.authService.getUserRole() === 'ADMIN';
+           && this.authService.getUserRole() === 'ROLE_ADMIN';
   }
 
   // Customer header: na admin route, na login/signup page

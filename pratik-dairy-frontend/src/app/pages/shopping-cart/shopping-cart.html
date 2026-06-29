@@ -1,79 +1,9 @@
-<!-- <main class="cart-page-container">
-    
-    <section class="page-header-banner">
-        <h1>Your Shopping Cart</h1>
-        <p>{{ cartData.items.length }} items currently added.</p>
-    </section>
-
-    <div *ngIf="isLoading" class="loading-message">
-        <p>Loading your cart...</p>
-    </div>
-
-    <div *ngIf="!isLoading && cartData.items.length === 0" class="empty-cart-message">
-        <p>Your cart is empty. Time to add some delicious dairy!</p>
-        <button routerLink="/products" class="btn-primary">Browse Products</button>
-    </div>
-
-    <div *ngIf="!isLoading && cartData.items.length > 0" class="cart-content">
-        <div class="cart-items-section">
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                        <th>Subtotal</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let item of cartData.items">
-                        <td class="product-info">
-                            <span class="product-name">{{ item.productName }}</span>
-                        </td>
-                        <td class="price">₹{{ item.pricePerUnit | number:'1.2-2' }}</td>
-                        <td class="quantity-control">
-                            <button (click)="updateQuantity(item, item.quantity - 1)" [disabled]="item.quantity <= 1">-</button>
-                            <input type="number" [ngModel]="item.quantity" (ngModelChange)="updateQuantity(item, $event)" min="1">
-                            <button (click)="updateQuantity(item, item.quantity + 1)">+</button>
-                        </td>
-                        <td class="subtotal">₹{{ item.subtotal | number:'1.2-2' }}</td>
-                        <td class="action">
-                            <button class="btn-remove" (click)="removeItem(item)">Remove</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <aside class="cart-summary-section">
-            <h2>Order Summary</h2>
-            <div class="summary-row">
-                <span>Subtotal</span>
-                <span>₹{{ cartData.grandTotal | number:'1.2-2' }}</span>
-            </div>
-            <div class="summary-row">
-                <span>Shipping</span>
-                <span>Calculated at checkout</span>
-            </div>
-            <div class="summary-row total">
-                <span>Total</span>
-                <span>₹{{ cartData.grandTotal | number:'1.2-2' }}</span>
-            </div>
-            <button class="btn-checkout" (click)="checkout()">Proceed to Checkout</button>
-            <button class="btn-continue-shopping" routerLink="/products">Continue Shopping</button>
-        </aside>
-    </div>
-</main> -->
-
-
-
 <div class="cart-container">
 
   <!-- Loading -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
-    <p>Cart load ho raha hai...</p>
+    <p>loading ...</p>
   </div>
 
   <!-- Error -->
@@ -85,19 +15,19 @@
   <div *ngIf="!isLoading && cartItems.length === 0 && !errorMsg" class="empty-cart">
     <i class="ti ti-shopping-cart-off"></i>
     <h3>Aapka cart khali hai</h3>
-    <a routerLink="/products">Products dekhein</a>
+    <a routerLink="/products">Add Products</a>
   </div>
 
   <!-- Cart Items -->
   <div *ngIf="!isLoading && cartItems.length > 0" class="cart-content">
 
-    <h2 class="cart-title">Mera Cart ({{ totalItems }} items)</h2>
+    <h2 class="cart-title">My Cart ({{ totalItems }} items)</h2>
 
     <div class="cart-items">
       <div *ngFor="let item of cartItems" class="cart-item">
 
         <div class="item-info">
-          <p class="product-id">Product: {{ item.productId }}</p>
+          <p class="product-name">Product: {{ item.productId }}</p>
           <p class="price">₹{{ item.pricePerUnit }} / unit</p>
         </div>
 

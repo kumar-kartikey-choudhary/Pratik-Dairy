@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class ProductServiceImpl implements ProductService {
+public class    ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
@@ -32,6 +32,10 @@ public class ProductServiceImpl implements ProductService {
         log.info("Inside @class ProductServiceImpl @method create @Param productDto : {}", productDto);
         if (productDto == null) {
             throw new RuntimeException("Product Object can not be null");
+        }
+        if(imageFile == null || imageFile.isEmpty())
+        {
+            throw new RuntimeException("Product image is required");
         }
         try {
             productDto.setId(null);
@@ -93,13 +97,13 @@ public class ProductServiceImpl implements ProductService {
         }
         try {
             Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-
+            product.setProductName(productDto.getProductName());
+            product.setDescription(productDto.getDescription());
             product.setPrice(productDto.getPrice());
             product.setAvailable(productDto.isAvailable());
             product.setStockUnit(productDto.getStockUnit());
             product.setStockQuantity(productDto.getStockQuantity());
             product.setManufactureDate(productDto.getManufactureDate());
-            product.setExpiryDate(productDto.getExpiryDate());
             product.setExpiryDate(productDto.getExpiryDate());
 
             Product updated = productRepository.saveAndFlush(product);
@@ -122,6 +126,8 @@ public class ProductServiceImpl implements ProductService {
         try {
             Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
+            product.setProductName(productDto.getProductName());
+            product.setDescription(productDto.getDescription());
             product.setPrice(productDto.getPrice());
             product.setAvailable(productDto.isAvailable());
             product.setStockUnit(productDto.getStockUnit());
@@ -178,9 +184,9 @@ public class ProductServiceImpl implements ProductService {
        log.info("Inside @class ProductServiceImpl @method searchProduct @Param name :{}", name);
        if(name == null || name.isEmpty())
        {
-           this.findAll();
+           return this.findAll();
        }
-        List<Product> products = this.productRepository.findByProductNameContainingIgnoreCase(name);
+       List<Product> products = this.productRepository.findByProductNameContainingIgnoreCase(name);
 
        return products.stream().map(product -> {
            try {

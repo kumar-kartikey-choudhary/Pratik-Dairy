@@ -35,7 +35,7 @@ export class AuthService {
   // CRITICAL FIX: Implementation of the isAdmin check
   isAdmin(): boolean {
     const role = this.getUserRole();
-    return role === 'ADMIN'; 
+    return role === 'ROLE_ADMIN'; 
   }
 
   /**
@@ -51,14 +51,14 @@ export class AuthService {
     );
   }
 
-  /**
-   * Saves the JWT and user data to browser storage upon successful login.
-   */
+  // ✅ FIX: localStorage → sessionStorage
+  // sessionStorage tab band hone pe clear ho jaata hai — localStorage ki tarah persist nahi karta
+  // XSS attack mein window.open se dusre tab mein token nahi milega
   private saveAuthData(response: JwtResponse): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(this.TOKEN_KEY, response.token);
-      localStorage.setItem(this.USER_ROLE_KEY, response.role);
-      localStorage.setItem(this.USERNAME_KEY, response.username);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(this.TOKEN_KEY,     response.token);
+      sessionStorage.setItem(this.USER_ROLE_KEY, response.role);
+      sessionStorage.setItem(this.USERNAME_KEY,  response.username);
     }
   }
   
@@ -69,9 +69,9 @@ export class AuthService {
     const role = this.getUserRole();
     console.log(role)
 
-    if (role === 'ADMIN') {
+    if (role === 'ROLE_ADMIN') {
       this.router.navigate(['/admin/dashboard']); 
-    } else if (role === 'CUSTOMER') {
+    } else if (role === 'ROLE_CUSTOMER') {
       this.router.navigate(['/home']); 
     } else {
       console.log("error")
@@ -82,23 +82,23 @@ export class AuthService {
 
   // ... (logout, isLoggedIn, getUserRole, getUserInitial methods remain the same) ...
   logout(): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(this.TOKEN_KEY);
-      localStorage.removeItem(this.USER_ROLE_KEY);
-      localStorage.removeItem(this.USERNAME_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(this.TOKEN_KEY);
+      sessionStorage.removeItem(this.USER_ROLE_KEY);
+      sessionStorage.removeItem(this.USERNAME_KEY);
     }
   }
 
   isLoggedIn(): boolean {
-    if (typeof localStorage !== 'undefined') {
-      return !!localStorage.getItem(this.TOKEN_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      return !!sessionStorage.getItem(this.TOKEN_KEY);
     }
     return false;
   }
 
   getUserRole(): string | null {
-    if (typeof localStorage !== 'undefined') {
-      return localStorage.getItem(this.USER_ROLE_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      return sessionStorage.getItem(this.USER_ROLE_KEY);
     }
     return null;
   }
@@ -107,10 +107,17 @@ export class AuthService {
     if (!this.isLoggedIn()) {
       return '👤'; 
     }
-    if (typeof localStorage !== 'undefined') {
-      const username = localStorage.getItem(this.USERNAME_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      const username = sessionStorage.getItem(this.USERNAME_KEY);
       return username ? username.charAt(0).toUpperCase() : 'U';
     }
     return 'U';
   }
+
+  getUsername(): string | null {
+  if (typeof sessionStorage !== 'undefined') {
+    return sessionStorage.getItem(this.USERNAME_KEY);
+  }
+  return null;
+}
 }

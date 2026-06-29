@@ -1,5 +1,7 @@
 package com.pratikdairy.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pratikdairy.parent.base.dto.BaseDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,5 +16,7 @@ public class UserDto extends BaseDto {
     private String username;
     private String email;
     private String role;
+    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }

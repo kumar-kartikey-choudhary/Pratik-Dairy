@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,6 +53,25 @@ public class UserControllerImpl implements UserController {
 
     @Override
     public ResponseEntity<UserDto> update(UserDto userDto, String id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String loggedInUsername = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equalsIgnoreCase("ADMIN"));
+        // Find karo ki {id} waala user kaun hai
+        UserDto targetUser;
+        try {
+            targetUser = this.userService.find(id);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Admin ya sirf apna account — dono allow hain
+        if (!isAdmin && !loggedInUsername.equals(targetUser.getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(this.userService.update(userDto, id));
     }
 

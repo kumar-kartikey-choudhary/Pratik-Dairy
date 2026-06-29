@@ -9,7 +9,6 @@ interface SignUp{
   lastName: string;
   username: string;
   email: string;
-  role: string;
   password: string;
 }
 
@@ -21,7 +20,6 @@ interface UserDto{
   username: string;
   email: string;
   role: string;
-
 }
 
 @Injectable({

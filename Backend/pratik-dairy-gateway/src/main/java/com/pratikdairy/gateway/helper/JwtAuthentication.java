@@ -25,7 +25,8 @@ public class JwtAuthentication implements GatewayFilter {
     public static final List<String> PUBLIC_ENDPOINTS = List.of(
             "/users/login",
             "/users/register",
-            "/products/all"
+            "/products/all",
+            "/products/search"
             // Add other public paths as needed
     );
 
@@ -40,7 +41,7 @@ public class JwtAuthentication implements GatewayFilter {
         exchange.getResponse().getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json");
         log.warn("Authentication rejected for path {}: {}", exchange.getRequest().getURI().getPath(), err);
         // Returns a simple JSON error response
-        String responseBody = "{\"error\": \"" + err + "\"}";
+        String responseBody = "{\"error\": \"" + err + "\", \"status\": " + httpStatus.value() +"}";
         return exchange.getResponse().writeWith(
                 Mono.just(exchange.getResponse().bufferFactory().wrap(responseBody.getBytes()))
         );
@@ -52,7 +53,11 @@ public class JwtAuthentication implements GatewayFilter {
         String path = exchange.getRequest().getURI().getPath();
 
         // 1. Check if the endpoint is public (no authentication required)
-        if (PUBLIC_ENDPOINTS.stream().anyMatch(path::endsWith)) {
+        boolean isPublic = PUBLIC_ENDPOINTS.stream().anyMatch(pub ->
+                path.equals(pub) || path.endsWith(pub) || path.contains("/image")
+        );
+        if (isPublic) {
+            log.debug("Public endpoint — bypassing JWT check: {}", path);
             return chain.filter(exchange);
         }
 
@@ -78,17 +83,17 @@ public class JwtAuthentication implements GatewayFilter {
                 return this.onError(exchange, "Token Expired", HttpStatus.UNAUTHORIZED);
             }
 
+            // Extract userId (Subject) and role (Custom Claim)
+            String username = claims.getSubject();
+            String userRole = claims.get("role", String.class);
+
             // 4. Inject trusted headers for downstream microservices
             ServerWebExchange mutatedExchange = exchange.mutate()
                     .request(builder -> {
-                        // Extract userId (Subject) and role (Custom Claim)
-                        String userId = claims.getSubject();
-                        String userRole = claims.get("role", String.class);
-
                         // Headers are trusted by microservices
-                        builder.header("X-Auth-User-Id", userId);
+                        builder.header("X-Auth-User-name", username);
                         builder.header("X-Auth-Role", userRole);
-                        log.debug("JWT validated for User: {} (ID: {})", claims.getSubject(), userId);
+                        log.debug("JWT validated for User: {} (ID: {})", claims.getSubject(), username);
                     })
                     .build();
 

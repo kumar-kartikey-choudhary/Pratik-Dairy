@@ -1,45 +1,3 @@
-// import { Injectable } from '@angular/core';
-// import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import { Observable } from 'rxjs';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class CartService {
-//   // Update this to match your API Gateway route for the Cart Service
-//   private baseUrl = 'http://localhost:8080/cart'; 
-
-//   constructor(private http: HttpClient) {}
-
-//   // // Securely passes the authenticated user's ID to the backend
-
-//   //   // Ensure you are saving the 'userId' in localStorage upon successful login
-//   //   const userId = localStorage.getItem('userId') || ''; 
-//   //   return new HttpHeaders({
-//   //     'X-Auth-UserId': userId
-//   //   });
-//   // }
-
-//   getCart(): Observable<any> {
-//     return this.http.get<any>(this.baseUrl);
-//   }
-
-//   addItemToCart(productId: string, quantity: number): Observable<any> {
-//     const payload = { productId, quantity };
-//     return this.http.post<any>(`${this.baseUrl}/items`, payload);
-//   }
-
-//   updateQuantity(productId: string, quantity: number): Observable<any> {
-//     return this.http.put<any>(`${this.baseUrl}/items/${productId}?quantity=${quantity}`, null);
-//   }
-
-//   removeItem(productId: string): Observable<any> {
-//     // Sending quantity as 0 triggers your backend's delete logic
-//     return this.updateQuantity(productId, 0); 
-//   }
-// }
-
-
 import { Injectable } from '@angular/core';
 import { HttpClient  } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -61,28 +19,32 @@ export interface AddToCart {
 @Injectable({ providedIn: 'root' })
 export class CartService {
 
-  private baseUrl = 'http://localhost:8080/carts';
+  private cartUrl = 'http://localhost:8080/carts';
+  private orderUrl = 'http://localhost:8080/orders'
 
   constructor(private http: HttpClient) {}
 
 
   getCart(): Observable<CartItemDto[]> {
-    return this.http.get<CartItemDto[]>(this.baseUrl);
+    return this.http.get<CartItemDto[]>(this.cartUrl);
   }
 
   addItemToCart(productId: string, quantity: number): Observable<any> {
     const payload: AddToCart = { productId, quantity };
-    return this.http.post<any>(`${this.baseUrl}/items`, payload);
+    return this.http.post<any>(`${this.cartUrl}/items`, payload);
   }
 
   updateQuantity(productId: string, newQty: number): Observable<any> {
-    const payload = { productId, quantity: newQty };
     return this.http.patch<any>(
-      `${this.baseUrl}/items/${productId}`, payload);
+      `${this.cartUrl}/items/${productId}?quantity=${newQty}`,{});
   }
 
   removeItem(productId: string): Observable<void> {
     return this.http.delete<void>(
-      `${this.baseUrl}/items/${productId}`);
+      `${this.cartUrl}/items/${productId}`);
+  }
+
+  checkout(): Observable<any>{
+    return this.http.post<any>(`${this.orderUrl}/create`,{});
   }
 }

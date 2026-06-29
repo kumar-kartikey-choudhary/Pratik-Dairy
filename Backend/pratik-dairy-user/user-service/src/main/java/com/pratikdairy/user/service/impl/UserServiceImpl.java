@@ -50,12 +50,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto create(UserDto userDto) {
         log.info("Inside @class UserServiceImpl @method create @Param userDto :{}", userDto);
-//        if(userDto.getId() != null)
-//        {
-//            throw new IllegalCallerException("User id must be null");
-//        }
+//       Duplicate username check
+        if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+            throw new RuntimeException("Username '" + userDto.getUsername() + "' already exists. Please choose a different username.");
+        }
         try {
             User user = MapperUtility.sourceToTarget(userDto, User.class);
+            user.setRole("CUSTOMER");
             user.setPassword(encoder.encode(userDto.getPassword()));
             log.info("Save user object to db");
             try{
@@ -119,7 +120,9 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDto.getLastName());
             user.setUsername(userDto.getUsername());
             user.setEmail(userDto.getEmail());
-            user.setPassword(userDto.getPassword());
+            if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
+                user.setPassword(encoder.encode(userDto.getPassword()));
+            }
             log.info("User with id {} updated successfully", id);
             User user1 = this.userRepository.saveAndFlush(user);
             return MapperUtility.sourceToTarget(user1, UserDto.class,"password");
@@ -165,12 +168,10 @@ public class UserServiceImpl implements UserService {
             log.info("authentication");
             User userDetails = (User)authentication.getPrincipal();
             String username = userDetails.getUsername();
-//            String userId = userDetails.getId();
             String userRole = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().getFirst();
             log.info("role :{}",userRole);
             String jwtToken = jwtUtils.generateToken(username, userRole);
-            log.info("User {} logged in successfully.", loginRequest.getUsername());
-            log.info(jwtToken);
+            log.info("User '{}' logged in successfully with role: {}", username, userRole);
             return LoginResponse.builder()
                     .username(userDetails.getUsername())
                     .role(userRole)

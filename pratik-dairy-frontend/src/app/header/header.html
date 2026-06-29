@@ -10,52 +10,57 @@
     <a routerLink="/" class="logo-link">
       <img src="assets/images/pratik-dairy-logo.png" alt="Pratik Dairy & Sweets Logo" class="logo-image">
       <h1>Pratik Dairy & Sweets</h1>
-      <span class="tagline">Freshness & Tradition</span> 
+      <span class="tagline">Freshness & Tradition</span>
     </a>
 
     <nav class="desktop-nav">
       <ul>
         @for (item of navLinks; track item.label) {
-          <li> 
-            <a [routerLink]="item.link" 
-               routerLinkActive="active-link"
-               [routerLinkActiveOptions]="item.link === '/' ? { exact: true } : { exact: false }"> 
-               {{ item.label }}
-            </a>
-          </li>
+        <li>
+          <a [routerLink]="item.link" routerLinkActive="active-link"
+            [routerLinkActiveOptions]="item.link === '/' ? { exact: true } : { exact: false }">
+            {{ item.label }}
+          </a>
+        </li>
         }
       </ul>
     </nav>
 
     <div class="utility-block">
-      
+
       <a href="tel:+917000628291" class="phone-link">
         📞 +91 7000628291
       </a>
 
       <div class="icon-group">
-        <a routerLink="/cart" class="utility-icon cart-icon" aria-label="Shopping Cart">🛒</a>
-        <a routerLink="/orders" class="utility-icon order-icon" aria-label="My Orders">📦</a>
-        <a routerLink="/account" class="utility-icon user-icon" aria-label="User Account">{{authservice.getUserInitial()}}</a>
-        <button class="logout-btn" (click)="onLogOut()" aria-label="Logout">Logout</button>
+        @if (authservice.isLoggedIn()) {
+        <a routerLink="/cart" class="utility-icon cart-icon">🛒</a>
+        <a routerLink="/orders" class="utility-icon order-icon">📦</a>
+        <a routerLink="/account" class="utility-icon user-icon">{{authservice.getUserInitial()}}</a>
+        <button class="logout-btn" (click)="onLogOut()">Logout</button>
+        } @else {
+        <a routerLink="/login" class="logout-btn">Login</a>
+        }
       </div>
 
-      <button class="menu-toggle-btn" (click)="toggleMenu()" aria-label="Toggle navigation" [attr.aria-expanded]="isMenuOpen">
+      <button class="menu-toggle-btn" (click)="toggleMenu()" aria-label="Toggle navigation"
+        [attr.aria-expanded]="isMenuOpen">
         @if (!isMenuOpen) {
-          <span>☰</span>
+        <span>☰</span>
         }
         @if (isMenuOpen) {
-          <span>✕</span>
+        <span>✕</span>
         }
       </button>
     </div>
 
-  </div> <nav class="mobile-nav" [class.open]="isMenuOpen">
+  </div>
+  <nav class="mobile-nav" [class.open]="isMenuOpen">
     <ul>
       @for (item of navLinks; track item.label) {
-        <li>
-          <a [routerLink]="item.link" (click)="toggleMenu()">{{ item.label }}</a>
-        </li>
+      <li>
+        <a [routerLink]="item.link" (click)="toggleMenu()">{{ item.label }}</a>
+      </li>
       }
     </ul>
   </nav>
