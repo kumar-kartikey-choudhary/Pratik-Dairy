@@ -50,8 +50,8 @@ public class User extends BaseEntity implements UserDetails {
     private String role = "CUSTOMER";
 
     @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$",
-            message = "Password must be 8-20 characters with at least one uppercase, one lowercase, one digit, and one special character (@$!%*?&)")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$",
+//            message = "Password must be 8-20 characters with at least one uppercase, one lowercase, one digit, and one special character (@$!%*?&)")
     @Column(name = "PASSWORD", columnDefinition = "VARCHAR(1000) NOT NULL" , nullable = false)
     private String password;
 
