@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService, CartItemDto } from '../../service/cart/CartService';
 import { Router } from '@angular/router';
-import { AuthService } from '../../service/login/auth-service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -18,7 +18,7 @@ export class ShoppingCart implements OnInit {
   errorMsg = '';
   isCheckingOut = false;
 
-  constructor(private cartService: CartService, private router: Router) { }
+  constructor(private cartService: CartService, private router: Router,private sanitizer: DomSanitizer) { }
   ngOnInit(): void {
     this.loadCart();
   }
@@ -28,8 +28,8 @@ export class ShoppingCart implements OnInit {
     this.isLoading = true;
     this.cartService.getCart().subscribe({
       next: (items) => {
-        console.log('Cart response:', items);
-        this.cartItems = items;
+        // console.log('Cart response:', items);
+        this.cartItems = items.map(item => this.mapImageUrl(item));
         this.isLoading = false;
       },
       error: (err) => {
@@ -38,6 +38,18 @@ export class ShoppingCart implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  private mapImageUrl(item: CartItemDto): CartItemDto {
+    let finalImageUrl: string | SafeUrl = 'assets/images/placeholder.png';
+
+    if (item.productImageUrl) {
+      finalImageUrl = this.sanitizer.bypassSecurityTrustUrl(
+        `data:image/jpeg;base64,${item.productImageUrl}`
+      );
+    }
+
+    return { ...item, productImageUrl: finalImageUrl };
   }
 
   removeItem(productId: string): void {
@@ -55,13 +67,14 @@ export class ShoppingCart implements OnInit {
   }
 
   increaseQuantity(item: CartItemDto): void {
-    this.cartService.addItemToCart(item.productId, 1).subscribe({
+    const newQty = item.quantity + 1;
+    this.cartService.updateQuantity(item.productId, newQty).subscribe({
       next: () => {
-        item.quantity += 1;
+        item.quantity = newQty;
         item.subtotal = item.pricePerUnit * item.quantity;
       },
       error: () => {
-        this.errorMsg = 'Quantity has not increased, Please check the stock';
+        this.errorMsg = 'No more sufficient quantity';
       }
     });
   }

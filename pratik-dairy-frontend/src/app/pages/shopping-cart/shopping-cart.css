@@ -159,3 +159,18 @@
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+.product-image {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.item-info .unit {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 2px 0;
+}

@@ -26,9 +26,12 @@
     <div class="cart-items">
       <div *ngFor="let item of cartItems" class="cart-item">
 
+        <img [src]="item.productImageUrl" [alt]="item.productName" class="product-image" />
+
         <div class="item-info">
           <p class="product-name">{{ item.productName }}</p>
-          <p class="price">₹{{ item.pricePerUnit }} / unit</p>
+          <!-- <p class="unit"></p>  -->
+          <p class="price">₹{{ item.pricePerUnit }}/{{ item.unit }}</p>
         </div>
 
         <div class="quantity-controls">
