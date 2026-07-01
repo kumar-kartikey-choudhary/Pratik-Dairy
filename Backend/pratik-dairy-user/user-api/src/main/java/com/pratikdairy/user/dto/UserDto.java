@@ -16,7 +16,6 @@ public class UserDto extends BaseDto {
     private String username;
     private String email;
     private String role;
-//    @JsonIgnore
-//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 }
