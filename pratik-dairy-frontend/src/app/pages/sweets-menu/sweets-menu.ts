@@ -17,7 +17,7 @@ interface SweetProduct {
   id: string;
   name: string;
   category: string;
-  type: string; // The specific type (Laddoo, Barfee)
+  type: string; 
   stockUnit: string,
   description: string;
   price: number;
