@@ -1,5 +1,5 @@
 <main class="sweets-page-container">
-  
+
   <section class="page-header-banner">
     <div class="header-overlay"></div>
     <div class="header-content">
@@ -10,13 +10,8 @@
 
   <section class="search-section">
     <div class="search-input-wrapper">
-      <input 
-        type="text" 
-        placeholder="Search by Sweet Name or Category (e.g., Kaju, Ladoo)..." 
-        [(ngModel)]="filterText" 
-        class="search-input"
-        aria-label="Search Sweets Menu"
-      >
+      <input type="text" placeholder="Search by Sweet Name or Category (e.g., Kaju, Ladoo)..." [(ngModel)]="filterText"
+        class="search-input" aria-label="Search Sweets Menu">
       <span class="search-icon"></span>
     </div>
   </section>
@@ -24,49 +19,64 @@
   <section class="menu-listing-section">
     <h2>
       @if (filterText) {
-        Filtered Results
+      Filtered Results
       } @else {
-        Our Complete Festive Collection
+      Our Complete Festive Collection
       }
     </h2>
-    
+
     @for (category of filteredCategories; track category.name) {
-      
-      @if (category.items.length > 0) {
-        
-        <div class="category-header">
-          <h3>{{ category.name }}</h3>
+
+    @if (category.items.length > 0) {
+
+    <div class="category-header">
+      <h3>{{ category.name }}</h3>
+    </div>
+
+    <div class="menu-grid">
+      @for (sweet of category.items; track sweet.name) {
+      <div class="sweet-card">
+        <div class="image-box">
+          <img [src]="sweet.imageUrl" [alt]="sweet.name" class="sweet-image">
+          <span class="category-tag">{{ sweet.category }}</span>
         </div>
-        
-        <div class="menu-grid">
-          @for (sweet of category.items; track sweet.name) {
-            <div class="sweet-card">
-              <div class="image-box">
-                 <img [src]="sweet.imageUrl" [alt]="sweet.name" class="sweet-image">
-                 <span class="category-tag">{{ sweet.category }}</span>
-              </div>
-              
-              <div class="card-details">
-                <div class="name-price">
-                  <h3>{{ sweet.name }}</h3>
-                  <span class="price-tag">{{ sweet.price }}/{{ sweet.stockUnit}}</span> 
-                </div>
-                
-                <p class="description">{{ sweet.description }}</p>
-                
-                <button class="btn-order">Add to Cart</button>
-              </div>
-            </div>
+
+        <div class="card-details">
+          <div class="name-price">
+            <h3>{{ sweet.name }}</h3>
+            <span class="price-tag">{{ sweet.price }}/{{ sweet.stockUnit}}</span>
+          </div>
+
+          <p class="description">{{ sweet.description }}</p>
+
+          <!-- Cart mein NAHI hai → Add to Cart button dikhao -->
+          @if (!cartService.isInCart(sweet.id)) {
+          <button class="btn-add-to-cart" [disabled]="cartService.isLoading(sweet.id)"
+            (click)="cartService.addToCart(sweet.id)">
+            {{ cartService.isLoading(sweet.id) ? 'Adding...' : '🛒 Add to Cart' }}
+          </button>
           }
+
+          @if (cartService.isInCart(sweet.id)) {
+          <div class="quantity-controls">
+            <button (click)="cartService.decrement(sweet.id)">−</button>
+            <span class="qty-display">{{ cartService.getQuantity(sweet.id) }}</span>
+            <button (click)="cartService.increment(sweet.id)">+</button>
+          </div>
+          }
+
         </div>
+      </div>
       }
+    </div>
+    }
     }
 
     @if (filteredCategories.length === 0 && filterText) {
-      <div class="no-results">
-        <p>😔 No sweets found matching "{{ filterText }}". Please try a different category or name.</p>
-        <button class="btn-clear-filter" (click)="filterText = ''">Clear Search</button>
-      </div>
+    <div class="no-results">
+      <p>😔 No sweets found matching "{{ filterText }}". Please try a different category or name.</p>
+      <button class="btn-clear-filter" (click)="filterText = ''">Clear Search</button>
+    </div>
     }
   </section>
 

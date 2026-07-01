@@ -34,7 +34,7 @@
 
       <div class="icon-group">
         @if (authservice.isLoggedIn()) {
-        <a routerLink="/cart" class="utility-icon cart-icon">🛒</a>
+        <a routerLink="/cart" class="utility-icon cart-icon" (click)="carts()">🛒</a>
         <a routerLink="/orders" class="utility-icon order-icon">📦</a>
         <a routerLink="/account" class="utility-icon user-icon">{{authservice.getUserInitial()}}</a>
         <button class="logout-btn" (click)="onLogOut()">Logout</button>

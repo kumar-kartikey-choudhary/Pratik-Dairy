@@ -2,6 +2,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../service/login/auth-service';
+import { CartService } from '../service/cart/CartService';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,7 @@ export class Header {
     { label: 'Contact', link: '/contact' }
   ];
 
-  constructor(public authservice : AuthService , private router : Router){}
+  constructor(public authservice : AuthService , private router : Router, private cartService : CartService){}
 
   // State variables for menu toggles
   isMenuOpen: boolean = false;
@@ -31,7 +32,10 @@ export class Header {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  
+  carts()
+  {
+    this.cartService.getCart();
+  }
 
   onLogOut() {
     this.authservice.logout();

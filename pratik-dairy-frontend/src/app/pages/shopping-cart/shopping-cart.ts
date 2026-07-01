@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CartService, CartItemDto } from '../../service/cart/CartService';
 import { Router } from '@angular/router';
+import { AuthService } from '../../service/login/auth-service';
 
 @Component({
   selector: 'app-shopping-cart',
@@ -17,11 +18,11 @@ export class ShoppingCart implements OnInit {
   errorMsg = '';
   isCheckingOut = false;
 
-  constructor(private cartService: CartService, private router : Router) {}
-
+  constructor(private cartService: CartService, private router: Router) { }
   ngOnInit(): void {
     this.loadCart();
   }
+
 
   loadCart(): void {
     this.isLoading = true;
@@ -32,7 +33,7 @@ export class ShoppingCart implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Cart error:', err); 
+        console.error('Cart error:', err);
         this.errorMsg = 'Cart load nahi ho saka. Dobara try karein.';
         this.isLoading = false;
       }
@@ -59,7 +60,7 @@ export class ShoppingCart implements OnInit {
         item.quantity += 1;
         item.subtotal = item.pricePerUnit * item.quantity;
       },
-      error: ()=>{
+      error: () => {
         this.errorMsg = 'Quantity has not increased, Please check the stock';
       }
     });
@@ -70,32 +71,31 @@ export class ShoppingCart implements OnInit {
       this.removeItem(item.productId);
       return;
     }
-    const newQty = item.quantity -1;
+    const newQty = item.quantity - 1;
     this.cartService.updateQuantity(item.productId, newQty).subscribe({
-      next: ()=>{
+      next: () => {
         item.quantity = newQty;
         item.subtotal = item.pricePerUnit * item.quantity;
       },
-      error: ()=>{
+      error: () => {
         this.errorMsg = 'Quantity has not updated';
-      } 
+      }
     })
   }
 
   checkout(): void {
-    if(this.cartItems.length === 0)
-    {
+    if (this.cartItems.length === 0) {
       this.errorMsg = 'Caert is enmpty, please add item to cart';
       return;
     }
     this.isCheckingOut = true;
     this.cartService.checkout().subscribe({
-      next: ()=>{
+      next: () => {
         this.cartItems = [];
         this.isCheckingOut = false;
         this.router.navigate(['/orders']);
       },
-      error: ()=>{
+      error: () => {
         this.errorMsg = "Order does not placed"
         this.isCheckingOut = false;
       }

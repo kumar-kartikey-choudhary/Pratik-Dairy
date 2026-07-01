@@ -80,26 +80,18 @@
             <span class="price-tag">{{ product.price }} / {{ product.unit }}</span>
 
             <!-- Cart mein NAHI hai → Add to Cart button dikhao -->
-            @if (!isInCart(product.id)) {
-            <button
-              class="btn-add-to-cart"
-              [class.loading]="loadingState[product.id]"
-              [disabled]="loadingState[product.id]"
-              (click)="addToCart(product.id)">
-              @if (loadingState[product.id]) {
-                <span class="spinner"></span> Adding...
-              } @else {
-                🛒 Add to Cart
-              }
+            @if (!cartService.isInCart(product.id)) {
+            <button class="btn-add-to-cart" [disabled]="cartService.isLoading(product.id)"
+              (click)="cartService.addToCart(product.id)">
+              {{ cartService.isLoading(product.id) ? 'Adding...' : '🛒 Add to Cart' }}
             </button>
             }
 
-            <!-- Cart mein HAI → Quantity controls dikhao (image jaisi) -->
-            @if (isInCart(product.id)) {
-            <div class="quantity-controls" [class.animate-in]="loadingState[product.id]">
-              <button class="btn-qty btn-minus" (click)="decrement(product.id)">−</button>
-              <span class="qty-display">{{ getQuantity(product.id) }}</span>
-              <button class="btn-qty btn-plus" (click)="increment(product.id)">+</button>
+            @if (cartService.isInCart(product.id)) {
+            <div class="quantity-controls">
+              <button class="qty-btn" (click)="cartService.decrement(product.id)">−</button>
+              <span class="qty-display">{{ cartService.getQuantity(product.id) }}</span>
+              <button class="qty-btn" (click)="cartService.increment(product.id)">+</button>
             </div>
             }
 
