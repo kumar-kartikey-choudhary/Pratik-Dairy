@@ -57,12 +57,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from '../login/auth-service';
+import { SafeUrl } from '@angular/platform-browser';
 
 export interface CartItemDto {
   id: string;
   username: string;
   productId: string;
   productName: string;
+  productImageUrl: string | SafeUrl;   
+  unit: string;              
   quantity: number;
   pricePerUnit: number;
   subtotal: number;
@@ -196,7 +199,7 @@ export class CartService {
 
   addItemToCart(productId: string, quantity: number): Observable<any> {
     const payload: AddToCart = { productId, quantity };
-    return this.http.post<any>(`${this.cartUrl}/items`, payload);
+    return this.http.post<any>(`${this.cartUrl}/items`, payload, { responseType: 'text' as 'json' });
   }
 
   updateQuantity(productId: string, newQty: number): Observable<any> {
