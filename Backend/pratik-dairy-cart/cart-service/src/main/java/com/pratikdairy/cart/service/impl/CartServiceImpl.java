@@ -5,14 +5,9 @@ import com.pratikdairy.cart.dto.CartItemDto;
 import com.pratikdairy.cart.entity.CartItem;
 import com.pratikdairy.cart.repository.CartItemRepository;
 import com.pratikdairy.cart.service.CartService;
-import com.pratikdairy.parent.utility.MapperUtility;
 import com.pratikdairy.product.controller.ProductController;
 import com.pratikdairy.product.dto.ProductDto;
-import com.pratikdairy.product.model.Product;
-import com.pratikdairy.user.controller.UserController;
-import com.pratikdairy.user.jwt.JwtAuthFilter;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 @Service
 @Slf4j
 public class CartServiceImpl implements CartService {
@@ -31,11 +25,9 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductController controller;
 
-
     @Autowired
-    public CartServiceImpl( CartItemRepository cartItemRepository,
-                           ProductController controller)
-    {
+    public CartServiceImpl(CartItemRepository cartItemRepository,
+                           ProductController controller) {
         this.cartItemRepository = cartItemRepository;
         this.controller = controller;
     }
@@ -48,42 +40,36 @@ public class CartServiceImpl implements CartService {
         return auth.getName();
     }
 
+    // ---------- NEW: single source of truth for fetching product ----------
+    private ProductDto fetchProduct(String productId) {
+        ResponseEntity<ProductDto> response = controller.find(productId);
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new RuntimeException("ProductNotFoundException: Could not fetch product details for id " + productId);
+        }
+        return response.getBody();
+    }
 
     @Override
     @Transactional
     public boolean addItemToCart(AddToCart request) {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         String username = this.getUsername();
-        ResponseEntity<ProductDto> response = controller.find(request.getProductId());
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-            throw new RuntimeException("ProductNotFoundException: Could not fetch product details.");
-        }
-        ProductDto productDto = response.getBody();
-        Product product;
-        try{
-            product = MapperUtility.sourceToTarget(productDto, Product.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        if(product.getStockQuantity() < request.getQuantity())
-        {
+
+        ProductDto productDto = fetchProduct(request.getProductId());
+
+        if (productDto.getStockQuantity() < request.getQuantity()) {
             return false;
         }
-        CartItem existingItem = this.cartItemRepository.findByUsernameAndProductId(username,product.getId());
-        if(existingItem != null)
-        {
-            //Update the quantity
-            existingItem.setQuantity(existingItem.getQuantity()+request.getQuantity());
-            existingItem.setPriceSnapshot(product.getPrice().multiply(BigDecimal.valueOf(existingItem.getQuantity())));
+
+        CartItem existingItem = cartItemRepository.findByUsernameAndProductId(username, productDto.getId());
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
             cartItemRepository.saveAndFlush(existingItem);
-        }else
-        {
-            //create a new cart item
+        } else {
             CartItem cartItem = new CartItem();
             cartItem.setUsername(username);
-            cartItem.setProductId(product.getId());
+            cartItem.setProductId(productDto.getId());
             cartItem.setQuantity(request.getQuantity());
-            cartItem.setPriceSnapshot(product.getPrice().multiply(BigDecimal.valueOf(request.getQuantity())));
             cartItemRepository.saveAndFlush(cartItem);
         }
         return true;
@@ -93,10 +79,9 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartItemDto updateQuantity(String productId, int quantity) {
         String username = this.getUsername();
-        log.info("updateQuantity: username:{} productId={}, quantity={}", username, productId, quantity);
+        log.info("updateQuantity: username={}, productId={}, quantity={}", username, productId, quantity);
 
         if (quantity <= 0) {
-            // CHANGED: quantity 0 ya negative ho to item remove kar do
             cartItemRepository.deleteByUsernameAndProductId(username, productId);
             return null;
         }
@@ -106,71 +91,67 @@ public class CartServiceImpl implements CartService {
             return null;
         }
 
-        // CHANGED: product ka latest price fetch karo taaki price stale na ho
-        ResponseEntity<ProductDto> response = controller.find(productId);
-        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
-            throw new RuntimeException("ProductNotFoundException");
-        }
+        ProductDto productDto = fetchProduct(productId);
 
-        ProductDto productDto = response.getBody();
-        Product product;
-        try {
-            product = MapperUtility.sourceToTarget(productDto, Product.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        // Stock check
-        if (product.getStockQuantity() < quantity) {
+        if (productDto.getStockQuantity() < quantity) {
             throw new RuntimeException("Insufficient stock");
         }
 
         cartItem.setQuantity(quantity);
-        cartItem.setPriceSnapshot(
-                product.getPrice().multiply(BigDecimal.valueOf(quantity))
-        );
         cartItem = cartItemRepository.saveAndFlush(cartItem);
-        try {
-            return MapperUtility.sourceToTarget(cartItem, CartItemDto.class);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
+        return toDto(cartItem, productDto);
+    }
 
     @Override
     public List<CartItemDto> getCart() {
         log.info("Inside @class CartServiceImpl @method getCart");
         String username = this.getUsername();
-         return cartItemRepository.findByUsername(username).stream().map(item -> {
-                        try {
-                            log.info("Mapping CartItem to CartItemDto :");
-                            return MapperUtility.sourceToTarget(item, CartItemDto.class);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-         }).toList();
+
+        return cartItemRepository.findByUsername(username).stream()
+                .map(item -> {
+                    ProductDto productDto = fetchProduct(item.getProductId());
+                    return toDto(item, productDto);
+                })
+                .toList();
+    }
+
+    // ---------- CHANGED: ab CartItem + ProductDto dono se DTO banata hai ----------
+    private CartItemDto toDto(CartItem item, ProductDto productDto) {
+        CartItemDto dto = new CartItemDto();
+        dto.setUsername(item.getUsername());
+        dto.setProductId(item.getProductId());
+        dto.setQuantity(item.getQuantity());
+
+        dto.setProductName(productDto.getProductName());
+        dto.setProductImageUrl(productDto.getImageData());
+        dto.setUnit(productDto.getStockUnit());
+        dto.setPricePerUnit(productDto.getPrice());
+
+        BigDecimal subtotal = productDto.getPrice() != null
+                ? productDto.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
+                : BigDecimal.ZERO;
+        dto.setSubtotal(subtotal);
+
+        return dto;
     }
 
     @Override
     public void clearCart() {
-        log.info("Inside @class CartServiceImpl @method clearCart ");
+        log.info("Inside @class CartServiceImpl @method clearCart");
         String username = this.getUsername();
         cartItemRepository.deleteByUsername(username);
     }
 
-
     @Transactional
     @Override
-    public boolean deleteItemFromCart( String productId) {
-        log.info("Inside @class CartServiceImpl @method deleteItemFromCart ");
+    public boolean deleteItemFromCart(String productId) {
+        log.info("Inside @class CartServiceImpl @method deleteItemFromCart");
         String username = this.getUsername();
-        if(!productId.isEmpty() && !username.isEmpty())
-        {
+        if (!productId.isEmpty() && !username.isEmpty()) {
             cartItemRepository.deleteByUsernameAndProductId(username, productId);
             return true;
         }
         return false;
     }
-
 }
