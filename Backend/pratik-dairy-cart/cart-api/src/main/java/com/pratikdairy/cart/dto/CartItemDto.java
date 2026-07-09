@@ -13,6 +13,7 @@ public class CartItemDto extends BaseDto {
     private String productName;
     private byte[] productImageUrl;
     private String unit;
+    private String weight;
     private int quantity;
     private BigDecimal pricePerUnit;
     private BigDecimal subtotal;

@@ -16,9 +16,6 @@ import java.util.List;
 
 
 @RestController
-//@CrossOrigin(origins = "http://localhost:4200",
-//        methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
-//        allowedHeaders = "*")
 @Primary
 @RequestMapping("products")
 public class ProductControllerImpl implements ProductController {
@@ -32,10 +29,6 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public ResponseEntity<ProductDto> create(ProductDto productDto, MultipartFile imageFile) {
-//        if(!userRole.equals("ADMIN"))
-//        {
-//            return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
         return new ResponseEntity<ProductDto>(this.productService.create(productDto, imageFile) , HttpStatus.CREATED);
     }
 
@@ -68,10 +61,6 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public ResponseEntity<ProductDto> update(String id, ProductDto productDto) {
-//        if(!userRole.equals("ADMIN"))
-//        {
-//            return  ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
         return ResponseEntity.ok(this.productService.update(productDto,id));
     }
 
@@ -83,5 +72,17 @@ public class ProductControllerImpl implements ProductController {
     @Override
     public void delete(String id) {
         this.productService.delete(id);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> decrementStock(String id, int quantity) {
+        boolean success = this.productService.decrementStock(id, quantity);
+        return ResponseEntity.ok(success);
+    }
+
+    @Override
+    public ResponseEntity<Void> restoreStock(String id, int quantity) {
+        this.productService.restoreStock(id, quantity);
+        return ResponseEntity.ok().build();
     }
 }

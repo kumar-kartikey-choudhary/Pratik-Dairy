@@ -5,6 +5,7 @@ import com.pratikdairy.cart.dto.CartItemDto;
 import com.pratikdairy.cart.entity.CartItem;
 import com.pratikdairy.cart.repository.CartItemRepository;
 import com.pratikdairy.cart.service.CartService;
+import com.pratikdairy.cart.util.WeightPricing;
 import com.pratikdairy.product.controller.ProductController;
 import com.pratikdairy.product.dto.ProductDto;
 import jakarta.transaction.Transactional;
@@ -55,13 +56,16 @@ public class CartServiceImpl implements CartService {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         String username = this.getUsername();
 
+        // Weight is client-selected but ALWAYS validated here. Never trust a price from the client.
+        String weight = WeightPricing.isValidWeight(request.getWeight()) ? request.getWeight().trim().toLowerCase() : "250g";
+
         ProductDto productDto = fetchProduct(request.getProductId());
 
         if (productDto.getStockQuantity() < request.getQuantity()) {
             return false;
         }
 
-        CartItem existingItem = cartItemRepository.findByUsernameAndProductId(username, productDto.getId());
+        CartItem existingItem = cartItemRepository.findByUsernameAndProductIdAndWeight(username, productDto.getId(), weight);
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
             cartItemRepository.saveAndFlush(existingItem);
@@ -70,6 +74,7 @@ public class CartServiceImpl implements CartService {
             cartItem.setUsername(username);
             cartItem.setProductId(productDto.getId());
             cartItem.setQuantity(request.getQuantity());
+            cartItem.setWeight(weight);
             cartItemRepository.saveAndFlush(cartItem);
         }
         return true;
@@ -126,11 +131,14 @@ public class CartServiceImpl implements CartService {
         dto.setProductName(productDto.getProductName());
         dto.setProductImageUrl(productDto.getImageData());
         dto.setUnit(productDto.getStockUnit());
-        dto.setPricePerUnit(productDto.getPrice());
+        dto.setWeight(item.getWeight());
 
-        BigDecimal subtotal = productDto.getPrice() != null
-                ? productDto.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
-                : BigDecimal.ZERO;
+        // Price is ALWAYS recalculated here from base price + weight — never read from the client.
+        // Multiplier is relative to THIS product's own stockUnit (e.g. Buffalo Ghee is priced per "1kg").
+        BigDecimal pricePerUnit = WeightPricing.priceFor(productDto.getPrice(), item.getWeight(), productDto.getStockUnit());
+        dto.setPricePerUnit(pricePerUnit);
+
+        BigDecimal subtotal = pricePerUnit.multiply(BigDecimal.valueOf(item.getQuantity()));
         dto.setSubtotal(subtotal);
 
         return dto;

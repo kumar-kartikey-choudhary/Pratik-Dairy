@@ -1,8 +1,10 @@
 package com.pratikdairy.order.controller;
 
 
+import com.pratikdairy.order.dto.OrderItemDto;
 import com.pratikdairy.order.dto.OrderResponse;
 import com.pratikdairy.order.model.OrderStatus;
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +15,9 @@ import java.util.List;
 @FeignClient(name = "Order-Service" , primary = false)
 public interface OrderController {
 
-    String USER_ID_HEADER = "X-Auth-UserId";
 
     @PostMapping(path = "create")
-    ResponseEntity<OrderResponse> create(
-            @RequestHeader(USER_ID_HEADER) String userId);
+    ResponseEntity<OrderResponse> create();
 
     @GetMapping(path = "admin/findAll")
     ResponseEntity<List<OrderResponse>> findAll();

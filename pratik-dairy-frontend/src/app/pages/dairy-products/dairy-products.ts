@@ -34,7 +34,6 @@ export class DairyProducts implements OnInit {
 
   ngOnInit(): void {
     this.loadDairyProducts();
-    this.cartService.syncCartFromBackend();
   }
 
   loadDairyProducts(): void {

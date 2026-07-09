@@ -15,4 +15,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, String> {
     void deleteByUsername(String username);
     CartItem findByUsernameAndProductId(String username, String productId);
     List<CartItem> findByUsername(String username);
+    // Same product + different weight = different cart line
+    CartItem findByUsernameAndProductIdAndWeight(String username, String productId, String weight);
+    void deleteByUsernameAndProductIdAndWeight(String username, String productId, String weight);
 }

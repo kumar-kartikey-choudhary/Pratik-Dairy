@@ -12,8 +12,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   
   if (isPlatformBrowser(platformId)) {
-    const token = sessionStorage.getItem('AUTH_TOKEN'); // AuthService mein TOKEN_KEY = 'AUTH_TOKEN'
-    console.log(token);
+    const token = sessionStorage.getItem('AUTH_TOKEN');
     if (token) {
       const cloned = req.clone({
         setHeaders: {

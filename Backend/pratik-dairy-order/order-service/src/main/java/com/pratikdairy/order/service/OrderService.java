@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OrderService {
     
-    OrderResponse create(String userId);
+    OrderResponse create();
 
     List<OrderResponse> findAll();
 

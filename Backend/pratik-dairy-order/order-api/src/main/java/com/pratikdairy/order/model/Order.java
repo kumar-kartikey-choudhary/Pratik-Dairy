@@ -23,8 +23,8 @@ public class Order extends  BaseEntity{
     private LocalDateTime orderDateTime = LocalDateTime.now();
 
 
-    @Column(name = "USER_ID", nullable = false)
-    private String userId;
+    @Column(name = "USERNAME", nullable = false)
+    private String username;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ORDER_STATUS" , nullable = false)

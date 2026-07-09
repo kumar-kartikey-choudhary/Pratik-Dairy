@@ -196,4 +196,26 @@ public class    ProductServiceImpl implements ProductService {
            }
        }).toList();
     }
+
+    @Override
+    @Transactional
+    public boolean decrementStock(String id, int quantity) {
+        log.info("Inside @class ProductServiceImpl @method decrementStock @Param id:{}, quantity:{}", id, quantity);
+        if (id == null || quantity <= 0) {
+            throw new IllegalArgumentException("Invalid id or quantity");
+        }
+        int updatedRows = productRepository.decrementStock(id, quantity);
+        // updatedRows == 0 means WHERE stockQuantity >= quantity failed -> not enough stock
+        return updatedRows > 0;
+    }
+
+    @Override
+    @Transactional
+    public void restoreStock(String id, int quantity) {
+        log.info("Inside @class ProductServiceImpl @method restoreStock @Param id:{}, quantity:{}", id, quantity);
+        if (id == null || quantity <= 0) {
+            throw new IllegalArgumentException("Invalid id or quantity");
+        }
+        productRepository.restoreStock(id, quantity);
+    }
 }

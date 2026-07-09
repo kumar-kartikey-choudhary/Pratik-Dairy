@@ -281,3 +281,31 @@ span.qty-display{
   text-align: center;
   font-weight: 500;
 }
+
+
+.weight-options {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+ 
+.weight-pill {
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+ 
+.weight-pill:hover {
+  border-color: #7b2ff7;
+}
+ 
+.weight-pill.active {
+  background: #7b2ff7;
+  color: white;
+  border-color: #7b2ff7;
+}

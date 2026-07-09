@@ -268,7 +268,7 @@
     align-items: baseline;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 10px;
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
 }
 
 .card-details h3 {
@@ -290,7 +290,7 @@
     flex-grow: 1; 
 }
 
-.btn-order {
+/* .btn-order {
     background-color: var(--primary-accent);
     color: var(--dark-bg);
     border: none;
@@ -302,7 +302,7 @@
     width: 100%;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
+} */
 
 .btn-order:hover {
     background-color: #ffaa33;
@@ -385,4 +385,170 @@
     .search-input {
         padding: 15px 40px 15px 15px;
     }
+}
+
+
+
+/* --- ADD TO CART BUTTON --- */
+.btn-add-to-cart {
+    background-color: #ea843c;
+    color: wheat;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s;
+    min-width: 130px;
+    text-align: center;
+}
+
+.btn-add-to-cart:hover:not(:disabled) {
+    background-color: #c2157a;
+    transform: translateY(-1px);
+}
+
+.btn-add-to-cart:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* --- QUANTITY CONTROLS (Image jaisi — pink background) --- */
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--cart-pink); /* Hot pink background */
+    border-radius: 8px;
+    overflow: hidden;
+    min-width: 130px;
+    height: 42px;
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+    0%   { transform: scale(0.75); opacity: 0; }
+    100% { transform: scale(1);    opacity: 1; }
+}
+
+/* − aur + buttons */
+.btn-qty {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    width: 42px;
+    height: 42px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    line-height: 1;
+    padding: 0;
+    /* Override old green color */
+    color: #ffffff !important;
+}
+
+.btn-qty:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.btn-qty:active {
+    background: rgba(0, 0, 0, 0.12);
+    transform: scale(0.9);
+}
+
+/* Quantity number */
+.qty-display {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+    min-width: 28px;
+    text-align: center;
+}
+
+/* --- CTA SECTION --- */
+.cta-section {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: var(--dark-surface);
+    margin-top: 40px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.cta-section h2 {
+    color: var(--text-light);
+    margin-bottom: 25px;
+}
+
+.cta-actions a {
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    font-size: 1em;
+    margin: 0 10px;
+}
+
+.cta-actions .btn-primary {
+    background-color: var(--primary-accent);
+    color: var(--dark-bg);
+    border: 2px solid var(--primary-accent);
+}
+
+.cta-actions .btn-secondary {
+    background-color: transparent;
+    color: var(--text-light);
+    border: 2px solid var(--text-light);
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-width: 600px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    .price-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+.quantity-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgb(57, 56, 56);
+  border-radius: 8px;
+  padding: 4px 8px;
+  background: #faf9f9;
+}
+
+span.qty-display{
+    color: black;
+}
+
+.qty-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn:hover { background: #e5e7eb; }
+
+.qty {
+  min-width: 28px;
+  text-align: center;
+  font-weight: 500;
 }

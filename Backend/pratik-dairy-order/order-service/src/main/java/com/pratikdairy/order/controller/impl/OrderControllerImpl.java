@@ -31,8 +31,8 @@ public class OrderControllerImpl implements OrderController {
 
 
     @Override
-    public ResponseEntity<OrderResponse> create(String userId) {
-        return new ResponseEntity<>(this.orderService.create(userId), HttpStatus.CREATED);
+    public ResponseEntity<OrderResponse> create() {
+        return new ResponseEntity<>(this.orderService.create(), HttpStatus.CREATED);
     }
 
     @Override

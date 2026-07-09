@@ -16,7 +16,7 @@ import java.util.List;
 @FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false, path = "products")
 public interface ProductController {
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(path = "addProduct", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> create(
 //            @RequestHeader("X-Auth-Role") String userRole,
@@ -41,7 +41,7 @@ public interface ProductController {
     ResponseEntity<List<ProductDto>> searchProduct(@RequestParam String name);
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping(path = "admin/updateProduct/{id}")
     ResponseEntity<ProductDto> update(
 //            @RequestHeader("X-Auth-Role") String userRole,
@@ -49,15 +49,28 @@ public interface ProductController {
 
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<ProductDto> update(@PathVariable(name = "id") String id ,@RequestPart ProductDto productDto ,  @RequestPart(value = "imageUrl", required = false) MultipartFile imageUrl);
 
 
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path = "admin/deleteProduct/{id}")
     void delete(@PathVariable(name = "id") String id);
+
+    // Internal, service-to-service only. Called by order-service at checkout time.
+    // Deliberately NOT admin-only: a normal logged-in user placing an order must be able
+    // to trigger this indirectly. Protected instead by requiring authentication + being
+    // listed under an internal path prefix that is never exposed on the public gateway.
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping(path = "internal/{id}/decrement-stock")
+    ResponseEntity<Boolean> decrementStock(@PathVariable(name = "id") String id, @RequestParam(name = "quantity") int quantity);
+
+    // Rolls back a decrement if a later item in the same order fails.
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping(path = "internal/{id}/restore-stock")
+    ResponseEntity<Void> restoreStock(@PathVariable(name = "id") String id, @RequestParam(name = "quantity") int quantity);
 
 }

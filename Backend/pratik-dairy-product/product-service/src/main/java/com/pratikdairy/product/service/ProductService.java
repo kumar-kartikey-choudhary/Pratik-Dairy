@@ -20,4 +20,10 @@ public interface ProductService {
     void delete(String id);
 
     List<ProductDto> searchProduct(String name);
+
+    // Returns true if stock was successfully decremented (enough stock was available), false otherwise.
+    boolean decrementStock(String id, int quantity);
+
+    // Adds stock back — used to roll back a decrement when an order fails partway through.
+    void restoreStock(String id, int quantity);
 }
