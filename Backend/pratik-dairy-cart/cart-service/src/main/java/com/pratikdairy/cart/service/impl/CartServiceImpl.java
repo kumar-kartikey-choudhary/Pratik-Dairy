@@ -5,7 +5,7 @@ import com.pratikdairy.cart.dto.CartItemDto;
 import com.pratikdairy.cart.entity.CartItem;
 import com.pratikdairy.cart.repository.CartItemRepository;
 import com.pratikdairy.cart.service.CartService;
-import com.pratikdairy.cart.util.WeightPricing;
+import com.pratikdairy.cart.util.*;
 import com.pratikdairy.product.controller.ProductController;
 import com.pratikdairy.product.dto.ProductDto;
 import jakarta.transaction.Transactional;
@@ -56,8 +56,8 @@ public class CartServiceImpl implements CartService {
         log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
         String username = this.getUsername();
 
-        // Weight is client-selected but ALWAYS validated here. Never trust a price from the client.
-        String weight = WeightPricing.isValidWeight(request.getWeight()) ? request.getWeight().trim().toLowerCase() : "250g";
+        // Weight is client-selected but ALWAYS validated here. Never trust a price from the client
+        String weight = (request.getWeight() == null || request.getWeight().isBlank()) ? "1kg" : request.getWeight().trim().toLowerCase();
 
         ProductDto productDto = fetchProduct(request.getProductId());
 

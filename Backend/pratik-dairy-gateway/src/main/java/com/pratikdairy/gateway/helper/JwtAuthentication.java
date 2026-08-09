@@ -52,6 +52,11 @@ public class JwtAuthentication implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
 
+        if (exchange.getRequest().getMethod() == org.springframework.http.HttpMethod.OPTIONS) {
+            log.debug("Preflight OPTIONS — bypassing JWT check: {}", path);
+            return chain.filter(exchange);
+        }
+
         // 1. Check if the endpoint is public (no authentication required)
         boolean isPublic = PUBLIC_ENDPOINTS.stream().anyMatch(pub ->
                 path.equals(pub) || path.endsWith(pub) || path.contains("/image")

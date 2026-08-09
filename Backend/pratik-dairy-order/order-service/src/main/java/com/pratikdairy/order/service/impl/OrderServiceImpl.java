@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
         // two simultaneous orders for the last unit of a product could both "succeed" and oversell.
         List<CartItemDto> decrementedSoFar = new ArrayList<>();
         for (CartItemDto item : cartItems) {
-            ResponseEntity<Boolean> response = productController.decrementStock(item.getProductId(), item.getQuantity());
+            ResponseEntity<Boolean> response = safeDecrementStock(item.getProductId(), item.getQuantity());
             boolean success = response.getBody() != null && response.getBody();
             if (!success) {
                 // rollback whatever we already decremented in this loop
@@ -140,5 +141,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delete(String id) {
         this.orderRepository.deleteById(id);
+    }
+
+
+    @CircuitBreaker(name = "productService", fallbackMethod = "decrementStockFallback")
+    public ResponseEntity<Boolean> safeDecrementStock(String productId, int qty) {
+        return productController.decrementStock(productId, qty);
+    }
+
+    private ResponseEntity<Boolean> decrementStockFallback(String productId, int qty, Throwable t) {
+        log.error("Product service unavailable, aborting checkout for {}: {}", productId, t.getMessage());
+        return ResponseEntity.ok(false);
     }
 }

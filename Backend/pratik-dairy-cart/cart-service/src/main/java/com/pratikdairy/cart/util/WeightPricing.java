@@ -5,49 +5,6 @@ import java.math.RoundingMode;
 import java.util.Set;
 
 /**
- * Product.price in the DB is always stored as the price for 1kg.
- * Smaller weight variants are derived by dividing the 1kg price down:
- * 250g = price / 4, 500g = price / 2, 1kg = price / 1.
- * This class does that conversion, so cart/order totals are always
- * computed on the server — never trusted from the client.
- *
- * NOTE: if you sell items where 500g/1kg are NOT simple fractions of 1kg
- * (e.g. bulk discounts), replace this with a real per-variant price table
- * on the Product entity instead of a divisor.
- */
-//public final class WeightPricing {
-//
-//    private static final Map<String, BigDecimal> WEIGHT_DIVISORS = Map.of(
-//            "250g", BigDecimal.valueOf(4),
-//            "500g", BigDecimal.valueOf(2),
-//            "1kg", BigDecimal.valueOf(1)
-//    );
-//
-//    private WeightPricing() {}
-//
-//    public static BigDecimal divisorForWeight(String weight) {
-//        if (weight == null) {
-//            return BigDecimal.ONE;
-//        }
-//        return WEIGHT_DIVISORS.getOrDefault(weight.trim().toLowerCase(), BigDecimal.ONE);
-//    }
-//
-//    public static BigDecimal priceForWeight(BigDecimal basePricePerKg, String weight) {
-//        if (basePricePerKg == null) {
-//            return BigDecimal.ZERO;
-//        }
-//        return basePricePerKg.divide(divisorForWeight(weight), 2, RoundingMode.HALF_UP);
-//    }
-//
-//    public static boolean isValidWeight(String weight) {
-//        return weight != null && WEIGHT_DIVISORS.containsKey(weight.trim().toLowerCase());
-//    }
-//
-//
-//}
-
-
-/**
  * IMPORTANT: Product.price is stored against WHATEVER unit that product's
  * admin set in Product.stockUnit (could be "250g" for one product, "1kg" for
  * another, e.g. Buffalo Ghee is priced per "1kg"). It is NOT always 250g.
@@ -116,7 +73,7 @@ public final class WeightPricing {
         return weight != null && SELECTABLE_WEIGHTS.contains(weight.trim().toLowerCase());
     }
 
-    /** True only if this product's stockUnit can actually be weight-converted (grams/kg). */
+    /** True only if this product's stockUnit can actually be weight-converted. */
     public static boolean supportsWeightVariants(String productBaseUnit) {
         return toGrams(productBaseUnit) > 0;
     }

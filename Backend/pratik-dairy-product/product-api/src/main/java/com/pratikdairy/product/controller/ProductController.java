@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false, path = "products")
+@FeignClient(name = "PRATIK-DAIRY-PRODUCT", primary = false, path = "products", url = "${product.url}")
 public interface ProductController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")

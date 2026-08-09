@@ -6,6 +6,7 @@ import com.pratikdairy.user.dto.UserDto;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +24,14 @@ public interface UserController {
     @GetMapping(path = "admin/find/{id}")
     ResponseEntity<UserDto> find(@PathVariable("id") String id);
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "admin/findAll")
     ResponseEntity<List<UserDto>> findAll();
 
-    @PutMapping(path = "update/{id}")
+    @PatchMapping(path = "update/{id}")
     ResponseEntity<UserDto> update(@Valid @RequestBody UserDto userDto, @PathVariable(name = "id") String id);
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(path = "delete/{id}")
     void delete(@PathVariable(name = "id") String id);
 }
