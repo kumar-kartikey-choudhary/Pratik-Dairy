@@ -6,7 +6,10 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.pratikdairy.cart.controller")
+@EnableFeignClients(basePackages = {
+		"com.pratikdairy.cart.controller",
+		"com.pratikdairy.product.controller"
+})
 @EnableJpaAuditing
 public class PratikDairyOrderApplication {
 

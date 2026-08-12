@@ -11,10 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "PRATIK-DAIRY-CART", url = "carts" , primary = false)
+@FeignClient(name = "PRATIK-DAIRY-CART", path = "carts" , primary = false)
 public interface CartController {
 
-    String USER_NAME_HEADER = "X-Auth-Username";
 
     @PostMapping(path = "items")
     ResponseEntity<String> addItemToCart(
@@ -33,5 +32,6 @@ public interface CartController {
     @DeleteMapping(path = "items/{productId}")
     ResponseEntity<Void> removeFromCart( @PathVariable String productId);
 
+    @DeleteMapping(path = "/clear")
     void clearCart();
 }

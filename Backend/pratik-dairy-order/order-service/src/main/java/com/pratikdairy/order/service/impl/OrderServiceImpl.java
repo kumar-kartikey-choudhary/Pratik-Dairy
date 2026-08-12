@@ -13,6 +13,7 @@ import com.pratikdairy.product.controller.ProductController;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,13 +26,18 @@ import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final CartController cartController;
     private final ProductController productController;
 
+    @Autowired
+    public OrderServiceImpl(OrderRepository orderRepository, CartController cartController, ProductController productController) {
+        this.orderRepository = orderRepository;
+        this.cartController = cartController;
+        this.productController = productController;
+    }
 
     private String getUsername() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
