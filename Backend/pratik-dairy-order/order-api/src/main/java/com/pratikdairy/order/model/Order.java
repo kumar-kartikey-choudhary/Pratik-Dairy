@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "ORDER_HEADER")
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Table(name = "ORDERS")
 public class Order extends  BaseEntity{
 
 

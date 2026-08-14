@@ -16,9 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("orders")
-@CrossOrigin(origins = "http://localhost:4200",
-        methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE},
-        allowedHeaders = "*")
 @Primary
 public class OrderControllerImpl implements OrderController {
 
@@ -33,6 +30,11 @@ public class OrderControllerImpl implements OrderController {
     @Override
     public ResponseEntity<OrderResponse> create() {
         return new ResponseEntity<>(this.orderService.create(), HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<List<OrderResponse>> findByCustomerName() {
+        return ResponseEntity.ok(this.orderService.findByCustomerName());
     }
 
     @Override

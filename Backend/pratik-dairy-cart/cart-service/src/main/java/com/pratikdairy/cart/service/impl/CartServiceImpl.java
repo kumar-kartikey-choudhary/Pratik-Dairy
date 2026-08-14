@@ -98,8 +98,8 @@ public class CartServiceImpl implements CartService {
 
         ProductDto productDto = fetchProduct(productId);
 
-        if (productDto.getStockQuantity() < quantity) {
-            throw new RuntimeException("Insufficient stock");
+        if (quantity > cartItem.getQuantity() && productDto.getStockQuantity() < quantity) {
+            throw new RuntimeException("Only " + productDto.getStockQuantity() + " unit(s) available");
         }
 
         cartItem.setQuantity(quantity);
@@ -108,6 +108,7 @@ public class CartServiceImpl implements CartService {
         return toDto(cartItem, productDto);
     }
 
+    @Transactional
     @Override
     public List<CartItemDto> getCart() {
         log.info("Inside @class CartServiceImpl @method getCart");
@@ -144,6 +145,7 @@ public class CartServiceImpl implements CartService {
         return dto;
     }
 
+    @Transactional
     @Override
     public void clearCart() {
         log.info("Inside @class CartServiceImpl @method clearCart");

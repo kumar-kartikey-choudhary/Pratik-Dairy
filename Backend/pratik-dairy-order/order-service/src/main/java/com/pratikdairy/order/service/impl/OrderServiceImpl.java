@@ -10,8 +10,8 @@ import com.pratikdairy.order.model.OrderStatus;
 import com.pratikdairy.order.repository.OrderRepository;
 import com.pratikdairy.order.service.OrderService;
 import com.pratikdairy.product.controller.ProductController;
+import com.pratikdairy.product.dto.ProductDto;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,14 +47,22 @@ public class OrderServiceImpl implements OrderService {
         return auth.getName();
     }
 
+    // ---------- single source of truth for fetching product details ----------
+    private ProductDto fetchProduct(String productId) {
+        ResponseEntity<ProductDto> response = productController.find(productId);
+        if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+            throw new RuntimeException("Could not fetch product details for id " + productId);
+        }
+        return response.getBody();
+    }
+
     @Override
     @Transactional
     public OrderResponse create() {
         log.info("Inside @class OrderServiceImpl @method create");
         String username = getUsername();
         List<CartItemDto> cartItems = cartController.getCart().getBody();
-        if(cartItems.isEmpty())
-        {
+        if (cartItems.isEmpty()) {
             throw new NullPointerException("Cart item is empty");
         }
 
@@ -77,11 +85,12 @@ public class OrderServiceImpl implements OrderService {
             decrementedSoFar.add(item);
         }
 
-        //calculate total price
+        // calculate total price
         BigDecimal totalPrice = cartItems.stream()
                 .map(item -> item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        //create order
+
+        // create order
         Order order = new Order();
         order.setUsername(username);
         order.setStatus(OrderStatus.CONFIRMED);
@@ -97,35 +106,71 @@ public class OrderServiceImpl implements OrderService {
 
         order.setItems(orderItems);
         Order order1 = orderRepository.saveAndFlush(order);
-        //clear cart
+        // clear cart
         cartController.clearCart();
 
+        // Lightweight response — no product-service calls, we already have everything we need
         return mapToOrderResponse(order1);
     }
 
+    // ---------- Lightweight mapping: NO product-service calls. Used by create()/updateStatus(),
+    // where the frontend just needs order id/status/total, not product name/image. ----------
     private OrderResponse mapToOrderResponse(Order order) {
+        List<OrderItemDto> itemDtos = order.getItems()
+                .stream()
+                .map(item -> new OrderItemDto(
+                        item.getId(),
+                        item.getProductId(),
+                        item.getQuantity(),
+                        item.getPrice(),
+                        item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
+                ))
+                .toList();
 
-        return  new OrderResponse(
+        return new OrderResponse(
                 order.getId(),
+                order.getOrderDateTime(),
                 order.getStatus(),
                 order.getTotalAmount(),
-                order.getItems()
-                        .stream()
-                        .map(item -> new OrderItemDto(
-                                item.getId(),
-                                item.getProductId(),
-                                item.getQuantity(),
-                                item.getPrice(),
-                                item.getPrice().multiply(new BigDecimal(item.getQuantity()))
-                        ))
-                        .toList()
+                itemDtos
+        );
+    }
+
+    // ---------- Enriched mapping: fetches product name/image from product-service.
+    // Used ONLY by findAll()/findByCustomerName() for the order-history display. ----------
+    private OrderResponse mapToOrderResponseWithProductDetails(Order order) {
+        List<OrderItemDto> itemDtos = order.getItems()
+                .stream()
+                .map(this::mapToOrderItemDtoWithProductDetails)
+                .toList();
+
+        return new OrderResponse(
+                order.getId(),
+                order.getOrderDateTime(),
+                order.getStatus(),
+                order.getTotalAmount(),
+                itemDtos
+        );
+    }
+
+    private OrderItemDto mapToOrderItemDtoWithProductDetails(OrderItems item) {
+        ProductDto product = fetchProduct(item.getProductId());
+
+        return new OrderItemDto(
+                item.getId(),
+                item.getProductId(),
+                product.getProductName(),
+                product.getImageData(),
+                item.getQuantity(),
+                item.getPrice(),
+                item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
         );
     }
 
     @Override
     public List<OrderResponse> findAll() {
         return this.orderRepository.findAll().stream()
-                .map(this::mapToOrderResponse)
+                .map(this::mapToOrderResponseWithProductDetails)
                 .toList();
     }
 
@@ -136,10 +181,9 @@ public class OrderServiceImpl implements OrderService {
                     .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
             order.setStatus(status);
             order = this.orderRepository.saveAndFlush(order);
+            // Lightweight — status change confirmation doesn't need product name/image
             return mapToOrderResponse(order);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new RuntimeException();
         }
     }
@@ -149,6 +193,16 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository.deleteById(id);
     }
 
+    @Transactional
+    @Override
+    public List<OrderResponse> findByCustomerName() {
+        log.info("Inside @OrderServiceImpl class @findByCustomerName method");
+        String username = this.getUsername();
+        List<Order> orders = this.orderRepository.findByUsername(username);
+        return orders.stream()
+                .map(this::mapToOrderResponseWithProductDetails)
+                .toList();
+    }
 
     @CircuitBreaker(name = "productService", fallbackMethod = "decrementStockFallback")
     public ResponseEntity<Boolean> safeDecrementStock(String productId, int qty) {

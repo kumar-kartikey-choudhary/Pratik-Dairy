@@ -3,6 +3,7 @@ package com.pratikdairy.order.controller;
 
 import com.pratikdairy.order.dto.OrderItemDto;
 import com.pratikdairy.order.dto.OrderResponse;
+import com.pratikdairy.order.model.Order;
 import com.pratikdairy.order.model.OrderStatus;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,12 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @ResponseBody
-@FeignClient(name = "Order-Service" , primary = false)
+@FeignClient(name = "PRATIK-DAIRY-CART", path = "orders", primary = false)
 public interface OrderController {
 
 
     @PostMapping(path = "create")
     ResponseEntity<OrderResponse> create();
+
+    @GetMapping(path = "/findByCustomer")
+    ResponseEntity<List<OrderResponse>> findByCustomerName();
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(path = "admin/findAll")

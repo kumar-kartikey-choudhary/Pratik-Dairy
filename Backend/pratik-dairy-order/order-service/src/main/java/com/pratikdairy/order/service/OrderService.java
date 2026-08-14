@@ -15,4 +15,5 @@ public interface OrderService {
 
     void delete(String id);
 
+    List<OrderResponse> findByCustomerName();
 }

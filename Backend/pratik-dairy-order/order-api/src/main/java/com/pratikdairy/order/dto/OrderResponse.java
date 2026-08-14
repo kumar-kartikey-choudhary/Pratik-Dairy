@@ -8,18 +8,31 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@RequiredArgsConstructor
 public class OrderResponse extends BaseDto {
-
     private BigDecimal totalAmount;
     private OrderStatus status;
     private LocalDateTime orderDateTime = LocalDateTime.now();
     private List<OrderItemDto> items;
 
-    public OrderResponse(String id, OrderStatus status, @NotNull BigDecimal totalAmount, List<OrderItemDto> orderItemDtoStream) {
+    // Used by create()/updateStatus() — no explicit date, defaults to now (fine for create;
+    // for updateStatus you'll want the other constructor so the ORIGINAL order date is preserved)
+    public OrderResponse(String id, OrderStatus status, @NotNull BigDecimal totalAmount, List<OrderItemDto> items) {
+        this.setId(id);
+        this.status = status;
+        this.totalAmount = totalAmount;
+        this.items = items;
+    }
+
+    // Used by findAll()/findByCustomerName()/updateStatus() — carries the real order date
+    public OrderResponse(String id, LocalDateTime orderDateTime, OrderStatus status,
+                         @NotNull BigDecimal totalAmount, List<OrderItemDto> items) {
+        this.setId(id);
+        this.orderDateTime = orderDateTime;
+        this.status = status;
+        this.totalAmount = totalAmount;
+        this.items = items;
     }
 }
