@@ -17,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -73,6 +75,8 @@ public class CartServiceImpl implements CartService {
             CartItem cartItem = new CartItem();
             cartItem.setUsername(username);
             cartItem.setProductId(productDto.getId());
+            cartItem.setCreatedBy(username);
+            cartItem.setCreatedAt(ZonedDateTime.now());
             cartItem.setQuantity(request.getQuantity());
             cartItem.setWeight(weight);
             cartItemRepository.saveAndFlush(cartItem);

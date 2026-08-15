@@ -129,6 +129,7 @@ public class OrderServiceImpl implements OrderService {
 
         return new OrderResponse(
                 order.getId(),
+                order.getUsername(),
                 order.getOrderDateTime(),
                 order.getStatus(),
                 order.getTotalAmount(),
@@ -146,6 +147,7 @@ public class OrderServiceImpl implements OrderService {
 
         return new OrderResponse(
                 order.getId(),
+                order.getUsername(),
                 order.getOrderDateTime(),
                 order.getStatus(),
                 order.getTotalAmount(),

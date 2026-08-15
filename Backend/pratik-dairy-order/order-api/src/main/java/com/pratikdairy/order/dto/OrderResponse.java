@@ -12,24 +12,27 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OrderResponse extends BaseDto {
+    private String username;
     private BigDecimal totalAmount;
     private OrderStatus status;
     private LocalDateTime orderDateTime = LocalDateTime.now();
     private List<OrderItemDto> items;
 
-    // Used by create()/updateStatus() — no explicit date, defaults to now (fine for create;
-    // for updateStatus you'll want the other constructor so the ORIGINAL order date is preserved)
-    public OrderResponse(String id, OrderStatus status, @NotNull BigDecimal totalAmount, List<OrderItemDto> items) {
+    // Used by create()/updateStatus() for the customer's own view — no explicit date needed there
+    public OrderResponse(String id, String username, OrderStatus status,
+                         @NotNull BigDecimal totalAmount, List<OrderItemDto> items) {
         this.setId(id);
+        this.username = username;
         this.status = status;
         this.totalAmount = totalAmount;
         this.items = items;
     }
 
-    // Used by findAll()/findByCustomerName()/updateStatus() — carries the real order date
-    public OrderResponse(String id, LocalDateTime orderDateTime, OrderStatus status,
+    // Used by findAll()/findByCustomerName() — carries the real order date, needed for admin table
+    public OrderResponse(String id, String username, LocalDateTime orderDateTime, OrderStatus status,
                          @NotNull BigDecimal totalAmount, List<OrderItemDto> items) {
         this.setId(id);
+        this.username = username;
         this.orderDateTime = orderDateTime;
         this.status = status;
         this.totalAmount = totalAmount;
