@@ -27,9 +27,12 @@ public class Product extends BaseEntity {
     @Column(name = "STOCK_UNIT" , columnDefinition = "VARCHAR(1000) NOT NULL ", nullable = false)
     private String stockUnit;
 
-    // CRITICAL: Tracks current inventory level
-    @Column(name = "STOCK_QUANTITY", columnDefinition = "INT DEFAULT '0'")
-    private int stockQuantity = 0;
+    // CRITICAL: Tracks current inventory level, expressed in stockUnit-multiples
+    // (e.g. if stockUnit = "1kg" and stockQuantity = 10.5, there is 10.5kg in stock).
+    // BigDecimal (not int) because weight-variant orders (e.g. selling "250g" off a
+    // "1kg" stockUnit) consume a fraction of a stockUnit — see WeightPricing.stockToConsume().
+    @Column(name = "STOCK_QUANTITY", columnDefinition = "DECIMAL(12,3) DEFAULT '0'", precision = 12, scale = 3)
+    private BigDecimal stockQuantity = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "CATEGORY", columnDefinition = "VARCHAR(20) NOT NULL", nullable = false)

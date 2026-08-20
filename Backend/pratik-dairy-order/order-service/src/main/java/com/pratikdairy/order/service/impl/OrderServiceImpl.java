@@ -9,6 +9,7 @@ import com.pratikdairy.order.model.OrderItems;
 import com.pratikdairy.order.model.OrderStatus;
 import com.pratikdairy.order.repository.OrderRepository;
 import com.pratikdairy.order.service.OrderService;
+import com.pratikdairy.cart.util.WeightPricing;
 import com.pratikdairy.product.controller.ProductController;
 import com.pratikdairy.product.dto.ProductDto;
 import jakarta.transaction.Transactional;
@@ -71,14 +72,24 @@ public class OrderServiceImpl implements OrderService {
         // If ANY item fails, we roll back the ones we already decremented and abort the order.
         // This must happen here (server side, at checkout) — never on the frontend — otherwise
         // two simultaneous orders for the last unit of a product could both "succeed" and oversell.
+        //
+        // IMPORTANT: the amount decremented is NOT the raw cart quantity. Product.stockQuantity
+        // is tracked in stockUnit-multiples (e.g. kg if stockUnit="1kg"), so buying "250g" x2 off
+        // a "1kg" stockUnit must only consume 0.5, not 2. WeightPricing.stockToConsume() applies
+        // the exact same weight multiplier used for pricing, so price and inventory always agree.
         List<CartItemDto> decrementedSoFar = new ArrayList<>();
         for (CartItemDto item : cartItems) {
-            ResponseEntity<Boolean> response = safeDecrementStock(item.getProductId(), item.getQuantity());
+            ProductDto product = fetchProduct(item.getProductId());
+            BigDecimal stockToConsume = WeightPricing.stockToConsume(item.getWeight(), product.getStockUnit(), item.getQuantity());
+
+            ResponseEntity<Boolean> response = safeDecrementStock(item.getProductId(), stockToConsume);
             boolean success = response.getBody() != null && response.getBody();
             if (!success) {
                 // rollback whatever we already decremented in this loop
                 for (CartItemDto done : decrementedSoFar) {
-                    productController.restoreStock(done.getProductId(), done.getQuantity());
+                    ProductDto doneProduct = fetchProduct(done.getProductId());
+                    BigDecimal restoreAmount = WeightPricing.stockToConsume(done.getWeight(), doneProduct.getStockUnit(), done.getQuantity());
+                    productController.restoreStock(done.getProductId(), restoreAmount);
                 }
                 throw new RuntimeException("Insufficient stock for product: " + item.getProductId());
             }
@@ -100,6 +111,7 @@ public class OrderServiceImpl implements OrderService {
                         item.getProductId(),
                         item.getQuantity(),
                         item.getPricePerUnit(),
+                        item.getWeight(),
                         order
                 ))
                 .toList();
@@ -123,7 +135,8 @@ public class OrderServiceImpl implements OrderService {
                         item.getProductId(),
                         item.getQuantity(),
                         item.getPrice(),
-                        item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
+                        item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())),
+                        item.getWeight()
                 ))
                 .toList();
 
@@ -165,7 +178,8 @@ public class OrderServiceImpl implements OrderService {
                 product.getImageData(),
                 item.getQuantity(),
                 item.getPrice(),
-                item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
+                item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())),
+                item.getWeight()
         );
     }
 
@@ -207,11 +221,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @CircuitBreaker(name = "productService", fallbackMethod = "decrementStockFallback")
-    public ResponseEntity<Boolean> safeDecrementStock(String productId, int qty) {
+    public ResponseEntity<Boolean> safeDecrementStock(String productId, BigDecimal qty) {
         return productController.decrementStock(productId, qty);
     }
 
-    private ResponseEntity<Boolean> decrementStockFallback(String productId, int qty, Throwable t) {
+    private ResponseEntity<Boolean> decrementStockFallback(String productId, BigDecimal qty, Throwable t) {
         log.error("Product service unavailable, aborting checkout for {}: {}", productId, t.getMessage());
         return ResponseEntity.ok(false);
     }

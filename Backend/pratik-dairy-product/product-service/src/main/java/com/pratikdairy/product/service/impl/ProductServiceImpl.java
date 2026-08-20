@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -181,27 +182,27 @@ public class    ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> searchProduct(String name) {
-       log.info("Inside @class ProductServiceImpl @method searchProduct @Param name :{}", name);
-       if(name == null || name.isEmpty())
-       {
-           return this.findAll();
-       }
-       List<Product> products = this.productRepository.findByProductNameContainingIgnoreCase(name);
+        log.info("Inside @class ProductServiceImpl @method searchProduct @Param name :{}", name);
+        if(name == null || name.isEmpty())
+        {
+            return this.findAll();
+        }
+        List<Product> products = this.productRepository.findByProductNameContainingIgnoreCase(name);
 
-       return products.stream().map(product -> {
-           try {
-               return  MapperUtility.sourceToTarget(product, ProductDto.class);
-           } catch (Exception e) {
-               throw new RuntimeException("Product not mapped with its Dto", e);
-           }
-       }).toList();
+        return products.stream().map(product -> {
+            try {
+                return  MapperUtility.sourceToTarget(product, ProductDto.class);
+            } catch (Exception e) {
+                throw new RuntimeException("Product not mapped with its Dto", e);
+            }
+        }).toList();
     }
 
     @Override
     @Transactional
-    public boolean decrementStock(String id, int quantity) {
+    public boolean decrementStock(String id, BigDecimal quantity) {
         log.info("Inside @class ProductServiceImpl @method decrementStock @Param id:{}, quantity:{}", id, quantity);
-        if (id == null || quantity <= 0) {
+        if (id == null || quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Invalid id or quantity");
         }
         int updatedRows = productRepository.decrementStock(id, quantity);
@@ -211,9 +212,9 @@ public class    ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void restoreStock(String id, int quantity) {
+    public void restoreStock(String id, BigDecimal quantity) {
         log.info("Inside @class ProductServiceImpl @method restoreStock @Param id:{}, quantity:{}", id, quantity);
-        if (id == null || quantity <= 0) {
+        if (id == null || quantity == null || quantity.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Invalid id or quantity");
         }
         productRepository.restoreStock(id, quantity);

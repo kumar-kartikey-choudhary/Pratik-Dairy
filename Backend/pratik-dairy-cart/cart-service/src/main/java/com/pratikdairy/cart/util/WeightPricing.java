@@ -16,9 +16,20 @@ import java.util.Set;
  *
  * This is always computed on the server — never trusted from the client.
  *
+ * The SAME multiplier is also what drives inventory: buying `quantity` line
+ * items of `selectedWeight` consumes `multiplier * quantity` of the
+ * product's own stockUnit from Product.stockQuantity. e.g. stockUnit="1kg",
+ * selectedWeight="250g", quantity=2 -> consumes 0.5 (kg-equivalents) of stock.
+ *
  * NOTE: if a product's stockUnit is not a weight (e.g. "1 litre", "6 pcs"),
  * grams conversion is impossible — in that case weight-pill selection doesn't
- * make sense for that product and the UI should not show pills for it.
+ * make sense for that product and the UI should not show pills for it. The
+ * multiplier falls back to 1, so stock is consumed one whole stockUnit per
+ * quantity, exactly as before weight-variants existed.
+ *
+ * Lives in pratik-dairy-core (not a single service's util package) because
+ * cart-service, order-service, and product-service all need the exact same
+ * math — duplicating it risks the price/stock calculations drifting apart.
  */
 public final class WeightPricing {
 
@@ -67,6 +78,17 @@ public final class WeightPricing {
         }
         return basePrice.multiply(multiplierFor(selectedWeight, productBaseUnit))
                 .setScale(2, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * How much of Product.stockQuantity (expressed in stockUnit-multiples) a cart/order
+     * line consumes: multiplier(selectedWeight, productBaseUnit) * quantity.
+     * e.g. stockUnit="1kg", weight="250g", quantity=2 -> 0.5.
+     * For non-weight products (litre/pcs) this is exactly `quantity`, same as before
+     * weight-variants existed.
+     */
+    public static BigDecimal stockToConsume(String selectedWeight, String productBaseUnit, int quantity) {
+        return multiplierFor(selectedWeight, productBaseUnit).multiply(BigDecimal.valueOf(quantity));
     }
 
     public static boolean isValidWeight(String weight) {

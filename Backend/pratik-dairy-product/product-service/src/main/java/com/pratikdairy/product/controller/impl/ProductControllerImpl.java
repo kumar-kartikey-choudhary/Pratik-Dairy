@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -29,7 +30,7 @@ public class ProductControllerImpl implements ProductController {
 
     @Override
     public ResponseEntity<ProductDto> create(ProductDto productDto, MultipartFile imageFile) {
-        return new ResponseEntity<ProductDto>(this.productService.create(productDto, imageFile) , HttpStatus.CREATED);
+        return new ResponseEntity<>(this.productService.create(productDto, imageFile) , HttpStatus.CREATED);
     }
 
     @Override
@@ -75,13 +76,13 @@ public class ProductControllerImpl implements ProductController {
     }
 
     @Override
-    public ResponseEntity<Boolean> decrementStock(String id, int quantity) {
+    public ResponseEntity<Boolean> decrementStock(String id, BigDecimal quantity) {
         boolean success = this.productService.decrementStock(id, quantity);
         return ResponseEntity.ok(success);
     }
 
     @Override
-    public ResponseEntity<Void> restoreStock(String id, int quantity) {
+    public ResponseEntity<Void> restoreStock(String id, BigDecimal quantity) {
         this.productService.restoreStock(id, quantity);
         return ResponseEntity.ok().build();
     }

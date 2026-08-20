@@ -5,7 +5,7 @@ import com.pratikdairy.cart.dto.CartItemDto;
 import com.pratikdairy.cart.entity.CartItem;
 import com.pratikdairy.cart.repository.CartItemRepository;
 import com.pratikdairy.cart.service.CartService;
-import com.pratikdairy.cart.util.*;
+import com.pratikdairy.cart.util.WeightPricing;
 import com.pratikdairy.product.controller.ProductController;
 import com.pratikdairy.product.dto.ProductDto;
 import jakarta.transaction.Transactional;
@@ -63,11 +63,16 @@ public class CartServiceImpl implements CartService {
 
         ProductDto productDto = fetchProduct(request.getProductId());
 
-        if (productDto.getStockQuantity() < request.getQuantity()) {
+        CartItem existingItem = cartItemRepository.findByUsernameAndProductIdAndWeight(username, productDto.getId(), weight);
+        int newLineQuantity = request.getQuantity() + (existingItem != null ? existingItem.getQuantity() : 0);
+
+        // Stock is tracked in stockUnit-multiples, so the check must be weight-adjusted too —
+        // e.g. requesting 2x "250g" off a "1kg" stockUnit only needs 0.5 units of stock, not 2.
+        BigDecimal stockNeeded = WeightPricing.stockToConsume(weight, productDto.getStockUnit(), newLineQuantity);
+        if (productDto.getStockQuantity() == null || productDto.getStockQuantity().compareTo(stockNeeded) < 0) {
             return false;
         }
 
-        CartItem existingItem = cartItemRepository.findByUsernameAndProductIdAndWeight(username, productDto.getId(), weight);
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
             cartItemRepository.saveAndFlush(existingItem);
@@ -102,8 +107,13 @@ public class CartServiceImpl implements CartService {
 
         ProductDto productDto = fetchProduct(productId);
 
-        if (quantity > cartItem.getQuantity() && productDto.getStockQuantity() < quantity) {
-            throw new RuntimeException("Only " + productDto.getStockQuantity() + " unit(s) available");
+        if (quantity > cartItem.getQuantity()) {
+            // Weight-adjusted: e.g. bumping a "250g" line from qty 1 -> 3 off a "1kg"
+            // stockUnit needs 0.75 units of stock, not 3.
+            BigDecimal stockNeeded = WeightPricing.stockToConsume(cartItem.getWeight(), productDto.getStockUnit(), quantity);
+            if (productDto.getStockQuantity() == null || productDto.getStockQuantity().compareTo(stockNeeded) < 0) {
+                throw new RuntimeException("Only " + productDto.getStockQuantity() + " " + productDto.getStockUnit() + "-unit(s) available");
+            }
         }
 
         cartItem.setQuantity(quantity);

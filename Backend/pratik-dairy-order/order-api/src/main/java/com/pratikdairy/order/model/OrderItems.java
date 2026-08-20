@@ -26,6 +26,12 @@ public class OrderItems extends BaseEntity {
     @Column(name = "PRICE_AT_PURCHASE")
     private BigDecimal price;
 
+    // Weight variant bought (e.g. "250g", "500g", "1kg") — copied from the cart line
+    // at checkout time so order history can show exactly what the customer purchased,
+    // even if the product's own stockUnit/price changes later.
+    @Column(name = "WEIGHT", columnDefinition = "VARCHAR(20) DEFAULT '1kg'")
+    private String weight = "1kg";
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
     @JsonIgnore

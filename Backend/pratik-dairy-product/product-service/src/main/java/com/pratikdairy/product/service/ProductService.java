@@ -3,6 +3,7 @@ package com.pratikdairy.product.service;
 import com.pratikdairy.product.dto.ProductDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductService {
@@ -22,8 +23,9 @@ public interface ProductService {
     List<ProductDto> searchProduct(String name);
 
     // Returns true if stock was successfully decremented (enough stock was available), false otherwise.
-    boolean decrementStock(String id, int quantity);
+    // quantity is in stockUnit-multiples (weight-adjusted) — see WeightPricing.stockToConsume().
+    boolean decrementStock(String id, BigDecimal quantity);
 
     // Adds stock back — used to roll back a decrement when an order fails partway through.
-    void restoreStock(String id, int quantity);
+    void restoreStock(String id, BigDecimal quantity);
 }

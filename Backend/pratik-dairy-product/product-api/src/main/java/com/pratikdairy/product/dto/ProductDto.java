@@ -16,7 +16,7 @@ public class ProductDto extends BaseDto {
     private String productName;
     private BigDecimal price;
     private boolean available;
-    private int stockQuantity;
+    private BigDecimal stockQuantity;
     private String stockUnit;
     private Category category;
     private SweetType type;

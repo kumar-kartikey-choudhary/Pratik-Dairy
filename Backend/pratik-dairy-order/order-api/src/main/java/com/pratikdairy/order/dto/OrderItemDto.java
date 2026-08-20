@@ -15,19 +15,21 @@ public class OrderItemDto extends BaseDto {
     private Integer quantity;
     private BigDecimal price;
     private BigDecimal subTotal;
+    private String weight;        // weight variant bought (e.g. "250g", "500g", "1kg")
 
     // Lightweight — used by create()/updateStatus(), no product-service call needed
-    public OrderItemDto(String id, String productId, Integer quantity, BigDecimal price, BigDecimal subTotal) {
+    public OrderItemDto(String id, String productId, Integer quantity, BigDecimal price, BigDecimal subTotal, String weight) {
         this.setId(id);
         this.productId = productId;
         this.quantity = quantity;
         this.price = price;
         this.subTotal = subTotal;
+        this.weight = weight;
     }
 
     // Enriched — used by findAll()/findByCustomerName(), includes product name/image for display
     public OrderItemDto(String id, String productId, String productName, byte[] imageData,
-                        Integer quantity, BigDecimal price, BigDecimal subTotal) {
+                        Integer quantity, BigDecimal price, BigDecimal subTotal, String weight) {
         this.setId(id);
         this.productId = productId;
         this.productName = productName;
@@ -35,5 +37,6 @@ public class OrderItemDto extends BaseDto {
         this.quantity = quantity;
         this.price = price;
         this.subTotal = subTotal;
+        this.weight = weight;
     }
 }
