@@ -35,10 +35,16 @@ export class MyOrders implements OnInit {
     this.isLoading = true;
     this.http.get<OrderResponse[]>(this.orderUrl).subscribe({
       next: (data) => {
-        this.orders = data.map((order) => ({
+        const mappedOrders = data.map((order) => ({
           ...order,
           items: order.items.map((item) => this.mapItemImage(item)),
         }));
+        // 2. Sort the orders array in descending order (newest first)
+        this.orders = mappedOrders.sort((a, b) => {
+          const dateA = new Date(a.orderDateTime).getTime();
+          const dateB = new Date(b.orderDateTime).getTime();
+          return dateB - dateA; // B - A ensures descending order
+        });
         this.isLoading = false;
       },
       error: () => {
