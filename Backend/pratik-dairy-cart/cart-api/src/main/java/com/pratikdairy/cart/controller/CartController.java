@@ -16,7 +16,7 @@ public interface CartController {
 
 
     @PostMapping(path = "items")
-    ResponseEntity<String> addItemToCart(
+    ResponseEntity<CartItemDto> addItemToCart(
             @Valid @RequestBody AddToCart request
     );
 

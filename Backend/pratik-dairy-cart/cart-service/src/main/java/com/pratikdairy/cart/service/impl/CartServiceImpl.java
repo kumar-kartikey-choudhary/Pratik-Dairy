@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -43,7 +42,6 @@ public class CartServiceImpl implements CartService {
         return auth.getName();
     }
 
-    // ---------- NEW: single source of truth for fetching product ----------
     private ProductDto fetchProduct(String productId) {
         ResponseEntity<ProductDto> response = controller.find(productId);
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
@@ -54,46 +52,49 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public boolean addItemToCart(AddToCart request) {
-        log.info("Inside @class CartServiceImpl @method addItemToCart Adding item {} to cart", request.getProductId());
+    public CartItemDto addItemToCart(AddToCart request) {
+        log.info("Adding product {} to cart", request.getProductId());
         String username = this.getUsername();
-
-        // Weight is client-selected but ALWAYS validated here. Never trust a price from the client
-        String weight = (request.getWeight() == null || request.getWeight().isBlank()) ? "1kg" : request.getWeight().trim().toLowerCase();
-
         ProductDto productDto = fetchProduct(request.getProductId());
 
-        CartItem existingItem = cartItemRepository.findByUsernameAndProductIdAndWeight(username, productDto.getId(), weight);
-        int newLineQuantity = request.getQuantity() + (existingItem != null ? existingItem.getQuantity() : 0);
+        String defaultWeight = (productDto.getStockUnit() != null && !productDto.getStockUnit().isBlank())
+                ? productDto.getStockUnit().trim().toLowerCase()
+                : "1kg";
+        String weight = (request.getWeight() == null || request.getWeight().isBlank())
+                ? defaultWeight
+                : request.getWeight().trim().toLowerCase();
 
-        // Stock is tracked in stockUnit-multiples, so the check must be weight-adjusted too —
-        // e.g. requesting 2x "250g" off a "1kg" stockUnit only needs 0.5 units of stock, not 2.
+        CartItem existingItem = cartItemRepository.findByUsernameAndProductIdAndWeight(username, productDto.getId(), weight);
+        int qtyToAdd = (request.getQuantity() != null && request.getQuantity() > 0) ? request.getQuantity() : 1;
+        int newLineQuantity = qtyToAdd + (existingItem != null ? existingItem.getQuantity() : 0);
+
         BigDecimal stockNeeded = WeightPricing.stockToConsume(weight, productDto.getStockUnit(), newLineQuantity);
         if (productDto.getStockQuantity() == null || productDto.getStockQuantity().compareTo(stockNeeded) < 0) {
-            return false;
+            return null;
         }
 
+        CartItem savedItem;
         if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
-            cartItemRepository.saveAndFlush(existingItem);
+            existingItem.setQuantity(newLineQuantity);
+            savedItem = cartItemRepository.saveAndFlush(existingItem);
         } else {
             CartItem cartItem = new CartItem();
             cartItem.setUsername(username);
             cartItem.setProductId(productDto.getId());
             cartItem.setCreatedBy(username);
             cartItem.setCreatedAt(ZonedDateTime.now());
-            cartItem.setQuantity(request.getQuantity());
+            cartItem.setQuantity(qtyToAdd);
             cartItem.setWeight(weight);
-            cartItemRepository.saveAndFlush(cartItem);
+            savedItem = cartItemRepository.saveAndFlush(cartItem);
         }
-        return true;
+
+        return toDto(savedItem, productDto);
     }
 
     @Override
     @Transactional
     public CartItemDto updateQuantity(String productId, int quantity) {
         String username = this.getUsername();
-        log.info("updateQuantity: username={}, productId={}, quantity={}", username, productId, quantity);
 
         if (quantity <= 0) {
             cartItemRepository.deleteByUsernameAndProductId(username, productId);
@@ -106,16 +107,6 @@ public class CartServiceImpl implements CartService {
         }
 
         ProductDto productDto = fetchProduct(productId);
-
-        if (quantity > cartItem.getQuantity()) {
-            // Weight-adjusted: e.g. bumping a "250g" line from qty 1 -> 3 off a "1kg"
-            // stockUnit needs 0.75 units of stock, not 3.
-            BigDecimal stockNeeded = WeightPricing.stockToConsume(cartItem.getWeight(), productDto.getStockUnit(), quantity);
-            if (productDto.getStockQuantity() == null || productDto.getStockQuantity().compareTo(stockNeeded) < 0) {
-                throw new RuntimeException("Only " + productDto.getStockQuantity() + " " + productDto.getStockUnit() + "-unit(s) available");
-            }
-        }
-
         cartItem.setQuantity(quantity);
         cartItem = cartItemRepository.saveAndFlush(cartItem);
 
@@ -125,9 +116,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public List<CartItemDto> getCart() {
-        log.info("Inside @class CartServiceImpl @method getCart");
         String username = this.getUsername();
-
         return cartItemRepository.findByUsername(username).stream()
                 .map(item -> {
                     ProductDto productDto = fetchProduct(item.getProductId());
@@ -136,23 +125,22 @@ public class CartServiceImpl implements CartService {
                 .toList();
     }
 
-    // ---------- CHANGED: ab CartItem + ProductDto dono se DTO banata hai ----------
     private CartItemDto toDto(CartItem item, ProductDto productDto) {
         CartItemDto dto = new CartItemDto();
+        dto.setId(item.getId());
         dto.setUsername(item.getUsername());
         dto.setProductId(item.getProductId());
         dto.setQuantity(item.getQuantity());
-
         dto.setProductName(productDto.getProductName());
         dto.setProductImageUrl(productDto.getImageData());
         dto.setUnit(productDto.getStockUnit());
         dto.setWeight(item.getWeight());
 
-        // Price is ALWAYS recalculated here from base price + weight — never read from the client.
-        // Multiplier is relative to THIS product's own stockUnit (e.g. Buffalo Ghee is priced per "1kg").
+        // Price per unit based on selected weight vs base unit
         BigDecimal pricePerUnit = WeightPricing.priceFor(productDto.getPrice(), item.getWeight(), productDto.getStockUnit());
         dto.setPricePerUnit(pricePerUnit);
 
+        // Subtotal = Unit Price * Quantity
         BigDecimal subtotal = pricePerUnit.multiply(BigDecimal.valueOf(item.getQuantity()));
         dto.setSubtotal(subtotal);
 
@@ -162,17 +150,14 @@ public class CartServiceImpl implements CartService {
     @Transactional
     @Override
     public void clearCart() {
-        log.info("Inside @class CartServiceImpl @method clearCart");
-        String username = this.getUsername();
-        cartItemRepository.deleteByUsername(username);
+        cartItemRepository.deleteByUsername(this.getUsername());
     }
 
     @Transactional
     @Override
     public boolean deleteItemFromCart(String productId) {
-        log.info("Inside @class CartServiceImpl @method deleteItemFromCart");
         String username = this.getUsername();
-        if (!productId.isEmpty() && !username.isEmpty()) {
+        if (productId != null && !productId.isBlank()) {
             cartItemRepository.deleteByUsernameAndProductId(username, productId);
             return true;
         }

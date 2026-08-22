@@ -4,46 +4,26 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Set;
 
-/**
- * IMPORTANT: Product.price is stored against WHATEVER unit that product's
- * admin set in Product.stockUnit (could be "250g" for one product, "1kg" for
- * another, e.g. Buffalo Ghee is priced per "1kg"). It is NOT always 250g.
- *
- * So the multiplier is always computed RELATIVE to that product's own
- * stockUnit, converting both sides to grams:
- *
- *   priceForSelectedWeight = product.price * (selectedWeightInGrams / stockUnitInGrams)
- *
- * This is always computed on the server — never trusted from the client.
- *
- * The SAME multiplier is also what drives inventory: buying `quantity` line
- * items of `selectedWeight` consumes `multiplier * quantity` of the
- * product's own stockUnit from Product.stockQuantity. e.g. stockUnit="1kg",
- * selectedWeight="250g", quantity=2 -> consumes 0.5 (kg-equivalents) of stock.
- *
- * NOTE: if a product's stockUnit is not a weight (e.g. "1 litre", "6 pcs"),
- * grams conversion is impossible — in that case weight-pill selection doesn't
- * make sense for that product and the UI should not show pills for it. The
- * multiplier falls back to 1, so stock is consumed one whole stockUnit per
- * quantity, exactly as before weight-variants existed.
- *
- * Lives in pratik-dairy-core (not a single service's util package) because
- * cart-service, order-service, and product-service all need the exact same
- * math — duplicating it risks the price/stock calculations drifting apart.
- */
 public final class WeightPricing {
 
     private static final Set<String> SELECTABLE_WEIGHTS = Set.of("250g", "500g", "1kg");
 
     private WeightPricing() {}
 
-    /** Converts a weight/unit string like "250g", "500 g", "1kg", "1 Kg" into grams. Returns -1 if not parseable as a weight. */
-    private static double toGrams(String unit) {
-        if (unit == null) return -1;
+    public static double toGrams(String unit) {
+        if (unit == null || unit.isBlank()) {
+            return 1000.0; // Default to 1kg if blank
+        }
+
         String u = unit.trim().toLowerCase().replaceAll("\\s+", "");
+
+        // Fix for database having just "kg" or "g" without numbers
+        if (u.equals("kg")) return 1000.0;
+        if (u.equals("g") || u.equals("gms")) return 1.0;
+
         try {
             if (u.endsWith("kg")) {
-                return Double.parseDouble(u.substring(0, u.length() - 2)) * 1000;
+                return Double.parseDouble(u.substring(0, u.length() - 2)) * 1000.0;
             }
             if (u.endsWith("gms")) {
                 return Double.parseDouble(u.substring(0, u.length() - 3));
@@ -52,19 +32,15 @@ public final class WeightPricing {
                 return Double.parseDouble(u.substring(0, u.length() - 1));
             }
         } catch (NumberFormatException e) {
-            return -1;
+            return 1000.0; // Fallback to 1kg base if parsing fails
         }
-        return -1; // not a weight unit (e.g. "litre", "pcs")
+        return 1000.0;
     }
 
-    /**
-     * Multiplier of selectedWeight relative to the product's own base unit.
-     * Falls back to 1 (no change) if either side isn't a parseable weight —
-     * e.g. product sold in litres/pieces, where weight-variant pricing doesn't apply.
-     */
     public static BigDecimal multiplierFor(String selectedWeight, String productBaseUnit) {
         double selectedGrams = toGrams(selectedWeight);
-        double baseGrams = toGrams(productBaseUnit);
+        double baseGrams = (productBaseUnit != null && !productBaseUnit.isBlank()) ? toGrams(productBaseUnit) : 1000.0;
+
         if (selectedGrams <= 0 || baseGrams <= 0) {
             return BigDecimal.ONE;
         }
@@ -76,27 +52,11 @@ public final class WeightPricing {
         if (basePrice == null) {
             return BigDecimal.ZERO;
         }
-        return basePrice.multiply(multiplierFor(selectedWeight, productBaseUnit))
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal multiplier = multiplierFor(selectedWeight, productBaseUnit);
+        return basePrice.multiply(multiplier).setScale(2, RoundingMode.HALF_UP);
     }
 
-    /**
-     * How much of Product.stockQuantity (expressed in stockUnit-multiples) a cart/order
-     * line consumes: multiplier(selectedWeight, productBaseUnit) * quantity.
-     * e.g. stockUnit="1kg", weight="250g", quantity=2 -> 0.5.
-     * For non-weight products (litre/pcs) this is exactly `quantity`, same as before
-     * weight-variants existed.
-     */
     public static BigDecimal stockToConsume(String selectedWeight, String productBaseUnit, int quantity) {
         return multiplierFor(selectedWeight, productBaseUnit).multiply(BigDecimal.valueOf(quantity));
-    }
-
-    public static boolean isValidWeight(String weight) {
-        return weight != null && SELECTABLE_WEIGHTS.contains(weight.trim().toLowerCase());
-    }
-
-    /** True only if this product's stockUnit can actually be weight-converted. */
-    public static boolean supportsWeightVariants(String productBaseUnit) {
-        return toGrams(productBaseUnit) > 0;
     }
 }

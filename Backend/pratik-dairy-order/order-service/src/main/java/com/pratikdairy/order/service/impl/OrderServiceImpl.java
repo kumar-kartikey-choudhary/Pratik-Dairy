@@ -48,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
         return auth.getName();
     }
 
-    // ---------- single source of truth for fetching product details ----------
     private ProductDto fetchProduct(String productId) {
         ResponseEntity<ProductDto> response = productController.find(productId);
         if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
@@ -57,48 +56,52 @@ public class OrderServiceImpl implements OrderService {
         return response.getBody();
     }
 
+    // ---------- NEW RECORD: We now trust the price directly from the CartItemDto ----------
+    private record PricedLine(CartItemDto cartItem, BigDecimal pricePerUnit, BigDecimal stockToConsume) {}
+
+    private PricedLine priceLine(CartItemDto item) {
+        ProductDto product = fetchProduct(item.getProductId());
+
+        // CRITICAL FIX: DO NOT recalculate the price here.
+        // Use the exact pricePerUnit that the Cart Service already calculated for this weight variant.
+        BigDecimal pricePerUnit = item.getPricePerUnit();
+
+        // Stock consumption still needs to be calculated based on the weight variant
+        BigDecimal stockToConsume = WeightPricing.stockToConsume(item.getWeight(), product.getStockUnit(), item.getQuantity());
+
+        return new PricedLine(item, pricePerUnit, stockToConsume);
+    }
+
     @Override
     @Transactional
     public OrderResponse create() {
         log.info("Inside @class OrderServiceImpl @method create");
         String username = getUsername();
         List<CartItemDto> cartItems = cartController.getCart().getBody();
-        if (cartItems.isEmpty()) {
+
+        if (cartItems == null || cartItems.isEmpty()) {
             throw new NullPointerException("Cart item is empty");
         }
 
-        // ---- CRITICAL: reserve stock BEFORE creating the order ----
-        // Done atomically per item on the product-service side (UPDATE ... WHERE stock >= qty).
-        // If ANY item fails, we roll back the ones we already decremented and abort the order.
-        // This must happen here (server side, at checkout) — never on the frontend — otherwise
-        // two simultaneous orders for the last unit of a product could both "succeed" and oversell.
-        //
-        // IMPORTANT: the amount decremented is NOT the raw cart quantity. Product.stockQuantity
-        // is tracked in stockUnit-multiples (e.g. kg if stockUnit="1kg"), so buying "250g" x2 off
-        // a "1kg" stockUnit must only consume 0.5, not 2. WeightPricing.stockToConsume() applies
-        // the exact same weight multiplier used for pricing, so price and inventory always agree.
-        List<CartItemDto> decrementedSoFar = new ArrayList<>();
-        for (CartItemDto item : cartItems) {
-            ProductDto product = fetchProduct(item.getProductId());
-            BigDecimal stockToConsume = WeightPricing.stockToConsume(item.getWeight(), product.getStockUnit(), item.getQuantity());
+        List<PricedLine> lines = cartItems.stream().map(this::priceLine).toList();
 
-            ResponseEntity<Boolean> response = safeDecrementStock(item.getProductId(), stockToConsume);
+        List<PricedLine> decrementedSoFar = new ArrayList<>();
+        for (PricedLine line : lines) {
+            ResponseEntity<Boolean> response = safeDecrementStock(line.cartItem().getProductId(), line.stockToConsume());
             boolean success = response.getBody() != null && response.getBody();
             if (!success) {
-                // rollback whatever we already decremented in this loop
-                for (CartItemDto done : decrementedSoFar) {
-                    ProductDto doneProduct = fetchProduct(done.getProductId());
-                    BigDecimal restoreAmount = WeightPricing.stockToConsume(done.getWeight(), doneProduct.getStockUnit(), done.getQuantity());
-                    productController.restoreStock(done.getProductId(), restoreAmount);
+                // rollback
+                for (PricedLine done : decrementedSoFar) {
+                    productController.restoreStock(done.cartItem().getProductId(), done.stockToConsume());
                 }
-                throw new RuntimeException("Insufficient stock for product: " + item.getProductId());
+                throw new RuntimeException("Insufficient stock for product: " + line.cartItem().getProductId());
             }
-            decrementedSoFar.add(item);
+            decrementedSoFar.add(line);
         }
 
-        // calculate total price
-        BigDecimal totalPrice = cartItems.stream()
-                .map(item -> item.getPricePerUnit().multiply(BigDecimal.valueOf(item.getQuantity())))
+        // Calculate total amount based on the correct unit prices from the cart
+        BigDecimal totalPrice = lines.stream()
+                .map(line -> line.pricePerUnit().multiply(BigDecimal.valueOf(line.cartItem().getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // create order
@@ -106,27 +109,26 @@ public class OrderServiceImpl implements OrderService {
         order.setUsername(username);
         order.setStatus(OrderStatus.CONFIRMED);
         order.setTotalAmount(totalPrice);
-        List<OrderItems> orderItems = cartItems.stream()
-                .map(item -> new OrderItems(
-                        item.getProductId(),
-                        item.getQuantity(),
-                        item.getPricePerUnit(),
-                        item.getWeight(),
+
+        List<OrderItems> orderItems = lines.stream()
+                .map(line -> new OrderItems(
+                        line.cartItem().getProductId(),
+                        line.cartItem().getQuantity(),
+                        line.pricePerUnit(), // Saved precisely as it was in the cart
+                        line.cartItem().getWeight(),
                         order
                 ))
                 .toList();
 
         order.setItems(orderItems);
-        Order order1 = orderRepository.saveAndFlush(order);
+        Order savedOrder = orderRepository.saveAndFlush(order);
+
         // clear cart
         cartController.clearCart();
 
-        // Lightweight response — no product-service calls, we already have everything we need
-        return mapToOrderResponse(order1);
+        return mapToOrderResponse(savedOrder);
     }
 
-    // ---------- Lightweight mapping: NO product-service calls. Used by create()/updateStatus(),
-    // where the frontend just needs order id/status/total, not product name/image. ----------
     private OrderResponse mapToOrderResponse(Order order) {
         List<OrderItemDto> itemDtos = order.getItems()
                 .stream()
@@ -150,8 +152,6 @@ public class OrderServiceImpl implements OrderService {
         );
     }
 
-    // ---------- Enriched mapping: fetches product name/image from product-service.
-    // Used ONLY by findAll()/findByCustomerName() for the order-history display. ----------
     private OrderResponse mapToOrderResponseWithProductDetails(Order order) {
         List<OrderItemDto> itemDtos = order.getItems()
                 .stream()
@@ -197,7 +197,6 @@ public class OrderServiceImpl implements OrderService {
                     .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
             order.setStatus(status);
             order = this.orderRepository.saveAndFlush(order);
-            // Lightweight — status change confirmation doesn't need product name/image
             return mapToOrderResponse(order);
         } catch (Exception e) {
             throw new RuntimeException();

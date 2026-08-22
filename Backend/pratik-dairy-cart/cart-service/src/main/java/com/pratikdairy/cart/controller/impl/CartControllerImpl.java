@@ -30,13 +30,12 @@ public class CartControllerImpl implements CartController {
 
 
     @Override
-    public ResponseEntity<String> addItemToCart(
-            @Valid @RequestBody AddToCart request) {
-        if (!cartService.addItemToCart(request)) {
-            return ResponseEntity.badRequest()
-                    .body("Product out of stock or not found");
+    public ResponseEntity<CartItemDto> addItemToCart(@Valid @RequestBody AddToCart request) {
+        CartItemDto item = cartService.addItemToCart(request);
+        if (item == null) {
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body("Item added to cart");
+        return ResponseEntity.status(HttpStatus.CREATED).body(item);
     }
 
     @Override
