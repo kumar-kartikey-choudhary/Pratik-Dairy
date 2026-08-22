@@ -1,165 +1,200 @@
 <div class="product-management-container">
+  <h1><span class="icon">🍬</span> Product Catalog Management</h1>
 
-    <h1><span class="icon">🍬</span> Product Catalog Management</h1>
+  <div class="management-grid">
+    <div class="product-listing-panel panel">
+      <div class="panel-header">
+        <h2>Product Inventory ({{ allProducts.length }} Items)</h2>
+        <button class="btn-primary" (click)="addNewProducts()">+ Add New Product</button>
+      </div>
 
-    <div class="management-grid">
+      <div class="filter-controls">
+        <input
+          type="text"
+          placeholder="Search by name or ID..."
+          [(ngModel)]="searchTerm"
+          class="search-input"
+          name="search-term"
+        />
+        <select [(ngModel)]="selectedCategory" class="category-select" name="category-filter">
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
 
-        <div class="product-listing-panel panel">
-            <div class="panel-header">
-                <h2>Product Inventory ({{ allProducts.length }} Items)</h2>
-                <button class="btn-primary" (click)="addNewProducts()">+ Add New Product</button>
-            </div>
-
-            <div class="filter-controls">
-                <input type="text" placeholder="Search by name or ID..." [(ngModel)]="searchTerm" class="search-input"
-                    name="search-term">
-                <select [(ngModel)]="selectedCategory" class="category-select" name="category-filter">
-                    @for (cat of categories; track cat) {
-                    <option [value]="cat">{{ cat }}</option>
-                    }
-                </select>
-            </div>
-
-            <div class="table-wrapper">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Product Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Stock Quantity</th>
-                            <th>Status</th>
-                            <th>Availability</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (product of filteredProducts; track product.id) {
-                        <tr [class.low-stock]="product.status === 'Low Stock'"
-                            [class.out-stock]="product.status === 'Discontinued'">
-                            <td class="product-id">#{{ product.id }}</td>
-                            <td class="product-name">{{ product.productName }}</td>
-                            <td>{{ product.category }}</td>
-                            <td>₹ {{ product.price | number:'1.2-2' }}</td>
-                            <!-- FIX: changed < 10 to <= 10 so exactly 10 units also triggers danger highlight -->
-                            <td [class.stock-danger]="product.stockQuantity <= 10">
-                                {{ product.stockQuantity }} {{ product.stockUnit }}
-                            </td>
-                            <!-- FIX: replaceAll used instead of replace to handle multi-word statuses correctly -->
-                            <td><span [class]="'status-' + product.status.toLowerCase().replaceAll(' ', '-')">{{
-                                    product.status }}</span></td>
-                            <td>{{ product.available }}</td>
-                            <td>
-                                <button class="btn-edit" (click)="editProduct(product)">Edit</button>
-                            </td>
-                        </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        @if (isEditing) {
-        <div class="product-form-panel panel">
-            <h2>{{ currentProduct.id === 0 ? 'Add New Product' : 'Edit Product #' + currentProduct.id }}</h2>
-
-            <form (ngSubmit)="saveProduct()" class="product-form">
-
-                <div class="form-row-group">
-                    <div class="input-group">
-                        <label>Product Name</label>
-                        <input type="text" [(ngModel)]="currentProduct.productName" name="productName" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Main Category</label>
-                        <select [(ngModel)]="currentProduct.category" name="category" required>
-                            @for (cat of categories.slice(1); track cat) {
-                            <option [value]="cat">{{ cat }}</option>
-                            }
-                        </select>
-                    </div>
-
-                    @if (currentProduct.category === 'Sweets') {
-                    <div class="input-group">
-                        <label>Sweet Type</label>
-                        <select [(ngModel)]="currentProduct.type" name="type" required>
-                            <option value="" disabled>-- Select Sweet Type --</option>
-                            @for (type of types; track type) {
-                            <option [value]="type">{{ type }}</option>
-                            }
-                        </select>
-                    </div>
-                    }
-                </div>
-
-                <div class="form-row-group">
-                    <div class="input-group">
-                        <label>Price (₹)</label>
-                        <input type="number" [(ngModel)]="currentProduct.price" name="price" required>
-                    </div>
-
-                    <!-- FIX: Status changed from free-text input to a select with defined options -->
-                    <div class="input-group">
-                        <label>Status</label>
-                        <select [(ngModel)]="currentProduct.status" name="status" required>
-                            <option value="" disabled>-- Select Status --</option>
-                            <option value="In Stock">In Stock</option>
-                            <option value="Low Stock">Low Stock</option>
-                            <option value="Out of Stock">Out of Stock</option>
-                            <option value="Discontinued">Discontinued</option>
-                        </select>
-                    </div>
-
-                    <!-- FIX: Stock Unit field restored (was missing from the form) -->
-                    <div class="input-group">
-                        <label>Stock Unit</label>
-                        <input type="text" [(ngModel)]="currentProduct.stockUnit" name="stockUnit"
-                            placeholder="e.g. kg, pcs, box" required>
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label>Availability</label>
-                    <textarea [(ngModel)]="currentProduct.available" name="available" rows="3"></textarea>
-                </div>
-
-                <div class="form-row-group">
-                    <div class="input-group">
-                        <label>Current Stock</label>
-                        <input type="number" [(ngModel)]="currentProduct.stockQuantity" name="stock" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Product Image</label>
-                        <!-- FIX: [required] binding corrected from static string to proper Angular property binding -->
-                        <input
-                            type="file"
-                            (change)="onFileSelected($event)"
-                            name="productImageFile"
-                            accept="image/*"
-                            [required]="currentProduct.id === 0"
-                            class="file-input-custom">
-                    </div>
-                </div>
-
-                <div class="form-row-group date-group">
-                    <div class="input-group">
-                        <label>Manufacture Date</label>
-                        <input type="date" [(ngModel)]="currentProduct.manufactureDate" name="manufactureDate" required>
-                    </div>
-                    <div class="input-group">
-                        <label>Expiration Date</label>
-                        <input type="date" [(ngModel)]="currentProduct.expirationDate" name="expirationDate" required>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-save">Save Changes</button>
-                    <button type="button" class="btn btn-cancel" (click)="isEditing = false">Cancel</button>
-                </div>
-            </form>
-        </div>
-        }
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock Quantity</th>
+              <th>Status</th>
+              <th>Availability</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of filteredProducts; track product.id) {
+              <tr
+                [class.low-stock]="product.status === 'Low Stock'"
+                [class.out-stock]="product.status === 'Discontinued'"
+              >
+                <td class="product-id">#{{ product.id }}</td>
+                <td class="product-name">{{ product.productName }}</td>
+                <td>{{ product.category }}</td>
+                <td>₹ {{ product.price | number: '1.2-2' }}</td>
+                <!-- FIX: changed < 10 to <= 10 so exactly 10 units also triggers danger highlight -->
+                <td [class.stock-danger]="product.stockQuantity <= 10">
+                  {{ product.stockQuantity }} {{ product.stockUnit }}
+                </td>
+                <!-- FIX: replaceAll used instead of replace to handle multi-word statuses correctly -->
+                <td>
+                  <span [class]="'status-' + product.status.toLowerCase().replaceAll(' ', '-')">{{
+                    product.status
+                  }}</span>
+                </td>
+                <td>{{ product.available }}</td>
+                <td>
+                  <button class="btn-edit" (click)="editProduct(product)">Edit</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
+
+    @if (isEditing) {
+      <div class="product-form-panel panel">
+        <h2>
+          {{ !currentProduct.id ? 'Add New Product' : 'Edit Product #' + currentProduct.id }}
+        </h2>
+
+        <form (ngSubmit)="saveProduct()" class="product-form">
+          <div class="form-row-group">
+            <div class="input-group">
+              <label>Product Name</label>
+              <input
+                type="text"
+                [(ngModel)]="currentProduct.productName"
+                name="productName"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <label>Main Category</label>
+              <select [(ngModel)]="currentProduct.category" name="category" required>
+                @for (cat of categories.slice(1); track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+            </div>
+
+            @if (currentProduct.category === 'Sweets') {
+              <div class="input-group">
+                <label>Sweet Type</label>
+                <select [(ngModel)]="currentProduct.type" name="type" required>
+                  <option value="" disabled>-- Select Sweet Type --</option>
+                  @for (type of types; track type) {
+                    <option [value]="type">{{ type }}</option>
+                  }
+                </select>
+              </div>
+            }
+          </div>
+
+          <div class="form-row-group">
+            <div class="input-group">
+              <label>Price (₹)</label>
+              <input type="number" [(ngModel)]="currentProduct.price" name="price" required />
+            </div>
+
+            <!-- FIX: Status changed from free-text input to a select with defined options -->
+            <div class="input-group">
+              <label>Status</label>
+              <select [(ngModel)]="currentProduct.status" name="status" required>
+                <option value="" disabled>-- Select Status --</option>
+                <option value="In Stock">In Stock</option>
+                <option value="Low Stock">Low Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+                <option value="Discontinued">Discontinued</option>
+              </select>
+            </div>
+
+            <!-- FIX: Stock Unit field restored (was missing from the form) -->
+            <div class="input-group">
+              <label>Stock Unit</label>
+              <input
+                type="text"
+                [(ngModel)]="currentProduct.stockUnit"
+                name="stockUnit"
+                placeholder="e.g. kg, pcs, box"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Availability</label>
+            <textarea [(ngModel)]="currentProduct.available" name="available" rows="3"></textarea>
+          </div>
+
+          <div class="form-row-group">
+            <div class="input-group">
+              <label>Current Stock</label>
+              <input
+                type="number"
+                [(ngModel)]="currentProduct.stockQuantity"
+                name="stock"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label>Product Image</label>
+              <!-- FIX: [required] binding corrected from static string to proper Angular property binding -->
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                name="productImageFile"
+                accept="image/*"
+                [required]="!currentProduct.id"
+                class="file-input-custom"
+              />
+            </div>
+          </div>
+
+          <div class="form-row-group date-group">
+            <div class="input-group">
+              <label>Manufacture Date</label>
+              <input
+                type="date"
+                [(ngModel)]="currentProduct.manufactureDate"
+                name="manufactureDate"
+                required
+              />
+            </div>
+            <div class="input-group">
+              <label>Expiration Date</label>
+              <input
+                type="date"
+                [(ngModel)]="currentProduct.expiryDate"
+                name="expiryDate"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-save">Save Changes</button>
+            <button type="button" class="btn btn-cancel" (click)="isEditing = false">Cancel</button>
+          </div>
+        </form>
+      </div>
+    }
+  </div>
 </div>

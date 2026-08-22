@@ -1,17 +1,16 @@
-// src/app/guards/customer-guard.guard.ts
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../service/login/auth-service';
 import { inject } from '@angular/core';
+import { AuthService } from '../service/login/auth-service';
+import { StorageService } from '../core/services/storage.service';
 
-export const customerGuard: CanActivateFn = (route, state) => {
+/** Any authenticated user (customer or admin). */
+export const customerGuard: CanActivateFn = (_route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const storage = inject(StorageService);
 
-  if (authService.isLoggedIn()) {
-    return true; // Both admin and customer can access
-  }
+  if (!storage.isBrowser) return true;
+  if (authService.isLoggedIn()) return true;
 
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
-  });
+  return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
 };

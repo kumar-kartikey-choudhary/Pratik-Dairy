@@ -1,41 +1,28 @@
 // // src/app/admin/pages/product-management/product-management.component.ts
 
-
-
-
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgFor, DecimalPipe } from '@angular/common';
 import { ProductService } from '../../../service/product/product-service';
+import type { Product } from '../../../model';
 
-// NOTE: The Product interface definition is finalized.
-interface Product {
-  id: number;
-  productName: string;
-  price: number;
-  available: boolean;
-  stockQuantity: number;
-  stockUnit: string;
-  category: string;
-  sweetType: string;
-  description: string;
-  manufactureDate: string;
-  expirationDate: string;
-  imageUrl: string;
-  status: 'In Stock' | 'Low Stock' | 'Discontinued';
-}
-
+/**
+ * Empty-string id is the "this is a new, unsaved product" sentinel.
+ * Backend ids are UUID strings (BaseDto.id), generated server-side on
+ * create — they are never `0`, so `0` can't be used as a sentinel here
+ * the way the previous `number`-typed model did.
+ */
+const NEW_PRODUCT_ID = '';
 
 @Component({
   selector: 'app-product-management',
   templateUrl: './product-management.html',
   styleUrls: ['./product-management.css'],
   standalone: true,
-  imports: [FormsModule, DecimalPipe]
+  imports: [FormsModule, DecimalPipe],
 })
 export class ProductManagement implements OnInit {
-
   // State variables
   isEditing: boolean = false;
   allProducts: Product[] = [];
@@ -53,7 +40,7 @@ export class ProductManagement implements OnInit {
   selectedCategory: string = 'All';
 
   // Inject the service
-  constructor(private service: ProductService) { }
+  constructor(private service: ProductService) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -72,19 +59,19 @@ export class ProductManagement implements OnInit {
   // Placeholder to create a clean model
   private getEmptyProductModel(): any {
     return {
-      id: 0,
+      id: NEW_PRODUCT_ID,
       productName: '',
       price: 0,
       available: true,
       stockQuantity: 0,
       stockUnit: 'KG',
       category: 'Dairy',
-      sweetType: '',
+      type: '',
       description: '',
       manufactureDate: new Date().toISOString().substring(0, 10),
-      expirationDate: '',
+      expiryDate: '',
       imageUrl: '',
-      status: 'In Stock'
+      status: 'In Stock',
     };
   }
 
@@ -103,7 +90,7 @@ export class ProductManagement implements OnInit {
   editProduct(product: Product): void {
     this.currentProduct = {
       ...product,
-      sweetType: (product as any).sweetType || ''
+      type: (product as any).type || '',
     };
     this.selectedFile = null; // Clear file selection when editing
     this.isEditing = true;
@@ -115,14 +102,13 @@ export class ProductManagement implements OnInit {
     // Guard against double submission
     if (this.isUploading) return;
 
-    // Remove the temporary ID for new product creation, if present.
-    // The backend should generate the ID, but TypeScript needs a number.
-    // We explicitly check for ID == 0 to signify a new product.
+    // A blank id means this is a new, unsaved product — the backend generates
+    // the real UUID on create, so we never send an id for CREATE.
 
     this.isUploading = true;
 
     // --- CASE 1: CREATE NEW PRODUCT (POST) ---
-    if (productPayload.id === 0) {
+    if (!productPayload.id) {
       if (!this.selectedFile) {
         alert('New product requires an image file to be selected.');
         this.isUploading = false;
@@ -142,7 +128,7 @@ export class ProductManagement implements OnInit {
           console.error('Add product failed:', err);
           alert('Add failed. Check API connection and file size limits.');
           this.isUploading = false;
-        }
+        },
       });
     }
     // --- CASE 2: UPDATE EXISTING PRODUCT (PUT) ---
@@ -160,24 +146,23 @@ export class ProductManagement implements OnInit {
             console.error('Update failed:', err);
             alert('Update failed. Check API connection and file size limits.');
             this.isUploading = false;
-          }
+          },
         });
-      }
-      else{
+      } else {
         this.service.updateProduct(productPayload.id, productPayload, this.selectedFile).subscribe({
-        next: (response) => {
-          alert(`Product #${response.id} updated successfully!`);
-          this.isEditing = false;
-          this.isUploading = false;
-          this.selectedFile = null;
-          this.loadProducts();
-        },
-        error: (err) => {
-          console.error('Update failed:', err);
-          alert('Update failed. Check API connection and file size limits.');
-          this.isUploading = false;
-        }
-      });
+          next: (response) => {
+            alert(`Product #${response.id} updated successfully!`);
+            this.isEditing = false;
+            this.isUploading = false;
+            this.selectedFile = null;
+            this.loadProducts();
+          },
+          error: (err) => {
+            console.error('Update failed:', err);
+            alert('Update failed. Check API connection and file size limits.');
+            this.isUploading = false;
+          },
+        });
       }
     }
   }
@@ -190,11 +175,11 @@ export class ProductManagement implements OnInit {
     const term = this.searchTerm.toLowerCase();
 
     if (this.selectedCategory !== 'All') {
-      products = products.filter(p => p.category === this.selectedCategory);
+      products = products.filter((p) => p.category === this.selectedCategory);
     }
 
     if (term) {
-      products = products.filter(p => p.productName.toLowerCase().includes(term));
+      products = products.filter((p) => p.productName.toLowerCase().includes(term));
     }
 
     return products;
@@ -208,7 +193,7 @@ export class ProductManagement implements OnInit {
       next: (data: any) => {
         this.allProducts = data;
       },
-      error: (err) => console.error('Failed to fetch products', err)
+      error: (err) => console.error('Failed to fetch products', err),
     });
   }
 }

@@ -1,18 +1,15 @@
 // src/app/footer/footer.component.ts
-
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.html',
   styleUrls: ['./footer.css'],
   standalone: true,
-  imports: [RouterLink]
+  imports: [RouterLink],
 })
 export class Footer {
-  
   quickLinks = [
     { label: 'Home', link: '/' },
     { label: 'Products Hub', link: '/products' },

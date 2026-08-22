@@ -126,11 +126,44 @@
     color: white;
 }
 
-.status-new { background-color: var(--accent-info); } /* Blue */
 .status-processing { background-color: var(--accent-warning); } /* Yellow */
-.status-ready { background-color: var(--admin-primary); } /* Orange */
+.status-confirmed { background-color: var(--admin-primary); } /* Orange */
+.status-shipped { background-color: var(--accent-info); } /* Blue */
 .status-delivered { background-color: var(--accent-success); } /* Green */
 .status-cancelled { background-color: var(--accent-danger); } /* Red */
+
+.status-action-select {
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-right: 8px;
+    cursor: pointer;
+    font-size: 0.85em;
+}
+
+.loading-message {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+}
+
+.error-message-box {
+    background-color: #fdecea;
+    border: 1px solid var(--accent-danger);
+    color: var(--accent-danger);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.error-message-box .btn-retry {
+    margin-top: 10px;
+    background-color: var(--accent-danger);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
 /* Action Buttons */
 .btn-action {

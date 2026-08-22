@@ -2,6 +2,7 @@
   max-width: 600px;
   margin: 40px auto;
   padding: 0 16px;
+  min-height: calc(100vh - 660px);
 }
 
 .loading-state {
@@ -32,7 +33,7 @@
   background: #fff;
   border-radius: 12px;
   padding: 32px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
 .profile-card h2 {
@@ -113,7 +114,7 @@
 .form-group input:focus {
   outline: none;
   border-color: #f5a623;
-  box-shadow: 0 0 0 3px rgba(245,166,35,0.1);
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
 }
 
 .form-actions {

@@ -1,251 +1,264 @@
 /* src/app/pages/dairy-products/dairy-products.component.css */
 
 :root {
-    --dark-bg: #1e1e2d;
-    --dark-surface: #262948;
-    --primary-accent: #ff8f00;
-    --secondary-accent: #FFC107;
-    --text-light: #f4f4f4;
-    --text-muted: #a0a0a0;
-    --cart-pink: #e91e8c; /* Image wali hot-pink */
+  --dark-bg: #1e1e2d;
+  --dark-surface: #262948;
+  --primary-accent: #ff8f00;
+  --secondary-accent: #ffc107;
+  --text-light: #f4f4f4;
+  --text-muted: #a0a0a0;
+  --cart-pink: #e91e8c; /* Image wali hot-pink */
 }
 
 .dairy-page-container {
-    background-color: var(--dark-bg);
-    min-height: 80vh;
-    padding-bottom: 50px;
+  background-color: var(--dark-bg);
+  min-height: 80vh;
+  padding-bottom: 50px;
 }
 
 /* --- PAGE HEADER BANNER --- */
 .page-header-banner {
-    background-color: #3d5a71;
-    padding: 60px 20px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    color: var(--text-light);
+  background-color: #3d5a71;
+  padding: 60px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  color: var(--text-light);
 }
 
 .page-header-banner h1 {
-    font-size: 3em;
-    color: var(--secondary-accent);
-    margin-bottom: 10px;
-    text-transform: uppercase;
+  font-size: 3em;
+  color: var(--secondary-accent);
+  margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .page-header-banner p {
-    font-size: 1.2em;
-    font-weight: 300;
+  font-size: 1.2em;
+  font-weight: 300;
 }
 
 /* --- PRODUCT LISTING SECTION --- */
 .product-listing-section {
-    padding: 50px 20px;
-    max-width: 1300px;
-    margin: 0 auto;
-    text-align: center;
+  padding: 50px 20px;
+  max-width: 1300px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .product-listing-section h2 {
-    font-size: 2.2em;
-    color: var(--secondary-accent);
-    margin-bottom: 50px;
-    text-transform: uppercase;
+  font-size: 2.2em;
+  color: var(--secondary-accent);
+  margin-bottom: 50px;
+  text-transform: uppercase;
 }
 
 /* --- PRODUCT CARD GRID --- */
 .product-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 0;
 }
 
 .product-card {
-    background-color: var(--dark-surface);
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
+  background-color: var(--dark-surface);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
 }
 
 .product-image {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-bottom: 3px solid var(--primary-accent);
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-bottom: 3px solid var(--primary-accent);
 }
 
 .card-body {
-    padding: 20px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-body h3 {
-    font-size: 1.6em;
-    color: var(--text-light);
-    margin-top: 0;
-    margin-bottom: 10px;
+  font-size: 1.6em;
+  color: var(--text-light);
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 
 .description {
-    color: var(--text-muted);
-    font-size: 0.95em;
-    flex-grow: 1;
-    margin-bottom: 15px;
+  color: var(--text-muted);
+  font-size: 0.95em;
+  flex-grow: 1;
+  margin-bottom: 15px;
 }
 
 /* --- PRICE & ACTIONS --- */
 .price-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .price-tag {
-    font-size: 1.4em;
-    font-weight: 700;
-    color: var(--secondary-accent);
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--secondary-accent);
 }
 
 /* --- ADD TO CART BUTTON --- */
 .btn-add-to-cart {
-    background-color: #ea843c;
-    color: wheat;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.15s;
-    min-width: 130px;
-    text-align: center;
+  background-color: #ea843c;
+  color: wheat;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+  min-width: 130px;
+  text-align: center;
 }
 
 .btn-add-to-cart:hover:not(:disabled) {
-    background-color: #c2157a;
-    transform: translateY(-1px);
+  background-color: #c2157a;
+  transform: translateY(-1px);
 }
 
 .btn-add-to-cart:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 /* --- QUANTITY CONTROLS (Image jaisi — pink background) --- */
 .quantity-controls {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: var(--cart-pink); /* Hot pink background */
-    border-radius: 8px;
-    overflow: hidden;
-    min-width: 130px;
-    height: 42px;
-    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--cart-pink); /* Hot pink background */
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 130px;
+  height: 42px;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 @keyframes popIn {
-    0%   { transform: scale(0.75); opacity: 0; }
-    100% { transform: scale(1);    opacity: 1; }
+  0% {
+    transform: scale(0.75);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* − aur + buttons */
 .btn-qty {
-    background: transparent;
-    border: none;
-    color: #ffffff;
-    font-size: 1.4rem;
-    font-weight: 700;
-    width: 42px;
-    height: 42px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s;
-    line-height: 1;
-    padding: 0;
-    /* Override old green color */
-    color: #ffffff !important;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 700;
+  width: 42px;
+  height: 42px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  line-height: 1;
+  padding: 0;
+  /* Override old green color */
+  color: #ffffff !important;
 }
 
 .btn-qty:hover {
-    background: rgba(255, 255, 255, 0.18);
-    color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
 }
 
 .btn-qty:active {
-    background: rgba(0, 0, 0, 0.12);
-    transform: scale(0.9);
+  background: rgba(0, 0, 0, 0.12);
+  transform: scale(0.9);
 }
 
 /* Quantity number */
 .qty-display {
-    color: #ffffff;
-    font-size: 1.05rem;
-    font-weight: 700;
-    min-width: 28px;
-    text-align: center;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 700;
+  min-width: 28px;
+  text-align: center;
 }
 
 /* --- CTA SECTION --- */
 .cta-section {
-    text-align: center;
-    padding: 50px 20px;
-    background-color: var(--dark-surface);
-    margin-top: 40px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  padding: 50px 20px;
+  background-color: var(--dark-surface);
+  margin-top: 40px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .cta-section h2 {
-    color: var(--text-light);
-    margin-bottom: 25px;
+  color: var(--text-light);
+  margin-bottom: 25px;
 }
 
 .cta-actions a {
-    text-decoration: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-weight: 700;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    font-size: 1em;
-    margin: 0 10px;
+  text-decoration: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 700;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  font-size: 1em;
+  margin: 0 10px;
 }
 
 .cta-actions .btn-primary {
-    background-color: var(--primary-accent);
-    color: var(--dark-bg);
-    border: 2px solid var(--primary-accent);
+  background-color: var(--primary-accent);
+  color: var(--dark-bg);
+  border: 2px solid var(--primary-accent);
 }
 
 .cta-actions .btn-secondary {
-    background-color: transparent;
-    color: var(--text-light);
-    border: 2px solid var(--text-light);
+  background-color: transparent;
+  color: var(--text-light);
+  border: 2px solid var(--text-light);
 }
 
 /* --- MEDIA QUERIES --- */
 @media (max-width: 600px) {
-    .product-grid {
-        grid-template-columns: 1fr;
-    }
-    .price-actions {
-        flex-direction: column;
-        gap: 10px;
-    }
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+  .price-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
 }
 .quantity-controls {
   display: inline-flex;
@@ -257,8 +270,8 @@
   background: #faf9f9;
 }
 
-span.qty-display{
-    color: black;
+span.qty-display {
+  color: black;
 }
 
 .qty-btn {
@@ -274,7 +287,9 @@ span.qty-display{
   justify-content: center;
 }
 
-.qty-btn:hover { background: #e5e7eb; }
+.qty-btn:hover {
+  background: #e5e7eb;
+}
 
 .qty {
   min-width: 28px;
@@ -282,30 +297,33 @@ span.qty-display{
   font-weight: 500;
 }
 
-
 .weight-options {
   display: flex;
   gap: 8px;
   margin: 8px 0;
   flex-wrap: wrap;
 }
- 
+
 .weight-pill {
-  border: 1px solid #d1d5db;
-  background: white;
+  border: 1px solid #e2ddd3;
+  background: #fff;
   border-radius: 20px;
   padding: 5px 14px;
   font-size: 0.85rem;
+  color: #6b7280;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
 }
- 
+
 .weight-pill:hover {
-  border-color: #7b2ff7;
+  border-color: #e07a24;
+  color: #e07a24;
 }
- 
+
 .weight-pill.active {
-  background: #7b2ff7;
-  color: white;
-  border-color: #7b2ff7;
+  background: #e07a24;
+  border-color: #e07a24;
+  color: #fff;
+  font-weight: 600;
 }
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/pratik-dairy-cart/cart-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-cart/cart-app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-cart/cart-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-cart/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-cart/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-order/order-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-order/order-app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-order/order-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-order/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-order/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-parent/pratik-dairy-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-parent/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-parent/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-product/product-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-product/product-app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-product/product-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-product/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-product/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-user/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-user/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-user/user-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-user/user-app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/pratik-dairy-user/user-service/src/main/java" charset="UTF-8" />
+  </component>
+</project>

@@ -1,16 +1,8 @@
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../../service/login/auth-service';
-import { inject } from '@angular/core';
+import { CanActivateFn } from '@angular/router';
+import { authGuardGuard } from '../../guard/auth-guard-guard';
 
-export const adminGuardGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-
-  // Check if the user is logged in AND has the 'admin' role
-  if (authService.isLoggedIn() && authService.isAdmin()) {
-    return true; // Access granted
-  } else {
-    // Access denied: Redirect to home page or login
-    return router.createUrlTree(['/login']); 
-  }
-};
+/**
+ * Kept for backwards compatibility with existing imports — the admin rules now
+ * live in a single place so the two guards can never drift apart.
+ */
+export const adminGuardGuard: CanActivateFn = authGuardGuard;

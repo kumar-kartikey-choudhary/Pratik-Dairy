@@ -1,22 +1,24 @@
 <main class="drinks-page-container">
-  
   <section class="page-header-banner">
     <div class="header-overlay"></div>
     <div class="header-content">
       <h1>Soft Drinks & Essentials</h1>
-      <p>Your favorite carbonated beverages and chilled water, available for quick pickup or delivery.</p>
+      <p>
+        Your favorite carbonated beverages and chilled water, available for quick pickup or
+        delivery.
+      </p>
     </div>
   </section>
 
   <section class="search-section">
     <div class="search-input-wrapper">
-      <input 
-        type="text" 
-        placeholder="Search Coke, Sprite, or Fanta..." 
-        [(ngModel)]="filterText" 
+      <input
+        type="text"
+        placeholder="Search Coke, Sprite, or Fanta..."
+        [(ngModel)]="filterText"
         class="search-input"
         aria-label="Search Cold Drinks Menu"
-      >
+      />
       <span class="search-icon">🔍</span>
     </div>
   </section>
@@ -29,31 +31,29 @@
         All Soft Drinks & Essentials
       }
     </h2>
-    
+
     @for (category of filteredCategories; track category.name) {
-      
       @if (category.items.length > 0) {
-        
         <div class="category-header">
           <h3>{{ category.name }}</h3>
         </div>
-        
+
         <div class="menu-grid">
           @for (drink of category.items; track drink.name) {
             <div class="drink-card">
               <div class="image-box">
-                 <img [src]="drink.imagePath" [alt]="drink.name" class="drink-image">
-                 <span class="category-tag">{{ drink.category }}</span>
+                <img [src]="drink.imagePath" [alt]="drink.name" class="drink-image" />
+                <span class="category-tag">{{ drink.category }}</span>
               </div>
-              
+
               <div class="card-details">
                 <div class="name-price">
                   <h3>{{ drink.name }}</h3>
-                  <span class="price-tag">{{ drink.price }}</span> 
+                  <span class="price-tag">{{ drink.price }}</span>
                 </div>
-                
+
                 <p class="description">{{ drink.description }}</p>
-                
+
                 <button class="btn-order">Add to Cart</button>
               </div>
             </div>
@@ -75,5 +75,4 @@
     <p>Perfect for events and gatherings. Contact us for bulk pricing.</p>
     <a routerLink="/contact" class="btn btn-primary">Bulk Order Inquiry</a>
   </section>
-
 </main>

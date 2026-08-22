@@ -1,8 +1,20 @@
-<app-admin-header *ngIf="showAdminHeader()"></app-admin-header>
-<app-header *ngIf="showCustomerHeader()"></app-header>
+<app-loading-bar />
 
-<main>
-  <router-outlet></router-outlet>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+@if (showAdminHeader()) {
+  <app-admin-header />
+}
+@if (showCustomerHeader()) {
+  <app-header />
+}
+
+<main id="main-content" tabindex="-1">
+  <router-outlet />
 </main>
 
-<app-footer *ngIf="showFooter()"></app-footer>
+@if (showFooter()) {
+  <app-footer />
+}
+
+<app-toast-host />

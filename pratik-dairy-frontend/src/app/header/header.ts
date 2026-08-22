@@ -6,15 +6,11 @@ import { CartService } from '../service/cart/CartService';
 
 @Component({
   selector: 'app-header',
-  imports: [
-    RouterLink,
-    RouterLinkActive,
-  ],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  styleUrl: './header.css',
 })
 export class Header {
-  
   navLinks = [
     { label: 'Home', link: '/' },
     { label: 'Products', link: '/products' },
@@ -22,23 +18,25 @@ export class Header {
     { label: 'Contact', link: '/contact' }
   ];
 
-  constructor(public authservice : AuthService , private router : Router, private cartService : CartService){}
+  constructor(
+    public authservice: AuthService,
+    private router: Router,
+    private cartService: CartService,
+  ) {}
 
   // State variables for menu toggles
   isMenuOpen: boolean = false;
-
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
-  carts()
-  {
+  carts() {
     this.cartService.getCart();
   }
 
   onLogOut() {
     this.authservice.logout();
-    this.router.navigate(['/login'])
+    this.router.navigate(['/login']);
   }
 }

@@ -105,10 +105,36 @@
 }
 
 /* Status Badges */
-.status-new { color: var(--admin-primary); font-weight: 600; }
 .status-processing { color: var(--accent-info); font-weight: 600; }
+.status-confirmed { color: var(--admin-primary); font-weight: 600; }
+.status-shipped { color: var(--accent-info); font-weight: 600; }
 .status-delivered { color: var(--accent-success); font-weight: 600; }
 .status-cancelled { color: var(--accent-danger); font-weight: 600; }
+
+.loading-message,
+.no-data-message {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 20px;
+}
+
+.error-message-box {
+    background-color: #fdecea;
+    border: 1px solid var(--accent-danger);
+    color: var(--accent-danger);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.error-message-box .btn-retry {
+    margin-top: 10px;
+    background-color: var(--accent-danger);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
 .action-link {
     color: var(--admin-primary);

@@ -1,72 +1,64 @@
 <div class="cart-container">
-
-  <!-- Loading -->
-  <div *ngIf="isLoading" class="loading-state">
-    <div class="spinner"></div>
-    <p>loading ...</p>
+  <div class="cart-header">
+    <h2>My Cart ({{ totalCount }} items)</h2>
   </div>
 
-  <!-- Error -->
-  <div *ngIf="errorMsg && !isLoading" class="error-msg">
-    {{ errorMsg }}
-  </div>
+  <div class="cart-content" *ngIf="cartItems.length > 0; else emptyCart">
+    <div class="cart-items-section">
+      <div class="cart-item-card" *ngFor="let item of cartItems">
+        <div class="item-image">
+          <img 
+            [src]="item.productImageUrl ? 'data:image/jpeg;base64,' + item.productImageUrl : 'assets/images/placeholder.png'" 
+            [alt]="item.productName" 
+          />
+        </div>
 
-  <!-- Empty Cart -->
-  <div *ngIf="!isLoading && cartItems.length === 0 && !errorMsg" class="empty-cart">
-    <i class="ti ti-shopping-cart-off"></i>
-    <h3>Aapka cart khali hai</h3>
-    <a routerLink="/products">Add Products</a>
-  </div>
-
-  <!-- Cart Items -->
-  <div *ngIf="!isLoading && cartItems.length > 0" class="cart-content">
-
-    <h2 class="cart-title">My Cart ({{ totalItems }} items)</h2>
-
-    <div class="cart-items">
-      <div *ngFor="let item of cartItems" class="cart-item">
-
-        <img [src]="item.productImageUrl" [alt]="item.productName" class="product-image" />
-
-        <div class="item-info">
-          <p class="product-name">{{ item.productName }}</p>
-          <!-- <p class="unit"></p>  -->
-          <p class="price">₹{{ item.pricePerUnit }}/{{ item.unit }}</p>
+        <div class="item-details">
+          <h3 class="product-name">{{ item.productName }}</h3>
+          <span class="weight-badge">{{ item.weight }}</span>
         </div>
 
         <div class="quantity-controls">
-          <button (click)="decreaseQuantity(item)" class="qty-btn">−</button>
-          <span class="qty">{{ item.quantity }}</span>
-          <button (click)="increaseQuantity(item)" class="qty-btn">+</button>
+          <button class="qty-btn" (click)="decreaseQuantity(item)">-</button>
+          <span class="qty-count">{{ item.quantity }}</span>
+          <button class="qty-btn" (click)="increaseQuantity(item)">+</button>
         </div>
 
-        <div class="item-subtotal">
-          <p>₹{{ item.subtotal }}</p>
+        <div class="item-pricing">
+          <span class="price-value">₹{{ item.subtotal != null ? item.subtotal : (item.pricePerUnit * item.quantity) }}</span>
         </div>
 
-        <button (click)="removeItem(item.productId)" class="remove-btn">
-          <i class="ti ti-trash"></i>
-        </button>
-
+        <div class="item-actions">
+          <button class="delete-btn" (click)="removeItem(item.productId)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Order Summary -->
-    <div class="order-summary">
-      <div class="summary-row">
-        <span>Subtotal ({{ totalItems }} items)</span>
-        <span>₹{{ totalAmount }}</span>
+    <div class="cart-summary-card">
+      <div class="summary-line">
+        <span>Subtotal ({{ totalCount }} items)</span>
+        <span>₹{{ subtotalAmount }}</span>
       </div>
-      <div class="summary-row">
+      <div class="summary-line">
         <span>Delivery</span>
-        <span class="free">FREE</span>
+        <span class="free-text">FREE</span>
       </div>
-      <div class="summary-row total">
-        <span>Total</span>
-        <span>₹{{ totalAmount }}</span>
+      <div class="divider"></div>
+      <div class="summary-line total-line">
+        <strong>Total</strong>
+        <strong>₹{{ totalAmount }}</strong>
       </div>
-      <button class="checkout-btn">Checkout karo</button>
-    </div>
 
+      <button class="checkout-btn" (click)="checkout()">Checkout</button>
+    </div>
   </div>
+
+  <ng-template #emptyCart>
+    <div class="empty-cart-view" *ngIf="!isLoading">
+      <p>Your cart is empty!</p>
+      <a routerLink="/products" class="shop-now-btn">Shop Now</a>
+    </div>
+  </ng-template>
 </div>

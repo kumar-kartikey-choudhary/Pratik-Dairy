@@ -1,89 +1,65 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, shareReplay, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import type { Product } from '../../model';
 
-interface Product {
-  id?: number;
-  productName: string,
-  price: number,
-  available: boolean,
-  stockQuantity: number,
-  stockUnit: string,
-  category: string,
-  sweetType?: string,
-  description: string,
-  manufactureDate: string,
-  expirationDate: string,
-  imageUrl: string,
-  status: 'In Stock' | 'Low Stock' | 'Discontinued';
-}
+export type { Product };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProductService {
-  private readonly API_URL = "http://localhost:8080/products";
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiBaseUrl}/products`;
 
-  constructor(private http: HttpClient) { }
+  /** Cached catalogue so navigating between category pages doesn't refetch. */
+  private catalogue$?: Observable<Product[]>;
 
-  /**
-   * Sends product data and image file in a single request (using FormData)
-   * to create a new product.
-   */
-  addProduct(productData: Product, imageFile: File): Observable<Product> {
-    const url = `${this.API_URL}/addProduct`;
-    const formData: FormData = new FormData();
-    const productDtoBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
+  addProduct(productData: Product, imageFile: File): Observable<Product> {
+    const formData = this.toFormData(productData, imageFile);
+    return this.http
+      .post<Product>(`${this.apiUrl}/addProduct`, formData)
+      .pipe(tap(() => this.invalidateCache()));
+  }
 
-    formData.append('productDto', productDtoBlob, 'productDto.json');
-    formData.append('imageFile', imageFile, imageFile.name);
+  /** Retrieve the product catalogue (cached until something mutates it). */
+  getAllProducts(forceRefresh = false): Observable<Product[]> {
+    if (forceRefresh || !this.catalogue$) {
+      this.catalogue$ = this.http
+        .get<Product[]>(`${this.apiUrl}/all`)
+        .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+    }
+    return this.catalogue$;
+  }
 
+  getProductsByCategory(category: string): Observable<Product[]> {
+    return this.http.get<Product[]>(`${this.apiUrl}/all`, { params: { category } });
+  }
 
-    // const authToken = localStorage.getItem("AUTH_TOKEN");
-    return this.http.post<Product>(url, formData,
-    // {
-    //     headers:{
-    //         Authorization : `Bearer ${authToken}` 
-    //     }
-    // }
-    );
-  }
+  updateProduct(
+    productId: string,
+    productData: Partial<Product>,
+    imageFile?: File | null,
+  ): Observable<Product> {
+    const url = `${this.apiUrl}/admin/updateProduct/${productId}`;
+    const body = imageFile ? this.toFormData(productData, imageFile) : productData;
+    return this.http.patch<Product>(url, body).pipe(tap(() => this.invalidateCache()));
+  }
 
-  /**
-   * Retrieve list of products from the backend.
-   */
-  getAllProducts(): Observable<Product[]> {
-    const url = `${this.API_URL}/all`;
-    return this.http.get<Product[]>(url);
-  }
+  deleteProduct(productId: string): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/admin/deleteProduct/${productId}`)
+      .pipe(tap(() => this.invalidateCache()));
+  }
 
-  /**
-   * CRITICAL FIX: Sends product data to update an existing product.
-   * Note: Changed imageFile type to allow null, resolving the TS error.
-   */
-  updateProduct(productId: number, productData: any, imageFile?: File | null): Observable<any> {
-    const url = `${this.API_URL}/admin/updateProduct/${productId}`;
+  invalidateCache(): void {
+    this.catalogue$ = undefined;
+  }
 
-    if (imageFile) {
-      // --- SCENARIO 1: Update with an Image (Multipart/form-data) ---
-      console.log(`Sending multipart PUT request to update product ${productId} with new image.`);
-
-      const formData: FormData = new FormData();
-      const productDtoBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
-
-      formData.append('productDto', productDtoBlob, 'productDto.json');
-      formData.append('imageFile', imageFile, imageFile.name); // imageFile is File here
-
-      return this.http.patch<any>(url, formData);
-
-    } else {
-      // --- SCENARIO 2: Update without an Image (application/json) ---
-      console.log(`Sending JSON PUT request to update product ${productId} (no image change).`);
-
-      // Send the plain JSON object.
-      return this.http.patch<any>(url, productData);
-    }
-  }
+  private toFormData(productData: Partial<Product>, imageFile: File): FormData {
+    const formData = new FormData();
+    const dtoBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
+    formData.append('productDto', dtoBlob, 'productDto.json');
+    formData.append('imageFile', imageFile, imageFile.name);
+    return formData;
+  }
 }
-
-

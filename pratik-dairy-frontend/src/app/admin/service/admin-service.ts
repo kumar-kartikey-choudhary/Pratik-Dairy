@@ -1,30 +1,20 @@
-  import { HttpClient } from '@angular/common/http';
-  import { Injectable } from '@angular/core';
-  import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import type { UserDto } from '../../model';
 
+export type { UserDto };
 
-  export interface User{
-    id: number;
-    firstName : string;
-    LastName : string;
-    email : string;
-    username: string;
-    role : string;
-    
+@Injectable({
+  providedIn: 'root',
+})
+export class AdminService {
+  private apiUrl = `${environment.apiBaseUrl}/users/admin/findAll`;
+
+  constructor(private http: HttpClient) {}
+
+  getAllUsers(): Observable<UserDto[]> {
+    return this.http.get<UserDto[]>(this.apiUrl);
   }
-
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class AdminService {
-    
-    private apiUrl = "http://localhost:8080/admin/findAll";
-
-    constructor(private http : HttpClient){}
-
-    getAllUsers() : Observable<User[]>{
-      return this.http.get<User[]>(this.apiUrl);
-    }
-
-  }
+}

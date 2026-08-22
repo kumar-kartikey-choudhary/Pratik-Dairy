@@ -1,6 +1,188 @@
+/* ============================================================================
+   Pratik Dairy — global design tokens & base styles
+   ----------------------------------------------------------------------------
+   The original stylesheet was 5 lines and every component re-invented its own
+   colours, spacing and buttons. These tokens give the app one palette,
+   one type scale and consistent focus/motion behaviour.
+   ========================================================================== */
+
+:root {
+  /* Brand palette — warm dairy/mithai tones */
+  --pd-primary: #b8860b;
+  --pd-primary-dark: #8f6809;
+  --pd-primary-soft: #fdf6e3;
+  --pd-accent: #c1440e;
+  --pd-success: #1f7a4d;
+  --pd-danger: #b3261e;
+
+  --pd-bg: #fffdf8;
+  --pd-surface: #ffffff;
+  --pd-text: #2b2b2b;
+  --pd-muted: #6b6b6b;
+  --pd-border: #e7e1d4;
+
+  /* Spacing scale */
+  --pd-space-1: 0.25rem;
+  --pd-space-2: 0.5rem;
+  --pd-space-3: 0.75rem;
+  --pd-space-4: 1rem;
+  --pd-space-6: 1.5rem;
+  --pd-space-8: 2rem;
+  --pd-space-12: 3rem;
+
+  --pd-radius: 0.75rem;
+  --pd-radius-pill: 999px;
+  --pd-shadow-sm: 0 1px 2px rgb(0 0 0 / 6%);
+  --pd-shadow: 0 6px 18px rgb(0 0 0 / 8%);
+
+  --pd-font: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --pd-container: 1200px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
-    margin: 0;
-    padding: 0;
-    /* Optional: Use a font that matches your design */
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: var(--pd-font);
+  color: var(--pd-text);
+  background: var(--pd-bg);
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+/* Visible keyboard focus everywhere — previously focus was invisible on most
+   custom buttons, which made the site hard to use without a mouse. */
+:focus-visible {
+  outline: 3px solid var(--pd-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Accessibility helper used by app.html */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--pd-primary);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  z-index: 10001;
+  border-radius: 0 0 0.5rem 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+main {
+  outline: none;
+}
+
+/* Reusable layout + component utilities */
+.pd-container {
+  width: min(100% - 2rem, var(--pd-container));
+  margin-inline: auto;
+}
+
+.pd-grid {
+  display: grid;
+  gap: var(--pd-space-6);
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.pd-card {
+  background: var(--pd-surface);
+  border: 1px solid var(--pd-border);
+  border-radius: var(--pd-radius);
+  box-shadow: var(--pd-shadow-sm);
+  overflow: hidden;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+.pd-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--pd-shadow);
+}
+
+.pd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--pd-radius-pill);
+  border: 1px solid var(--pd-primary);
+  background: transparent;
+  color: var(--pd-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+}
+.pd-btn:hover:not(:disabled) {
+  background: var(--pd-primary-soft);
+}
+.pd-btn--primary {
+  background: var(--pd-primary);
+  color: #fff;
+}
+.pd-btn--primary:hover:not(:disabled) {
+  background: var(--pd-primary-dark);
+}
+.pd-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.pd-error-text {
+  color: var(--pd-danger);
+  font-size: 0.875rem;
+  margin: var(--pd-space-2) 0 0;
+}
+
+/* Skeleton placeholder for loading lists */
+.pd-skeleton {
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+  background-size: 400% 100%;
+  animation: pd-shimmer 1.3s ease infinite;
+  border-radius: var(--pd-radius);
+}
+@keyframes pd-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

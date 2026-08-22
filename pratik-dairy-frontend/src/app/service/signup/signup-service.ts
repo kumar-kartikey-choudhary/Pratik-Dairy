@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
-
-interface SignUp{
+export interface SignUp {
   firstName: string;
   middleName: string;
   lastName: string;
@@ -12,7 +12,7 @@ interface SignUp{
   password: string;
 }
 
-interface UserDto{
+export interface UserDto {
   id: number;
   firstName: string;
   middleName: string;
@@ -22,27 +22,20 @@ interface UserDto{
   role: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class SignupService {
+  private readonly http = inject(HttpClient);
+  private readonly signupUrl = `${environment.apiBaseUrl}/users`;
 
-  private readonly SIGNUP_URL = 'http://localhost:8080/users';
-
-  constructor(private http : HttpClient){}
-
-  /**
-   * Sends register/signup credentials to the Spring Boot backend.
-   * @param credentials - Object containing register fields.
-   * @returns - userDto 
-   */
-  onSignUp(credentials : SignUp) : Observable<UserDto>{
-    const url = `${this.SIGNUP_URL}/register`;
-    return this.http.post<UserDto>(url, credentials).pipe(
-      tap(() =>{
-        console.log(`Registration request sent for ${credentials.username}`);
-      })
-    );
+  /** Registers a new customer account. */
+  onSignUp(credentials: SignUp): Observable<UserDto> {
+    return this.http.post<UserDto>(`${this.signupUrl}/register`, credentials);
   }
-  
+
+  /** Optional availability check — lets the form warn before submitting. */
+  isUsernameAvailable(username: string): Observable<{ available: boolean }> {
+    return this.http.get<{ available: boolean }>(`${this.signupUrl}/available`, {
+      params: { username },
+    });
+  }
 }

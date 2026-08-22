@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="pratik-dairy-gateway" />
+        <module name="pratik-dairy-registry" />
+      </profile>
+      <profile name="Annotation profile for pratik-dairy-cart" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+        </processorPath>
+        <module name="cart-service" />
+        <module name="user-api" />
+        <module name="user-service" />
+        <module name="cart-api" />
+        <module name="user-app" />
+        <module name="cart-app" />
+      </profile>
+      <profile name="Annotation profile for pratik-dairy-order" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.42/lombok-1.18.42.jar" />
+        </processorPath>
+        <module name="pratik-dairy-core" />
+        <module name="order-app" />
+        <module name="product-app" />
+        <module name="product-api" />
+        <module name="product-service" />
+        <module name="order-service" />
+        <module name="order-api" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="cart-api" options="-parameters" />
+      <module name="cart-app" options="-parameters" />
+      <module name="cart-service" options="-parameters" />
+      <module name="order-api" options="-parameters" />
+      <module name="order-app" options="-parameters" />
+      <module name="order-service" options="-parameters" />
+      <module name="pratik-dairy-cart" options="-parameters" />
+      <module name="pratik-dairy-core" options="-parameters" />
+      <module name="pratik-dairy-gateway" options="-parameters" />
+      <module name="pratik-dairy-order" options="-parameters" />
+      <module name="pratik-dairy-parent" options="-parameters" />
+      <module name="pratik-dairy-product" options="-parameters" />
+      <module name="pratik-dairy-registry" options="-parameters" />
+      <module name="pratik-dairy-user" options="-parameters" />
+      <module name="product-api" options="-parameters" />
+      <module name="product-app" options="-parameters" />
+      <module name="product-service" options="-parameters" />
+      <module name="user-api" options="-parameters" />
+      <module name="user-app" options="-parameters" />
+      <module name="user-service" options="-parameters" />
+    </option>
+  </component>
+</project>

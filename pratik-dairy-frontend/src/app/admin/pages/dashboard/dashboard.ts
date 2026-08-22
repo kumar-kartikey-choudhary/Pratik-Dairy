@@ -1,9 +1,12 @@
 // src/app/admin/pages/admin-dashboard/admin-dashboard.component.ts
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DecimalPipe, NgFor } from '@angular/common'; // For looping lists/stats
-// import { AdminDataService } from '../../service/admin-data.service'; // To fetch admin data
+import { DecimalPipe } from '@angular/common';
+import { forkJoin } from 'rxjs';
+import { AdminService } from '../../service/admin-service';
+import { OrderAdminService, OrderResponse } from '../../service/order-admin-service';
+import { ProductService } from '../../../service/product/product-service';
 
 interface Kpi {
   title: string;
@@ -12,11 +15,11 @@ interface Kpi {
   colorClass: 'primary' | 'secondary' | 'danger' | 'info';
 }
 
-interface Order {
-  id: number;
+interface RecentOrderRow {
+  id: string;
   customer: string;
   total: number;
-  status: 'New' | 'Processing' | 'Delivered' | 'Cancelled';
+  status: string;
 }
 
 interface LowStockItem {
@@ -25,40 +28,139 @@ interface LowStockItem {
   threshold: number;
 }
 
+// No stock-threshold field exists on the backend Product model — this is a client-side
+// assumption for "low stock" flagging. Adjust to match your actual reorder policy, or
+// wire it up to a real field if one gets added to the product entity later.
+const LOW_STOCK_THRESHOLD = 10;
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './dashboard.html',
-  styleUrls: ['./dashboard.css'], 
+  styleUrls: ['./dashboard.css'],
   standalone: true,
-  imports: [RouterLink,  DecimalPipe]
+  imports: [RouterLink, DecimalPipe],
 })
-export class AdminDashboardComponent {
-  
-  // Mock Data for KPIs
-  kpis: Kpi[] = [
-    { title: "Today's Orders", value: "8", detail: "+3 Since Yesterday", colorClass: 'primary' },
-    { title: "Weekly Revenue", value: "₹ 14,500", detail: "Target: ₹ 20k", colorClass: 'secondary' },
-    { title: "Low Stock Alerts", value: "2", detail: "Paneer & Motichoor Ladoo", colorClass: 'danger' },
-    { title: "New Customers", value: "7", detail: "This Week", colorClass: 'info' },
-  ];
+export class AdminDashboardComponent implements OnInit {
+  kpis: Kpi[] = [];
+  recentOrders: RecentOrderRow[] = [];
+  lowStockItems: LowStockItem[] = [];
 
-  // Mock Data for Recent Orders
-  recentOrders: Order[] = [
-    { id: 1004, customer: "Ritu K.", total: 680, status: 'Processing' },
-    { id: 1003, customer: "Sanjay M.", total: 1250, status: 'New' },
-    { id: 1002, customer: "Priya T.", total: 340, status: 'Delivered' },
-    { id: 1001, customer: "Admin Test", total: 4500, status: 'Cancelled' },
-  ];
+  isLoading = true;
+  errorMsg = '';
 
-  // Mock Data for Inventory Snapshot
-  lowStockItems: LowStockItem[] = [
-    { name: 'Fresh Paneer', stock: 4, threshold: 10 },
-    { name: 'Pure Cow Ghee', stock: 12, threshold: 15 },
-    { name: 'Motichoor Ladoo', stock: 50, threshold: 100 },
-  ];
+  constructor(
+    private adminService: AdminService,
+    private orderAdminService: OrderAdminService,
+    private productService: ProductService,
+  ) {}
 
-  // Inject service if needed later, but we use mock data for now
-  constructor() {}
+  ngOnInit(): void {
+    this.loadDashboard();
+  }
+
+  loadDashboard(): void {
+    this.isLoading = true;
+    this.errorMsg = '';
+
+    forkJoin({
+      orders: this.orderAdminService.getAllOrders(),
+      products: this.productService.getAllProducts(),
+      users: this.adminService.getAllUsers(),
+    }).subscribe({
+      next: ({ orders, products, users }) => {
+        this.buildKpis(orders, products as any[], users as any[]);
+        this.buildRecentOrders(orders);
+        this.buildLowStockItems(products as any[]);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load dashboard data:', err);
+        this.errorMsg = 'Could not load dashboard data. Is the backend running?';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private isSameDay(a: Date, b: Date): boolean {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
+  }
+
+  private daysAgo(date: Date, days: number): boolean {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - days);
+    return date.getTime() >= cutoff.getTime();
+  }
+
+  private buildKpis(orders: OrderResponse[], products: any[], users: any[]): void {
+    const today = new Date();
+
+    const todaysOrders = orders.filter((o) =>
+      this.isSameDay(new Date(o.orderDateTime), today),
+    );
+
+    // Revenue from the last 7 days, excluding cancelled orders
+    const weeklyRevenue = orders
+      .filter((o) => o.status !== 'CANCELLED' && this.daysAgo(new Date(o.orderDateTime), 7))
+      .reduce((sum, o) => sum + o.totalAmount, 0);
+
+    const lowStockProducts = products.filter((p) => p.stockQuantity <= LOW_STOCK_THRESHOLD);
+
+    const newCustomers = users.filter((u) => u.createdAt && this.daysAgo(new Date(u.createdAt), 7));
+
+    this.kpis = [
+      {
+        title: "Today's Orders",
+        value: `${todaysOrders.length}`,
+        detail: `${orders.length} total all-time`,
+        colorClass: 'primary',
+      },
+      {
+        title: 'Weekly Revenue',
+        value: `₹ ${weeklyRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`,
+        detail: 'Last 7 days',
+        colorClass: 'secondary',
+      },
+      {
+        title: 'Low Stock Alerts',
+        value: `${lowStockProducts.length}`,
+        detail:
+          lowStockProducts.length > 0
+            ? lowStockProducts.map((p) => p.productName).slice(0, 2).join(', ')
+            : 'All stocked',
+        colorClass: 'danger',
+      },
+      {
+        title: 'New Customers',
+        value: `${newCustomers.length}`,
+        detail: 'This Week',
+        colorClass: 'info',
+      },
+    ];
+  }
+
+  private buildRecentOrders(orders: OrderResponse[]): void {
+    this.recentOrders = [...orders]
+      .sort((a, b) => new Date(b.orderDateTime).getTime() - new Date(a.orderDateTime).getTime())
+      .slice(0, 5)
+      .map((o) => ({
+        id: o.id,
+        customer: o.username,
+        total: o.totalAmount,
+        status: o.status,
+      }));
+  }
+
+  private buildLowStockItems(products: any[]): void {
+    this.lowStockItems = products
+      .filter((p) => p.stockQuantity <= LOW_STOCK_THRESHOLD)
+      .map((p) => ({
+        name: p.productName,
+        stock: p.stockQuantity,
+        threshold: LOW_STOCK_THRESHOLD,
+      }));
+  }
 }
-

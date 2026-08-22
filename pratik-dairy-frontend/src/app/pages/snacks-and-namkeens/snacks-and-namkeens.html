@@ -1,5 +1,4 @@
 <main class="snacks-page-container">
-  
   <section class="page-header-banner">
     <div class="header-overlay"></div>
     <div class="header-content">
@@ -10,13 +9,13 @@
 
   <section class="search-section">
     <div class="search-input-wrapper">
-      <input 
-        type="text" 
-        placeholder="Search for Sev, Bhujia, or Mathri..." 
-        [(ngModel)]="filterText" 
+      <input
+        type="text"
+        placeholder="Search for Sev, Bhujia, or Mathri..."
+        [(ngModel)]="filterText"
         class="search-input"
         aria-label="Search Snacks Menu"
-      >
+      />
       <span class="search-icon">🔍</span>
     </div>
   </section>
@@ -29,31 +28,29 @@
         Our Full Savory Collection
       }
     </h2>
-    
+
     @for (category of filteredCategories; track category.name) {
-      
       @if (category.items.length > 0) {
-        
         <div class="category-header">
           <h3>{{ category.name }}</h3>
         </div>
-        
+
         <div class="menu-grid">
           @for (snack of category.items; track snack.name) {
             <div class="snack-card">
               <div class="image-box">
-                 <img [src]="snack.imagePath" [alt]="snack.name" class="snack-image">
-                 <span class="category-tag">{{ snack.category }}</span>
+                <img [src]="snack.imagePath" [alt]="snack.name" class="snack-image" />
+                <span class="category-tag">{{ snack.category }}</span>
               </div>
-              
+
               <div class="card-details">
                 <div class="name-price">
                   <h3>{{ snack.name }}</h3>
-                  <span class="price-tag">{{ snack.price }}</span> 
+                  <span class="price-tag">{{ snack.price }}</span>
                 </div>
-                
+
                 <p class="description">{{ snack.description }}</p>
-                
+
                 <button class="btn-order">Add to Cart</button>
               </div>
             </div>
@@ -75,5 +72,4 @@
     <p>We supply fresh, packaged namkeen and snacks for any occasion.</p>
     <a routerLink="/contact" class="btn btn-primary">Contact for Bulk Pricing</a>
   </section>
-
 </main>
