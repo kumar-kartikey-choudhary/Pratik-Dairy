@@ -12,13 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class    ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
@@ -90,27 +91,37 @@ public class    ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
     public ProductDto update(ProductDto productDto, String id) {
-        log.info("Inside @class ProductServiceImpl @method update @Param id :{} , productDto :{}", id, productDto);
-        if (id == null) {
-            throw new RuntimeException("Id must not be null");
-        }
         try {
-            Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-            product.setProductName(productDto.getProductName());
-            product.setDescription(productDto.getDescription());
-            product.setPrice(productDto.getPrice());
-            product.setAvailable(productDto.isAvailable());
-            product.setStockUnit(productDto.getStockUnit());
-            product.setStockQuantity(productDto.getStockQuantity());
-            product.setManufactureDate(productDto.getManufactureDate());
-            product.setExpiryDate(productDto.getExpiryDate());
+            Product existingProduct = productRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
-            Product updated = productRepository.saveAndFlush(product);
+            existingProduct.setProductName(productDto.getProductName());
+            existingProduct.setPrice(productDto.getPrice());
+            existingProduct.setStockQuantity(productDto.getStockQuantity());
+            existingProduct.setStockUnit(productDto.getStockUnit());
+            existingProduct.setCategory(productDto.getCategory());
+            existingProduct.setDescription(productDto.getDescription());
+            existingProduct.setManufactureDate(productDto.getManufactureDate());
+            existingProduct.setExpiryDate(productDto.getExpiryDate());
 
-            log.info("Product details updated..");
-            return MapperUtility.sourceToTarget(updated, ProductDto.class);
+            // FIX 1: Update status and map to boolean isAvailable field
+            if (productDto.getStatus() != null) {
+                existingProduct.setStatus(productDto.getStatus());
+                // Map "In Stock" to true, everything else ("Out of Stock", etc.) to false
+                boolean available = "In Stock".equalsIgnoreCase(productDto.getStatus().trim());
+                existingProduct.setAvailable(available);
+            }
+
+            // FIX 2: Only update image fields if new image data was provided in request
+            if (productDto.getImageData() != null && productDto.getImageData().length > 0) {
+                existingProduct.setImageName(productDto.getImageName());
+                existingProduct.setImageType(productDto.getImageType());
+                existingProduct.setImageData(productDto.getImageData());
+            }
+
+            Product updatedProduct = productRepository.save(existingProduct);
+            return MapperUtility.sourceToTarget(updatedProduct, ProductDto.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

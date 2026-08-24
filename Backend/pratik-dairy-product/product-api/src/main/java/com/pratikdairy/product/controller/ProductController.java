@@ -36,7 +36,7 @@ public interface ProductController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping(path = "admin/updateProduct/{id}")
-    ResponseEntity<ProductDto> update( @PathVariable(name = "id") String id ,@RequestPart ProductDto productDto );
+    ResponseEntity<ProductDto> update( @PathVariable(name = "id") String id ,@RequestBody ProductDto productDto );
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping(path = "admin/updateProduct/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

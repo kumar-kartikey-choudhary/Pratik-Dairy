@@ -99,6 +99,10 @@ export class ProductManagement implements OnInit {
   saveProduct(): void {
     const productPayload: Product = { ...this.currentProduct };
 
+    if (productPayload.type === '') {
+      productPayload.type = undefined; 
+    }
+
     // Guard against double submission
     if (this.isUploading) return;
 
